@@ -59,31 +59,6 @@ void SystemClock_Config(void) {
 }
 
 
-/**  Causes the display of a temperature or angle value
-   * @brief  Will show the proper float on the display and will flash if temperature alarm sounded
-	 * @param  Float of temperature/angle to be displayed
-	 * @param	 Boolean that is false for temperature display and true for angle display
-   * @param	 Boolean that indicates whether or not temperature alarm is sounding **/
-//void display(float displayValue, uint8_t displayBool, uint8_t alarmBool){
-//	
-//	uint8_t i;
-//	
-//	// Reset all pins and set delay to show noticeable blink if alarm active
-//	if (alarmBool){
-//		for(i=0; i<4; i++){
-//			selectDigit(i);
-//			reset();
-//		}
-//		
-//		osDelay(100);
-//	}
-//	
-//	if (displayBool) draw_angle(displayValue);
-//	else draw_temperature(displayValue);
-//	
-//	return;
-//}
-
 
 /**  Timer3 initialization function
    * @brief  Function to initialize timer 3 **/
