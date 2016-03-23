@@ -24,6 +24,7 @@ extern float rollValue, pitchValue;
 // Timer 3 values
 extern TIM_HandleTypeDef handle_tim3;
 extern uint32_t timingDelay;
+extern int alarmCount;
 
 /* @brief Structure for the Kalman filter  */ 
 typedef struct kalman_t{

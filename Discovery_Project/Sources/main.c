@@ -165,6 +165,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			osSignalSet(tid_Thread_TempSensor, (int32_t) THREAD_GREEN_LIGHT);
 			tim3_ticks = 0;
 		}
+
+		// Alarm counter for display LEDs
+		ledCount++;
+		if (ledCount > 2000) ledCount = 0;
+
 	}
 	
 }

@@ -141,8 +141,10 @@ void Delay(uint32_t time){
 	
 	timingDelay = time;
   while(timingDelay !=0);
+
 	
 }
+
 
 
 /**  Configures system for user interface
@@ -151,25 +153,24 @@ void UserInterface_config(void){
 
 }
 
-void alarm(void) {
-	
-	
+void ledsRotate(void) {
+
 	// Green light on
-	if (alarmCount < 500){
+	if (ledCount < 500){
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
 	}
 	else {
 		
 		// Orange light on
-		if (alarmCount < 1000){
+		if (ledCount < 1000){
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
 		}
 		else{
 			
 			// Red light on
-			if (alarmCount < 1500){
+			if (ledCount < 1500){
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
 				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
 			}
@@ -183,5 +184,51 @@ void alarm(void) {
 	}
 
 }
+void ledsCounterRotate(void) {
+	
+
+	if (ledCount < 500){
+		// Blue light on
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
+	}
+	else {
+				
+		if (ledCount < 1000){
+			// Red light on
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+			
+		}
+
+		else {			
+			
+			if (ledCount < 1500){
+				// Orange light on
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+			}
+						
+			else {
+				// Green light on
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+			}
+		}
+	}
+}
+
+void ledsOn(void) {
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void ledsOff(void) {
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
 }
 
