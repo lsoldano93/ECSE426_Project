@@ -46,6 +46,7 @@
 #include "debug.h"
 #include "stm32_bluenrg_ble.h"
 #include "bluenrg_utils.h"
+#include "NucleoSPI.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -153,6 +154,9 @@ int main(void)
 	/* SYSTEM CLOCK = 32 MHz */
   SystemClock_Config();
 
+	/* Configure Nucleo for SPI communications with Discovery */
+  NucleoSPI_Config();
+
   /* Initialize the BlueNRG SPI driver */
   BNRG_SPI_Init();
   
@@ -186,103 +190,105 @@ int main(void)
     SERVER_BDADDR[5] = 0x02;
   }
 
-  /* The Nucleo board must be configured as SERVER */
-  Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
-  
-  ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
-                                  CONFIG_DATA_PUBADDR_LEN,
-                                  bdaddr);
-  if(ret){
-    PRINTF("Setting BD_ADDR failed.\n");
-  }
-  
-  ret = aci_gatt_init();    
-  if(ret){
-    PRINTF("GATT_Init failed.\n");
-  }
+//  /* The Nucleo board must be configured as SERVER */
+//  Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
+//  
+//  ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
+//                                  CONFIG_DATA_PUBADDR_LEN,
+//                                  bdaddr);
+//  if(ret){
+//    PRINTF("Setting BD_ADDR failed.\n");
+//  }
+//  
+//  ret = aci_gatt_init();    
+//  if(ret){
+//    PRINTF("GATT_Init failed.\n");
+//  }
 
-  if (bnrg_expansion_board == IDB05A1) {
-    ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x03, &service_handle, &dev_name_char_handle, &appearance_char_handle);
-  }
-  else {
-    ret = aci_gap_init_IDB04A1(GAP_PERIPHERAL_ROLE_IDB04A1, &service_handle, &dev_name_char_handle, &appearance_char_handle);
-  }
+//  if (bnrg_expansion_board == IDB05A1) {
+//    ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x03, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+//  }
+//  else {
+//    ret = aci_gap_init_IDB04A1(GAP_PERIPHERAL_ROLE_IDB04A1, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+//  }
 
-  if(ret != BLE_STATUS_SUCCESS){
-    PRINTF("GAP_Init failed.\n");
-  }
+//  if(ret != BLE_STATUS_SUCCESS){
+//    PRINTF("GAP_Init failed.\n");
+//  }
 
-  ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
-                                   strlen(name), (uint8_t *)name);
+//  ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
+//                                   strlen(name), (uint8_t *)name);
 
-  if(ret){
-    PRINTF("aci_gatt_update_char_value failed.\n");            
-    while(1);
-  }
-  
-  ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
-                                     OOB_AUTH_DATA_ABSENT,
-                                     NULL,
-                                     7,
-                                     16,
-                                     USE_FIXED_PIN_FOR_PAIRING,
-                                     123456,
-                                     BONDING);
-  if (ret == BLE_STATUS_SUCCESS) {
-    PRINTF("BLE Stack Initialized.\n");
-  }
-  
-  PRINTF("SERVER: BLE Stack Initialized\n");
-  
-  ret = Add_Acc_Service();
-  
-  if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("Acc service added successfully.\n");
-  else
-    PRINTF("Error while adding Acc service.\n");
-  
-  ret = Add_Environmental_Sensor_Service();
-  
-  if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("Environmental Sensor service added successfully.\n");
-  else
-    PRINTF("Error while adding Environmental Sensor service.\n");
+//  if(ret){
+//    PRINTF("aci_gatt_update_char_value failed.\n");            
+//    while(1);
+//  }
+//  
+//  ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
+//                                     OOB_AUTH_DATA_ABSENT,
+//                                     NULL,
+//                                     7,
+//                                     16,
+//                                     USE_FIXED_PIN_FOR_PAIRING,
+//                                     123456,
+//                                     BONDING);
+//  if (ret == BLE_STATUS_SUCCESS) {
+//    PRINTF("BLE Stack Initialized.\n");
+//  }
+//  
+//  PRINTF("SERVER: BLE Stack Initialized\n");
+//  
+//  ret = Add_Acc_Service();
+//  
+//  if(ret == BLE_STATUS_SUCCESS)
+//    PRINTF("Acc service added successfully.\n");
+//  else
+//    PRINTF("Error while adding Acc service.\n");
+//  
+//  ret = Add_Environmental_Sensor_Service();
+//  
+//  if(ret == BLE_STATUS_SUCCESS)
+//    PRINTF("Environmental Sensor service added successfully.\n");
+//  else
+//    PRINTF("Error while adding Environmental Sensor service.\n");
 
-#if NEW_SERVICES
-  /* Instantiate Timer Service with two characteristics:
-   * - seconds characteristic (Readable only)
-   * - minutes characteristics (Readable and Notifiable )
-   */
-  ret = Add_Time_Service(); 
-  
-  if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("Time service added successfully.\n");
-  else
-    PRINTF("Error while adding Time service.\n");  
-  
-  /* Instantiate LED Button Service with one characteristic:
-   * - LED characteristic (Readable and Writable)
-   */  
-  ret = Add_LED_Service();
+//#if NEW_SERVICES
+//  /* Instantiate Timer Service with two characteristics:
+//   * - seconds characteristic (Readable only)
+//   * - minutes characteristics (Readable and Notifiable )
+//   */
+//  ret = Add_Time_Service(); 
+//  
+//  if(ret == BLE_STATUS_SUCCESS)
+//    PRINTF("Time service added successfully.\n");
+//  else
+//    PRINTF("Error while adding Time service.\n");  
+//  
+//  /* Instantiate LED Button Service with one characteristic:
+//   * - LED characteristic (Readable and Writable)
+//   */  
+//  ret = Add_LED_Service();
 
-  if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("LED service added successfully.\n");
-  else
-    PRINTF("Error while adding LED service.\n");  
-#endif
+//  if(ret == BLE_STATUS_SUCCESS)
+//    PRINTF("LED service added successfully.\n");
+//  else
+//    PRINTF("Error while adding LED service.\n");  
+//#endif
 
-  /* Set output power level */
-  ret = aci_hal_set_tx_power_level(1,4);
+//  /* Set output power level */
+//  ret = aci_hal_set_tx_power_level(1,4);
 
   while(1)
   {
-    HCI_Process();
-    User_Process(&axes_data);
-#if NEW_SERVICES
-    Update_Time_Characteristics();
-#endif
+		
+//    HCI_Process();
+//    User_Process(&axes_data);
+//#if NEW_SERVICES
+//    Update_Time_Characteristics();
+//#endif
   }
 }
+
 
 /**
  * @brief  Process user input (i.e. pressing the USER button on Nucleo board)
@@ -317,16 +323,4 @@ void User_Process(AxesRaw_t* p_axes)
   }
 }
 
-/**
- * @}
- */
- 
-/**
- * @}
- */
 
-/**
- * @}
- */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

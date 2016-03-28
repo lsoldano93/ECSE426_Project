@@ -472,6 +472,16 @@
               <FileType>2</FileType>
               <FilePath>.\Sources\Kalmanfilter_asm.s</FilePath>
             </File>
+            <File>
+              <FileName>Thread_SPICommunication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Sources\Thread_SPICommunication.c</FilePath>
+            </File>
+            <File>
+              <FileName>Thread_SPICommunication.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Sources\Thread_SPICommunication.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -958,6 +968,16 @@
               <FileType>2</FileType>
               <FilePath>.\Sources\Kalmanfilter_asm.s</FilePath>
             </File>
+            <File>
+              <FileName>Thread_SPICommunication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Sources\Thread_SPICommunication.c</FilePath>
+            </File>
+            <File>
+              <FileName>Thread_SPICommunication.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Sources\Thread_SPICommunication.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1443,6 +1463,16 @@
               <FileName>Kalmanfilter_asm.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\Sources\Kalmanfilter_asm.s</FilePath>
+            </File>
+            <File>
+              <FileName>Thread_SPICommunication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Sources\Thread_SPICommunication.c</FilePath>
+            </File>
+            <File>
+              <FileName>Thread_SPICommunication.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Sources\Thread_SPICommunication.h</FilePath>
             </File>
           </Files>
         </Group>

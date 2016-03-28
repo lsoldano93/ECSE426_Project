@@ -136,14 +136,14 @@ ARM Macro Assembler    Page 3
 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=.\objects\kalmanfilter_asm.d -o.\objects\kalmanfilter_asm.o -IC
-:\zzz\ECSE426\Lab4_STM32F4Cube_Base_project\RTE -IC:\zzz\ECSE426\Lab4_STM32F4Cu
-be_Base_project\RTE\Device\STM32F407VGTx -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\
-CMSIS\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC -IC:\Kei
-l_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Includ
-e -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\I
-nc --predefine="__RTX SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UV
-ISION_VERSION SETA 515" --predefine="_RTE_ SETA 1" --predefine="STM32F407xx SET
-A 1" --list=.\listings\kalmanfilter_asm.lst Sources\Kalmanfilter_asm.s
+:\zzz\ECSE426_Project\Discovery_Project\RTE -IC:\zzz\ECSE426_Project\Discovery_
+Project\RTE\Device\STM32F407VGTx -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\In
+clude -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC -IC:\Keil_v5\ARM
+\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include -IC:\K
+eil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc --pre
+define="__RTX SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VE
+RSION SETA 515" --predefine="_RTE_ SETA 1" --predefine="STM32F407xx SETA 1" --l
+ist=.\listings\kalmanfilter_asm.lst Sources\Kalmanfilter_asm.s
 
 
 

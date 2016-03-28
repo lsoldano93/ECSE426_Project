@@ -5,7 +5,6 @@
 #include "global_vars.h"
 #include "stm32f4xx_hal_conf.h"
 #include "stm32f4xx_hal_gpio.h"
-#include "global_vars.h"
 
 // TODO: Determine these values
 #define tempKalman_q 0.1

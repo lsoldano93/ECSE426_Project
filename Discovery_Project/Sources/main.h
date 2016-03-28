@@ -6,6 +6,7 @@
 #include "Thread_TempSensor.h"
 #include "Thread_Accelerometer.h"
 #include "Thread_UserInterface.h"
+#include "Thread_SPICommunication.h"
 
 extern osThreadId tid_Thread_LED;
 extern osThreadId tid_Thread_TempSensor; 

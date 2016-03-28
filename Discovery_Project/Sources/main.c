@@ -166,10 +166,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			tim3_ticks = 0;
 		}
 
-		// Alarm counter for display LEDs
-		ledCount++;
-		if (ledCount > 2000) ledCount = 0;
-
 	}
 	
 }
@@ -192,14 +188,17 @@ int main (void) {
 	/* User codes goes here*/
 	init_TIM3();															/* Initialize timer 3 				     	*/
   
-	ADC_config();														  /* Initialize temp sensor ADC     	*/
-	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
+//	ADC_config();														  /* Initialize temp sensor ADC     	*/
+//	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
+//	
+//	Accelerometer_config();										/* Initialize accelerometer         */
+//	start_Thread_Accelerometer();							/* Start accelerometer thread       */
+//	
+//	UserInterface_config();										/* Initialize LED pins              */
+//	start_Thread_UserInterface();				  		/* Start UI thread                  */
 	
-	Accelerometer_config();										/* Initialize accelerometer         */
-	start_Thread_Accelerometer();							/* Start accelerometer thread       */
-	
-	UserInterface_config();										/* Initialize display and keypad    */
-	start_Thread_UserInterface();				  		/* Start UI thread                  */
+	SPICommunication_config();								/* Initialize parameters for SPI    */
+	start_Thread_SPICommunication();				  /* Start SPI thread                 */
 
 	/* User codes ends here*/
   
