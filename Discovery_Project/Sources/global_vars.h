@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "cmsis_os.h"
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_spi.h"
 
 #define THREAD_RED_LIGHT 0  	 // Signal for thread to wait
 #define THREAD_GREEN_LIGHT 2   // Signal for thread to execute
@@ -15,16 +16,21 @@
 // Mutexes
 extern osMutexId temperatureMutex;
 extern osMutexId tiltAnglesMutex;
+extern osMutexId ledStateMutex;
 
 // Shared variables
 extern float temperatureValue;
 extern float accelerometer_out[3];
 extern float rollValue, pitchValue;
+extern int alarmCount;
+
+// SPI Handles
+extern SPI_HandleTypeDef SpiHandle;
+extern SPI_HandleTypeDef NucleoSpiHandle;
 
 // Timer 3 values
 extern TIM_HandleTypeDef handle_tim3;
 extern uint32_t timingDelay;
-extern int alarmCount;
 
 /* @brief Structure for the Kalman filter  */ 
 typedef struct kalman_t{

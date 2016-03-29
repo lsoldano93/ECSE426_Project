@@ -58,3 +58,4 @@
 .\objects\main.o: .\Drivers\BSP\X-NUCLEO-IDB04A1\stm32_bluenrg_ble.h
 .\objects\main.o: .\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\bluenrg_utils.h
 .\objects\main.o: .\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\compiler.h
+.\objects\main.o: Src\NucleoSPI.h

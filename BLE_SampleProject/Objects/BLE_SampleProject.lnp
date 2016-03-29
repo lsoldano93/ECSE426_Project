@@ -5,6 +5,7 @@
 ".\objects\stm32xx_it.o"
 ".\objects\main.o"
 ".\objects\sensor_service.o"
+".\objects\nucleospi.o"
 ".\objects\hci.o"
 ".\objects\bluenrg_gap_aci.o"
 ".\objects\bluenrg_gatt_aci.o"

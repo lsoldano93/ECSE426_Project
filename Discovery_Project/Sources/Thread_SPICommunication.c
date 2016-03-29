@@ -6,7 +6,7 @@
 /* Private Variables ---------------------------------------------------------*/
 
 osThreadId tid_Thread_SPICommunication;   
-SPI_HandleTypeDef SpiHandle;
+SPI_HandleTypeDef NucleoSpiHandle;
 
 osThreadDef(Thread_SPICommunication, osPriorityNormal, 1, NULL); 
 
@@ -38,7 +38,8 @@ void Thread_SPICommunication (void const *argument){
 	
 	while(1){
 		
-		// TODO: Have this Thread read be called via a GPIO pin interrupt that will be set by Nucleo
+		// Thread called via a GPIO pin E1 signal that will be set by Nucleo
+		while(HAL_GPIO_ReadPin(NUCLEO_SPI_SIGNAL_GPIO_PORT, NUCLEO_SPI_SIGNAL_PIN) != GPIO_PIN_RESET);
 		
 		// TODO: After GPIO Interrupt read, be ready to read in first value from Nucleo
 		
@@ -106,6 +107,18 @@ static uint8_t Slave_SendByte(uint8_t byte) {
   return SPI_ReceiveData(&SpiHandle);
 }
 
+static uint8_t Slave_ReadByte(uint8_t byte) {
+	/* Wait to receive a Byte */
+  SPI_Timeout = SPI_Timeout_Flag;
+  while (__HAL_SPI_GET_FLAG(&SpiHandle, SPI_FLAG_RXNE) == RESET) {
+    if((SPI_Timeout--) == 0) {
+			return 0;
+		}
+  }
+	/* Return the Byte read from the SPI bus */ 
+  return SPI_ReceiveData(&SpiHandle);
+}
+
 
 /**
   * @brief  Initialize SPI handle for slave device (Discovery board)
@@ -117,41 +130,45 @@ void SPICommunication_config(void){
 	/* SPI3 uses port b */
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-  /* Enable SCK, MOSI and MISO GPIO clocks */
+  /* Enable SCK, MOSI, CS and MISO GPIO clocks */
+	__GPIOA_CLK_ENABLE();
   __GPIOB_CLK_ENABLE();
-
-  /* Enable CS, INT1, INT2  GPIO clock */
-  __GPIOE_CLK_ENABLE();
- 
+	
   GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
   GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
   GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
-  GPIO_InitStructure.Alternate = GPIO_AF5_SPI1;
+  GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
 
   // SPI3_SCK = PB3,  PI3_MISO = PB4, SPI3_MOSI = PB5
-  GPIO_InitStructure.Pin = GPIO_PIN_3 | GPIO_PIN_4 |GPIO_PIN_5;
+  GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_SCK_PIN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	// SPI3 CS = PA15
+	GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
+  GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
+  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
 
   /* SPI configuration -------------------------------------------------------*/
 	/* Enable the SPI periph */
   __SPI3_CLK_ENABLE();
 	
-  HAL_SPI_DeInit(&SpiHandle);
-  SpiHandle.Instance 							  = SPI3;
-  SpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_4;
-  SpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
-  SpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
-  SpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
-  SpiHandle.Init.CRCCalculation			= SPI_CRCCALCULATION_DISABLED;
-  SpiHandle.Init.CRCPolynomial 			= 7;
-  SpiHandle.Init.DataSize 					= SPI_DATASIZE_8BIT;
-  SpiHandle.Init.FirstBit 					= SPI_FIRSTBIT_MSB;
-  SpiHandle.Init.NSS 								= SPI_NSS_SOFT;
-  SpiHandle.Init.TIMode 						= SPI_TIMODE_DISABLED;
-  SpiHandle.Init.Mode 							= SPI_MODE_SLAVE;
+  HAL_SPI_DeInit(&NucleoSpiHandle);
+  NucleoSpiHandle.Instance 							  = SPI3;
+  NucleoSpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_4;
+  NucleoSpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
+  NucleoSpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
+  NucleoSpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
+  NucleoSpiHandle.Init.CRCCalculation			= SPI_CRCCALCULATION_DISABLED;
+  NucleoSpiHandle.Init.CRCPolynomial 			= 7;
+  NucleoSpiHandle.Init.DataSize 					= SPI_DATASIZE_8BIT;
+  NucleoSpiHandle.Init.FirstBit 					= SPI_FIRSTBIT_MSB;
+  NucleoSpiHandle.Init.NSS 								= SPI_NSS_SOFT;
+  NucleoSpiHandle.Init.TIMode 						= SPI_TIMODE_DISABLED;
+  NucleoSpiHandle.Init.Mode 							= SPI_MODE_SLAVE;
 		
-	if (HAL_SPI_Init(&SpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI1 \n");};
+	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI Nucleo \n");};
   
-	__HAL_SPI_ENABLE(&SpiHandle);
+	__HAL_SPI_ENABLE(&NucleoSpiHandle);
 	
 }

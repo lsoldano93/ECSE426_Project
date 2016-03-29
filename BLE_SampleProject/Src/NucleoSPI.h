@@ -26,8 +26,19 @@
 /* Values for Discovery SPI communications */
 #define DISCOVERY_FLAG_TIMEOUT      	  ((uint32_t)0x1000)
 
-#define DISCOVERY_SPI_CS_GPIO_PORT			GPIOD
-#define DISCOVERY_SPI_CS_PIN						GPIO_PIN_8  // GPIO_D8
+/* Refer to page 33 of the following document
+   http://www.st.com/web/en/resource/technical/document/user_manual/DM00105823.pdf */
+#define DISCOVERY_SPI_SCK_GPIO_PORT			GPIOB
+#define DISCOVERY_SPI_SCK_PIN						GPIO_PIN_13  // GPIO_B13
+
+#define DISCOVERY_SPI_MOSI_GPIO_PORT		GPIOB
+#define DISCOVERY_SPI_MOSI_PIN					GPIO_PIN_15  // GPIO_B15
+
+#define DISCOVERY_SPI_MISO_GPIO_PORT		GPIOB
+#define DISCOVERY_SPI_MISO_PIN					GPIO_PIN_14  // GPIO_B14
+
+#define DISCOVERY_SPI_CS_GPIO_PORT			GPIOB
+#define DISCOVERY_SPI_CS_PIN						GPIO_PIN_6  // GPIO_B6
 
 
 /* Private macros ------------------------------------------------------------*/

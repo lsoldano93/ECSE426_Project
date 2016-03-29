@@ -24,6 +24,19 @@
 
 #define SPI_Timeout_Flag 4096
 
+/* Pins associated with Nucleo signal */
+#define NUCLEO_SPI_SCK_GPIO_PORT		GPIOB
+#define NUCLEO_SPI_SCK_PIN					GPIO_PIN_3  // GPIO_B3
+
+#define NUCLEO_SPI_MOSI_GPIO_PORT		GPIOB
+#define NUCLEO_SPI_MOSI_PIN					GPIO_PIN_5  // GPIO_B5
+
+#define NUCLEO_SPI_MISO_GPIO_PORT		GPIOB
+#define NUCLEO_SPI_MISO_PIN					GPIO_PIN_4  // GPIO_B4
+
+#define NUCLEO_SPI_CS_GPIO_PORT			GPIOA
+#define NUCLEO_SPI_CS_PIN						GPIO_PIN_15  // GPIO_A15
+
 /* Private Variables ---------------------------------------------------------*/
 
 uint32_t  SPI_Timeout = SPI_Timeout_Flag;

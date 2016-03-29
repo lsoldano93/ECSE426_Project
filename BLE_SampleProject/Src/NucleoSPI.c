@@ -4,7 +4,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 __IO uint32_t  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
-SPI_HandleTypeDef    SpiHandle;
+SPI_HandleTypeDef    SpiHandleDiscovery;
 
 
 /**
@@ -54,17 +54,17 @@ static uint8_t Discovery_SendByte(uint8_t byte){
 	
   /* Loop while DR register in not empty */
   DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
-  while (__HAL_SPI_GET_FLAG(&SpiHandle, SPI_FLAG_TXE) == RESET)
+  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_TXE) == RESET)
   {
     if((DiscoveryTimeout--) == 0) return DISCOVERY_TIMEOUT_UserCallback();
   }
 
   /* Send a Byte through the SPI peripheral */
-  SPI_SendData(&SpiHandle,  byte);
+  SPI_SendData(&SpiHandleDiscovery,  byte);
 
   /* Wait to receive a Byte */
   DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
-  while (__HAL_SPI_GET_FLAG(&SpiHandle, SPI_FLAG_RXNE) == RESET)
+  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_RXNE) == RESET)
   {
     if((DiscoveryTimeout--) == 0) {
 			return DISCOVERY_TIMEOUT_UserCallback();
@@ -72,7 +72,7 @@ static uint8_t Discovery_SendByte(uint8_t byte){
   }
 
   /* Return the Byte read from the SPI bus */ 
-  return SPI_ReceiveData(&SpiHandle);
+  return SPI_ReceiveData(&SpiHandleDiscovery);
 }
 
 
@@ -130,6 +130,7 @@ void Discovery_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteTo
 
   /* Set chip select High at the end of the transmission */
   DISCOVERY_CS_HIGH();
+	
 }
 
 
@@ -143,12 +144,12 @@ void NucleoSPI_Config(void){
 	GPIO_InitTypeDef GPIO_InitStructure;
 
   /* Enable Discovery CS line clock */
-  __GPIOD_CLK_ENABLE();
+  __GPIOB_CLK_ENABLE();
  
   GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
   GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
   GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
-  GPIO_InitStructure.Alternate = GPIO_AF5_SPI1;
+  GPIO_InitStructure.Alternate = GPIO_AF5_SPI2;
 
   GPIO_InitStructure.Pin = DISCOVERY_SPI_CS_PIN;
   HAL_GPIO_Init(DISCOVERY_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
@@ -157,22 +158,23 @@ void NucleoSPI_Config(void){
 	/* Enable the SPI periph */
   __SPI3_CLK_ENABLE();
 	
-  HAL_SPI_DeInit(&SpiHandle);
-  SpiHandle.Instance 							  = SPI3;
-  SpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_4;
-  SpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
-  SpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
-  SpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
-  SpiHandle.Init.CRCCalculation			= SPI_CRCCALCULATION_DISABLED;
-  SpiHandle.Init.CRCPolynomial 			= 7;
-  SpiHandle.Init.DataSize 					= SPI_DATASIZE_8BIT;
-  SpiHandle.Init.FirstBit 					= SPI_FIRSTBIT_MSB;
-  SpiHandle.Init.NSS 								= SPI_NSS_SOFT;
-  SpiHandle.Init.TIMode 						= SPI_TIMODE_DISABLED;
-  SpiHandle.Init.Mode 							= SPI_MODE_MASTER;
+  HAL_SPI_DeInit(&SpiHandleDiscovery);
+  SpiHandleDiscovery.Instance 							= SPI2;
+  SpiHandleDiscovery.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  SpiHandleDiscovery.Init.Direction 				= SPI_DIRECTION_2LINES; // set full duplex communication
+  SpiHandleDiscovery.Init.CLKPhase 					= SPI_PHASE_1EDGE;
+  SpiHandleDiscovery.Init.CLKPolarity 			= SPI_POLARITY_LOW;
+  SpiHandleDiscovery.Init.CRCCalculation		= SPI_CRCCALCULATION_DISABLED;
+  SpiHandleDiscovery.Init.CRCPolynomial 		= 7;
+  SpiHandleDiscovery.Init.DataSize 					= SPI_DATASIZE_8BIT;
+  SpiHandleDiscovery.Init.FirstBit 					= SPI_FIRSTBIT_MSB;
+  SpiHandleDiscovery.Init.NSS 							= SPI_NSS_SOFT;
+  SpiHandleDiscovery.Init.TIMode 						= SPI_TIMODE_DISABLED;
+  SpiHandleDiscovery.Init.Mode 							= SPI_MODE_MASTER;
 		
-	if (HAL_SPI_Init(&SpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI1 \n");};
+	if (HAL_SPI_Init(&SpiHandleDiscovery) != HAL_OK) {printf ("ERROR: Error in initialising SPIDiscovery \n");};
   
-	__HAL_SPI_ENABLE(&SpiHandle);
+	__HAL_SPI_ENABLE(&SpiHandleDiscovery);
 	
 }
+

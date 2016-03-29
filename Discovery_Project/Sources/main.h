@@ -8,10 +8,10 @@
 #include "Thread_UserInterface.h"
 #include "Thread_SPICommunication.h"
 
-extern osThreadId tid_Thread_LED;
 extern osThreadId tid_Thread_TempSensor; 
 extern osThreadId tid_Thread_Accelerometer;
 extern osThreadId tid_Thread_UserInterface;
+extern osThreadId tid_Thread_SPICommunication;
 
 osMutexId temperatureMutex;
 osMutexId tiltAnglesMutex;
