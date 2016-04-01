@@ -176,9 +176,29 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi){
 	
 	/* SPI3 Handle is for comm between discovery and nucleo */
 	else if (hspi->Instance == SPI3){
+
+		/* Enable SCK, MOSI, CS and MISO GPIO clocks */
+		__GPIOA_CLK_ENABLE();
+		__GPIOB_CLK_ENABLE();
+		
+		GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+		GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+		GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+		GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
+
+		// SPI3_SCK = PB3,  PI3_MISO = PB4, SPI3_MOSI = PB5
+		GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_SCK_PIN;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+		
+		// SPI3 CS = PA15
+		GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
+		GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
+		GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
+		HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
 		
 	}
 	
+	return;
 }
 
 

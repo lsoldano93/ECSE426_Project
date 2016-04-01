@@ -143,20 +143,9 @@ void NucleoSPI_Config(void){
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-  /* Enable Discovery CS line clock */
-  __GPIOB_CLK_ENABLE();
- 
-  GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
-  GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
-  GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
-  GPIO_InitStructure.Alternate = GPIO_AF5_SPI2;
-
-  GPIO_InitStructure.Pin = DISCOVERY_SPI_CS_PIN;
-  HAL_GPIO_Init(DISCOVERY_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
-
   /* SPI configuration -------------------------------------------------------*/
 	/* Enable the SPI periph */
-  __SPI3_CLK_ENABLE();
+  __SPI2_CLK_ENABLE();
 	
   HAL_SPI_DeInit(&SpiHandleDiscovery);
   SpiHandleDiscovery.Instance 							= SPI2;

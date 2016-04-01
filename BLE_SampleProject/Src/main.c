@@ -125,6 +125,8 @@ int main(void)
   uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
   uint8_t bdaddr[BDADDR_SIZE];
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
+	uint8_t pBuffer; 
+	uint16_t NumByteToWrite;
   
   uint8_t  hwVersion;
   uint16_t fwVersion;
@@ -278,9 +280,12 @@ int main(void)
 //  /* Set output power level */
 //  ret = aci_hal_set_tx_power_level(1,4);
 
+	pBuffer = 0x11;
+
   while(1)
   {
 		
+			Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1);
 //    HCI_Process();
 //    User_Process(&axes_data);
 //#if NEW_SERVICES
@@ -323,4 +328,112 @@ void User_Process(AxesRaw_t* p_axes)
   }
 }
 
+
+/**
+ * @brief  This function is used for low level initialization of the SPI 
+ *         communication with the BlueNRG Expansion Board.
+ * @param  hspi: SPI handle.
+ * @retval None
+ */
+void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+	
+	if (hspi->Instance == SPI2){
+		
+		/* Enable Discovery CS line clock */
+		__GPIOB_CLK_ENABLE();
+ 
+		GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
+		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+
+		GPIO_InitStruct.Pin = DISCOVERY_SPI_MOSI_PIN | DISCOVERY_SPI_MISO_PIN | DISCOVERY_SPI_SCK_PIN;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		
+		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+
+		GPIO_InitStruct.Pin = DISCOVERY_SPI_CS_PIN;
+		HAL_GPIO_Init(DISCOVERY_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
+		
+		/* Deselect : Chip Select high */
+		DISCOVERY_CS_HIGH();
+		
+	}
+  else if(hspi->Instance==BNRG_SPI_INSTANCE)
+{
+    /* Enable peripherals clock */
+
+    /* Enable GPIO Ports Clock */  
+    BNRG_SPI_RESET_CLK_ENABLE();
+    BNRG_SPI_SCLK_CLK_ENABLE();
+    BNRG_SPI_MISO_CLK_ENABLE();
+    BNRG_SPI_MOSI_CLK_ENABLE();
+    BNRG_SPI_CS_CLK_ENABLE();
+    BNRG_SPI_IRQ_CLK_ENABLE();
+
+    /* Enable SPI clock */
+    BNRG_SPI_CLK_ENABLE();
+
+    /* Reset */
+    GPIO_InitStruct.Pin = BNRG_SPI_RESET_PIN;
+    GPIO_InitStruct.Mode = BNRG_SPI_RESET_MODE;
+    GPIO_InitStruct.Pull = BNRG_SPI_RESET_PULL;
+    GPIO_InitStruct.Speed = BNRG_SPI_RESET_SPEED;
+    GPIO_InitStruct.Alternate = BNRG_SPI_RESET_ALTERNATE;
+    HAL_GPIO_Init(BNRG_SPI_RESET_PORT, &GPIO_InitStruct);	
+    HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_RESET);	/*Added to avoid spurious interrupt from the BlueNRG */
+
+    /* SCLK */
+    GPIO_InitStruct.Pin = BNRG_SPI_SCLK_PIN;
+    GPIO_InitStruct.Mode = BNRG_SPI_SCLK_MODE;
+    GPIO_InitStruct.Pull = BNRG_SPI_SCLK_PULL;
+    GPIO_InitStruct.Speed = BNRG_SPI_SCLK_SPEED;
+    GPIO_InitStruct.Alternate = BNRG_SPI_SCLK_ALTERNATE;
+    HAL_GPIO_Init(BNRG_SPI_SCLK_PORT, &GPIO_InitStruct); 
+
+    /* MISO */
+    GPIO_InitStruct.Pin = BNRG_SPI_MISO_PIN;
+    GPIO_InitStruct.Mode = BNRG_SPI_MISO_MODE;
+    GPIO_InitStruct.Pull = BNRG_SPI_MISO_PULL;
+    GPIO_InitStruct.Speed = BNRG_SPI_MISO_SPEED;
+    GPIO_InitStruct.Alternate = BNRG_SPI_MISO_ALTERNATE;
+    HAL_GPIO_Init(BNRG_SPI_MISO_PORT, &GPIO_InitStruct);
+
+    /* MOSI */
+    GPIO_InitStruct.Pin = BNRG_SPI_MOSI_PIN;
+    GPIO_InitStruct.Mode = BNRG_SPI_MOSI_MODE;
+    GPIO_InitStruct.Pull = BNRG_SPI_MOSI_PULL;
+    GPIO_InitStruct.Speed = BNRG_SPI_MOSI_SPEED;
+    GPIO_InitStruct.Alternate = BNRG_SPI_MOSI_ALTERNATE;
+    HAL_GPIO_Init(BNRG_SPI_MOSI_PORT, &GPIO_InitStruct);
+
+    /* NSS/CSN/CS */
+    GPIO_InitStruct.Pin = BNRG_SPI_CS_PIN;
+    GPIO_InitStruct.Mode = BNRG_SPI_CS_MODE;
+    GPIO_InitStruct.Pull = BNRG_SPI_CS_PULL;
+    GPIO_InitStruct.Speed = BNRG_SPI_CS_SPEED;
+    GPIO_InitStruct.Alternate = BNRG_SPI_CS_ALTERNATE;
+    HAL_GPIO_Init(BNRG_SPI_CS_PORT, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+
+    /* IRQ -- INPUT */
+    GPIO_InitStruct.Pin = BNRG_SPI_IRQ_PIN;
+    GPIO_InitStruct.Mode = BNRG_SPI_IRQ_MODE;
+    GPIO_InitStruct.Pull = BNRG_SPI_IRQ_PULL;
+    GPIO_InitStruct.Speed = BNRG_SPI_IRQ_SPEED;
+    GPIO_InitStruct.Alternate = BNRG_SPI_IRQ_ALTERNATE;
+    HAL_GPIO_Init(BNRG_SPI_IRQ_PORT, &GPIO_InitStruct);
+
+    /* Configure the NVIC for SPI */  
+    HAL_NVIC_SetPriority(BNRG_SPI_EXTI_IRQn, 3, 0);    
+    HAL_NVIC_EnableIRQ(BNRG_SPI_EXTI_IRQn);
+  }
+
+	return;
+}
 

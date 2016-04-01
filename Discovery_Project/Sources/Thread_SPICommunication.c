@@ -36,10 +36,18 @@ int start_Thread_SPICommunication (void) {
    */
 void Thread_SPICommunication (void const *argument){
 	
+	uint8_t returnValue;
+	
 	while(1){
 		
-		// Thread called via a GPIO pin E1 signal that will be set by Nucleo
-		while(HAL_GPIO_ReadPin(NUCLEO_SPI_SIGNAL_GPIO_PORT, NUCLEO_SPI_SIGNAL_PIN) != GPIO_PIN_RESET);
+		// Wait for signal from GPIO pin
+		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
+		
+		returnValue = Slave_ReadByte();
+		printf("Should be 0x80, returnValue = %d\n", (int)returnValue);
+		
+		returnValue = Slave_ReadByte();
+		printf("Should be 0x11, returnValue = %d\n", (int)returnValue);
 		
 		// TODO: After GPIO Interrupt read, be ready to read in first value from Nucleo
 		
@@ -59,7 +67,7 @@ void Thread_SPICommunication (void const *argument){
   * @param  Data: Data to be transmitted.
   * @retval None
   */
-void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data)
+void Slave_Spi_SendData(SPI_HandleTypeDef *hspi, uint16_t Data)
 { 
   /* Write in the DR register the data to be sent */
   hspi->Instance->DR = Data;
@@ -71,7 +79,7 @@ void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data)
   * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
   * @retval The value of the received data.
   */
-uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi)
+uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi)
 {
   /* Return the data in the DR register */
   return hspi->Instance->DR;
@@ -86,17 +94,17 @@ uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi)
 static uint8_t Slave_SendByte(uint8_t byte) {
   /* Loop while DR register in not empty */
 	SPI_Timeout = SPI_Timeout_Flag;
-  while (__HAL_SPI_GET_FLAG(&SpiHandle, SPI_FLAG_TXE) == RESET)
+  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET)
   {
     if((SPI_Timeout--) == 0) return 0;
   }
 
   /* Send a Byte through the SPI peripheral */
-  SPI_SendData(&SpiHandle,  byte);
+  Slave_Spi_SendData(&NucleoSpiHandle,  byte);
 
   /* Wait to receive a Byte */
   SPI_Timeout = SPI_Timeout_Flag;
-  while (__HAL_SPI_GET_FLAG(&SpiHandle, SPI_FLAG_RXNE) == RESET)
+  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET)
   {
     if((SPI_Timeout--) == 0) {
 			return 0;
@@ -104,19 +112,20 @@ static uint8_t Slave_SendByte(uint8_t byte) {
   }
 
   /* Return the Byte read from the SPI bus */ 
-  return SPI_ReceiveData(&SpiHandle);
+  return Slave_Spi_ReceiveData(&NucleoSpiHandle);
 }
 
-static uint8_t Slave_ReadByte(uint8_t byte) {
+
+static uint8_t Slave_ReadByte(void) {
 	/* Wait to receive a Byte */
   SPI_Timeout = SPI_Timeout_Flag;
-  while (__HAL_SPI_GET_FLAG(&SpiHandle, SPI_FLAG_RXNE) == RESET) {
+  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET) {
     if((SPI_Timeout--) == 0) {
 			return 0;
 		}
   }
 	/* Return the Byte read from the SPI bus */ 
-  return SPI_ReceiveData(&SpiHandle);
+  return Slave_Spi_ReceiveData(&NucleoSpiHandle);
 }
 
 
@@ -127,28 +136,6 @@ static uint8_t Slave_ReadByte(uint8_t byte) {
   */
 void SPICommunication_config(void){
 	
-	/* SPI3 uses port b */
-	GPIO_InitTypeDef GPIO_InitStructure;
-
-  /* Enable SCK, MOSI, CS and MISO GPIO clocks */
-	__GPIOA_CLK_ENABLE();
-  __GPIOB_CLK_ENABLE();
-	
-  GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
-  GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
-  GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
-  GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
-
-  // SPI3_SCK = PB3,  PI3_MISO = PB4, SPI3_MOSI = PB5
-  GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_SCK_PIN;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
-	
-	// SPI3 CS = PA15
-	GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
-  GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
-  GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
-
   /* SPI configuration -------------------------------------------------------*/
 	/* Enable the SPI periph */
   __SPI3_CLK_ENABLE();
