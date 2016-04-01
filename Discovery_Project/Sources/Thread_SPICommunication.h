@@ -39,7 +39,6 @@
 
 /* Private Variables ---------------------------------------------------------*/
 
-uint32_t  SPI_Timeout = SPI_Timeout_Flag;
 
 
 /* Private function prototypes -----------------------------------------------*/

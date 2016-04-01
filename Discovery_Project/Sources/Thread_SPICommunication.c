@@ -13,6 +13,7 @@ osThreadDef(Thread_SPICommunication, osPriorityNormal, 1, NULL);
 
 /* Private Functions ---------------------------------------------------------*/
 
+uint32_t  SPI_Timeout = SPI_Timeout_Flag;
 /**  Initiates SPI Communication thread
    * @brief  Builds thread and starts it
    * @param  None
@@ -136,6 +137,8 @@ static uint8_t Slave_ReadByte(void) {
   */
 void SPICommunication_config(void){
 	
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
   /* SPI configuration -------------------------------------------------------*/
 	/* Enable the SPI periph */
   __SPI3_CLK_ENABLE();
@@ -156,6 +159,26 @@ void SPICommunication_config(void){
 		
 	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI Nucleo \n");};
   
+	/* SPI3 Handle is for comm between discovery and nucleo */
+	/* Enable SCK, MOSI, CS and MISO GPIO clocks */
+	__GPIOA_CLK_ENABLE();
+	__GPIOB_CLK_ENABLE();
+	
+	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
+
+	// SPI3_SCK = PB3,  PI3_MISO = PB4, SPI3_MOSI = PB5
+	GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_SCK_PIN;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+	
+	// SPI3 CS = PA15
+	GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
+	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
+	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
+	HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
+	
 	__HAL_SPI_ENABLE(&NucleoSpiHandle);
 	
 }
