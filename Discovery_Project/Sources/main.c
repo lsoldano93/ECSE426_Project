@@ -131,7 +131,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
   __IO uint32_t tmpreg = 0x00;
   UNUSED(tmpreg); 
 	
-	/* If callback regards GPIO pin (E0) associated with external accelerometer interrupt, 
+	/* If callback regards GPIO pin associated with external accelerometer interrupt, 
 		 read accelerometer to output and signal accelerometer thread to execute */
 	if(GPIO_Pin == GPIO_PIN_0) {
 		LIS3DSH_ReadACC(accelerometer_out);
@@ -165,7 +165,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			osSignalSet(tid_Thread_TempSensor, (int32_t) THREAD_GREEN_LIGHT);
 			tim3_ticks = 0;
 		}
-
 	}
 	
 }
@@ -190,10 +189,10 @@ int main (void) {
   
 //	ADC_config();														  /* Initialize temp sensor ADC     	*/
 //	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
-//	
+	
 //	Accelerometer_config();										/* Initialize accelerometer         */
 //	start_Thread_Accelerometer();							/* Start accelerometer thread       */
-//	
+	
 //	UserInterface_config();										/* Initialize LED pins              */
 //	start_Thread_UserInterface();				  		/* Start UI thread                  */
 	

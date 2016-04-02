@@ -40,15 +40,15 @@ void Thread_SPICommunication (void const *argument){
 	uint8_t returnValue;
 	
 	while(1){
-		
+
 		// Wait for signal from GPIO pin
 		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
+	
+		returnValue = Slave_ReadByte();
+		printf("Should be 0x80 = 164, returnValue = %d\n", returnValue);
 		
 		returnValue = Slave_ReadByte();
-		printf("Should be 0x80, returnValue = %d\n", (int)returnValue);
-		
-		returnValue = Slave_ReadByte();
-		printf("Should be 0x11, returnValue = %d\n", (int)returnValue);
+		printf("Should be 0x11 = 17, returnValue = %d\n", returnValue);
 		
 		// TODO: After GPIO Interrupt read, be ready to read in first value from Nucleo
 		
@@ -157,7 +157,7 @@ void SPICommunication_config(void){
   NucleoSpiHandle.Init.TIMode 						= SPI_TIMODE_DISABLED;
   NucleoSpiHandle.Init.Mode 							= SPI_MODE_SLAVE;
 		
-	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI Nucleo \n");};
+	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) printf ("ERROR: Error in initialising SPI Nucleo \n");
   
 	/* SPI3 Handle is for comm between discovery and nucleo */
 	/* Enable SCK, MOSI, CS and MISO GPIO clocks */
@@ -169,9 +169,27 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
 
-	// SPI3_SCK = PB3,  PI3_MISO = PB4, SPI3_MOSI = PB5
-	GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_SCK_PIN;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStructure);
+	// PI3_MISO = PB4
+	GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN;
+	HAL_GPIO_Init(NUCLEO_SPI_MISO_GPIO_PORT, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
+	
+	// SPI3_MOSI = PB5
+	GPIO_InitStructure.Pin = NUCLEO_SPI_MOSI_PIN;
+	HAL_GPIO_Init(NUCLEO_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
+	
+	// SPI3_SCK = PB3
+	GPIO_InitStructure.Pin = NUCLEO_SPI_SCK_PIN;
+	HAL_GPIO_Init(NUCLEO_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
 	
 	// SPI3 CS = PA15
 	GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
