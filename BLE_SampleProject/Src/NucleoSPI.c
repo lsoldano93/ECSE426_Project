@@ -36,10 +36,9 @@ uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi){
   * @retval None.
   */
 uint32_t DISCOVERY_TIMEOUT_UserCallback(void){
-  /* Block communication and all processes */
-//  while (1)
- // {
-  //}
+  
+	printf("Discovery communication timed out \n");
+	
 	return 0;
 }
 

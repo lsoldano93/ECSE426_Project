@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\BLE_SampleProject.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\BLE_SampleProject.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050169: Last Updated: Sat Apr 02 16:08:48 2016
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050169: Last Updated: Sat Apr 02 17:21:58 2016
 <BR><P>
 <H3>Maximum Stack Usage =       1056 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -493,7 +493,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_file
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Temp_Update
+<BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DISCOVERY_TIMEOUT_UserCallback
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Temp_Update
 <LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Press_Update
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Humidity_Update
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GAP_DisconnectionComplete_CB
@@ -1052,8 +1053,13 @@ Global Symbols
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Timer_Expired
 </UL>
 
-<P><STRONG><a name="[c2]"></a>DISCOVERY_TIMEOUT_UserCallback</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, nucleospi.o(i.DISCOVERY_TIMEOUT_UserCallback))
-<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
+<P><STRONG><a name="[c0]"></a>DISCOVERY_TIMEOUT_UserCallback</STRONG> (Thumb, 12 bytes, Stack size 8 bytes, nucleospi.o(i.DISCOVERY_TIMEOUT_UserCallback))
+<BR><BR>[Stack]<UL><LI>Max Depth = 152 + Unknown Stack Size
+<LI>Call Chain = DISCOVERY_TIMEOUT_UserCallback &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
+</UL>
+<BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
 </UL>
 
 <P><STRONG><a name="[10]"></a>DebugMon_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32xx_it.o(i.DebugMon_Handler))
@@ -1062,7 +1068,7 @@ Global Symbols
 <P><STRONG><a name="[b9]"></a>Disable_SPI_IRQ</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, stm32_bluenrg_ble.o(i.Disable_SPI_IRQ))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = Disable_SPI_IRQ
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
+<BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
 <LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;hci_send_req
@@ -1070,9 +1076,10 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c5]"></a>Discovery_Write</STRONG> (Thumb, 54 bytes, Stack size 16 bytes, nucleospi.o(i.Discovery_Write))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = Discovery_Write &rArr; Discovery_SendByte
+<BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
+<LI>Call Chain = Discovery_Write &rArr; Discovery_SendByte &rArr; DISCOVERY_TIMEOUT_UserCallback &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
+<BR>[Calls]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
 </UL>
 <BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1212,7 +1219,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Init
 </UL>
 
-<P><STRONG><a name="[c0]"></a>HAL_NVIC_DisableIRQ</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, stm32f4xx_hal_cortex.o(i.HAL_NVIC_DisableIRQ))
+<P><STRONG><a name="[c1]"></a>HAL_NVIC_DisableIRQ</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, stm32f4xx_hal_cortex.o(i.HAL_NVIC_DisableIRQ))
 <BR><BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Disable_SPI_IRQ
 </UL>
 
@@ -1487,11 +1494,11 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c4]"></a>SPI_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, nucleospi.o(i.SPI_ReceiveData))
-<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
+<BR><BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
 </UL>
 
 <P><STRONG><a name="[c3]"></a>SPI_SendData</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, nucleospi.o(i.SPI_SendData))
-<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
+<BR><BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_SendByte
 </UL>
 
 <P><STRONG><a name="[f]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32xx_it.o(i.SVC_Handler))
@@ -1896,12 +1903,13 @@ Global Symbols
 <H3>
 Local Symbols
 </H3>
-<P><STRONG><a name="[c1]"></a>Discovery_SendByte</STRONG> (Thumb, 108 bytes, Stack size 4 bytes, nucleospi.o(i.Discovery_SendByte))
-<BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = Discovery_SendByte
+<P><STRONG><a name="[c2]"></a>Discovery_SendByte</STRONG> (Thumb, 108 bytes, Stack size 8 bytes, nucleospi.o(i.Discovery_SendByte))
+<BR><BR>[Stack]<UL><LI>Max Depth = 160 + Unknown Stack Size
+<LI>Call Chain = Discovery_SendByte &rArr; DISCOVERY_TIMEOUT_UserCallback &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_SendData
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_ReceiveData
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DISCOVERY_TIMEOUT_UserCallback
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DISCOVERY_TIMEOUT_UserCallback
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Discovery_Write
 </UL>

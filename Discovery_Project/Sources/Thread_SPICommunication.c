@@ -49,13 +49,18 @@ void Thread_SPICommunication (void const *argument){
 		// Set GPIO interrupt pin low to communication with Nucleo that new data is available
 		HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_RESET);
 		
+		// Wait for chip select line to go low so information can be read
 		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
 		
 		returnValue = Slave_ReadByte();
-		printf("Should be 0x80 = 164, returnValue = %d\n", returnValue);
+		
+		// For the sake of debugging...
+		if(returnValue != 0) printf("Should be 0x80 = 164, returnValue = %d\n", returnValue);
 		
 		returnValue = Slave_ReadByte();
-		printf("Should be 0x11 = 17, returnValue = %d\n", returnValue);
+		
+		// For the sake of debugging...
+		if(returnValue != 0) printf("Should be 0x11 = 17, returnValue = %d\n", returnValue);
 		
 		// TODO: After GPIO Interrupt read, be ready to read in first value from Nucleo
 		
@@ -97,6 +102,7 @@ uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi)
 }
 
 
+
 /**
   * @brief  Sends a Byte through the SPI interface and return the Byte received from the SPI bus.
   * @param  Byte : Byte send.
@@ -107,7 +113,10 @@ static uint8_t Slave_SendByte(uint8_t byte) {
 	SPI_Timeout = SPI_Timeout_Flag;
   while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET)
   {
-    if((SPI_Timeout--) == 0) return 0;
+    if((SPI_Timeout--) == 0){
+			NUCLEO_TIMEOUT_UserCallback();
+			return 0;
+		}
   }
 
   /* Send a Byte through the SPI peripheral */
@@ -118,6 +127,7 @@ static uint8_t Slave_SendByte(uint8_t byte) {
   while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET)
   {
     if((SPI_Timeout--) == 0) {
+			NUCLEO_TIMEOUT_UserCallback();
 			return 0;
 		}
   }
@@ -132,6 +142,7 @@ static uint8_t Slave_ReadByte(void) {
   SPI_Timeout = SPI_Timeout_Flag;
   while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET) {
     if((SPI_Timeout--) == 0) {
+			NUCLEO_TIMEOUT_UserCallback();
 			return 0;
 		}
   }
@@ -139,6 +150,17 @@ static uint8_t Slave_ReadByte(void) {
   return Slave_Spi_ReceiveData(&NucleoSpiHandle);
 }
 
+/**
+  * @brief  Basic management of the timeout situation.
+  * @param  None.
+  * @retval None.
+  */
+uint32_t NUCLEO_TIMEOUT_UserCallback(void){
+  
+	printf("Nucleo communication timed out \n");
+	
+	return 0;
+}
 
 /**
   * @brief  Initialize SPI handle for slave device (Discovery board)
@@ -192,7 +214,7 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Pin = NUCLEO_SPI_MOSI_PIN;
 	HAL_GPIO_Init(NUCLEO_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
 	
-	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;			// TODO: Maybe this pin should be an input with no pull??
 	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;

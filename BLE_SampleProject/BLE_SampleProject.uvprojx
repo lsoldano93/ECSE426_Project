@@ -452,6 +452,16 @@
               <FileType>5</FileType>
               <FilePath>.\Src\NucleoSPI.h</FilePath>
             </File>
+            <File>
+              <FileName>main.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Src\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>fput_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Src\fput_debug.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

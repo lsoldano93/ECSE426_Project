@@ -285,21 +285,27 @@ int main(void)
 
 	pBuffer = 0x11;
 
-  while(1)
-  {
+  while(1){
 		
+		/* TODO: Might be a good idea to add functionality that causes this statement not to trigger until Discovery has booted up
+			 EG: Add an external line to discovery, where discovey sets/keeps it at high once ready   - Luke */
+
+// Uncomment this for SPI functionality		
 			// Check for Discovery flag trigger that indicates new data as available
 			if (DISCOVERY_SPI_FLAG == 1){
 				printf("Discovery flag set low\n");
-				Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1);
+				// TODO: Order of operations should be: Read temperature, Read accelerometer, Write LEDState - Luke
+				Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
 				DISCOVERY_SPI_FLAG = 0;
 			}
-			
+
+// Uncomment this for BT functionality		
 //    HCI_Process();
 //    User_Process(&axes_data);
 //#if NEW_SERVICES
 //    Update_Time_Characteristics();
 //#endif
+			
   }
 }
 

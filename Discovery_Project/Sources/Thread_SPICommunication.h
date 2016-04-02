@@ -82,6 +82,13 @@ static uint8_t Slave_SendByte(uint8_t byte);
 static uint8_t Slave_ReadByte(void);
 
 /**
+  * @brief  Basic management of the timeout situation.
+  * @param  None.
+  * @retval None.
+  */
+uint32_t NUCLEO_TIMEOUT_UserCallback(void);
+
+/**
   * @brief  Initialize SPI handle for slave device (Discovery board)
   * @param  None
   * @retval None

@@ -515,17 +515,29 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi){
 		GPIO_InitStructure.Pin = LIS3DSH_SPI_SCK_PIN;
 		HAL_GPIO_Init(LIS3DSH_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
 
+		GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+		GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+		GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+		GPIO_InitStructure.Alternate = GPIO_AF5_SPI1;
+
 		/* SPI  MOSI pin configuration */
 		GPIO_InitStructure.Pin =  LIS3DSH_SPI_MOSI_PIN;
 		HAL_GPIO_Init(LIS3DSH_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
+
+		GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
+		GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+		GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+		GPIO_InitStructure.Alternate = GPIO_AF5_SPI1;
 
 		/* SPI MISO pin configuration */
 		GPIO_InitStructure.Pin = LIS3DSH_SPI_MISO_PIN;
 		HAL_GPIO_Init(LIS3DSH_SPI_MISO_GPIO_PORT, &GPIO_InitStructure);
 		
-		GPIO_InitStructure.Pin   = LIS3DSH_SPI_CS_PIN;
 		GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
 		GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
+		
+		/* SPI CS pin configuration */
+		GPIO_InitStructure.Pin   = LIS3DSH_SPI_CS_PIN;
 		HAL_GPIO_Init(LIS3DSH_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
 
 		/* Deselect : Chip Select high */
