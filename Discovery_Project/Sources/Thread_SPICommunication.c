@@ -41,9 +41,16 @@ void Thread_SPICommunication (void const *argument){
 	
 	while(1){
 
-		// Wait for signal from GPIO pin
-		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
+		/* Wait for temperature sensor or accelerometer to update its value.
+		   Upon signal, transmit temperature and accelerometer values before
+			 receiving current LED state value from Nucleo                  */
+		osSignalWait(THREAD_GREEN_LIGHT, THREAD_TIMEOUT);
 	
+		// Set GPIO interrupt pin low to communication with Nucleo that new data is available
+		HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_RESET);
+		
+		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
+		
 		returnValue = Slave_ReadByte();
 		printf("Should be 0x80 = 164, returnValue = %d\n", returnValue);
 		
@@ -57,6 +64,9 @@ void Thread_SPICommunication (void const *argument){
 		
 		// TODO: If value from Nucleo indicates that master wants to read, prepare to write specified value
 		//       Gain access to shared variable and then send it to Nucleo
+		
+		// Set GPIO interrupt pin back to high
+		HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
 
 	}                                                       
 }
@@ -145,7 +155,7 @@ void SPICommunication_config(void){
 	
   HAL_SPI_DeInit(&NucleoSpiHandle);
   NucleoSpiHandle.Instance 							  = SPI3;
-  NucleoSpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_4;
+  NucleoSpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_2;
   NucleoSpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
   NucleoSpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
   NucleoSpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
@@ -191,11 +201,19 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Pin = NUCLEO_SPI_SCK_PIN;
 	HAL_GPIO_Init(NUCLEO_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
 	
-	// SPI3 CS = PA15
+	// SPI3 CS = PA15  (Input - Active Low)
 	GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
+	
+	// Nucleo GPIO Interrupt (Out - Active Low)
+	GPIO_InitStructure.Pin   = NUCLEO_SPI_INTERRUPT_PIN;
+	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
+	HAL_GPIO_Init(NUCLEO_SPI_INTERRUPT_PORT, &GPIO_InitStructure);
+	
+	HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
 	
 	__HAL_SPI_ENABLE(&NucleoSpiHandle);
 	

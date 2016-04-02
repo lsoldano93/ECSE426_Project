@@ -5,6 +5,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 osThreadId tid_Thread_Accelerometer;
+
 float accelerometer_out[3];
 accelerometer_values accel;
 float accel_x, accel_y, accel_z;
@@ -40,6 +41,7 @@ void Thread_Accelerometer (void const *argument){
 		
 		Status_Accelerometer = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);
 		accelerometer_mode();
+		osSignalSet(tid_Thread_SPICommunication, (int32_t) THREAD_GREEN_LIGHT);
 		
 	}
 	

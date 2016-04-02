@@ -39,6 +39,8 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+
+
 #include "cube_hal.h"
 
 #include "osal.h"
@@ -83,6 +85,7 @@ extern volatile uint8_t set_connectable;
 extern volatile int connected;
 extern AxesRaw_t axes_data;
 uint8_t bnrg_expansion_board = IDB04A1; /* at startup, suppose the X-NUCLEO-IDB04A1 is used */
+uint8_t DISCOVERY_SPI_FLAG = 0;
 /**
  * @}
  */
@@ -121,7 +124,7 @@ void User_Process(AxesRaw_t* p_axes);
  */
 int main(void)
 {
-  const char *name = "BlueNRG";
+  const char *name = "BTLE_G4";
   uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
   uint8_t bdaddr[BDADDR_SIZE];
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
@@ -192,100 +195,106 @@ int main(void)
     SERVER_BDADDR[5] = 0x02;
   }
 
-//  /* The Nucleo board must be configured as SERVER */
-//  Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
-//  
-//  ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
-//                                  CONFIG_DATA_PUBADDR_LEN,
-//                                  bdaddr);
-//  if(ret){
-//    PRINTF("Setting BD_ADDR failed.\n");
-//  }
-//  
-//  ret = aci_gatt_init();    
-//  if(ret){
-//    PRINTF("GATT_Init failed.\n");
-//  }
+  /* The Nucleo board must be configured as SERVER */
+  Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
+  
+  ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
+                                  CONFIG_DATA_PUBADDR_LEN,
+                                  bdaddr);
+  if(ret){
+    PRINTF("Setting BD_ADDR failed.\n");
+  }
+  
+  ret = aci_gatt_init();    
+  if(ret){
+    PRINTF("GATT_Init failed.\n");
+  }
 
-//  if (bnrg_expansion_board == IDB05A1) {
-//    ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x03, &service_handle, &dev_name_char_handle, &appearance_char_handle);
-//  }
-//  else {
-//    ret = aci_gap_init_IDB04A1(GAP_PERIPHERAL_ROLE_IDB04A1, &service_handle, &dev_name_char_handle, &appearance_char_handle);
-//  }
+  if (bnrg_expansion_board == IDB05A1) {
+    ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x03, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+  }
+  else {
+    ret = aci_gap_init_IDB04A1(GAP_PERIPHERAL_ROLE_IDB04A1, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+  }
 
-//  if(ret != BLE_STATUS_SUCCESS){
-//    PRINTF("GAP_Init failed.\n");
-//  }
+  if(ret != BLE_STATUS_SUCCESS){
+    PRINTF("GAP_Init failed.\n");
+  }
 
-//  ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
-//                                   strlen(name), (uint8_t *)name);
+  ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
+                                   strlen(name), (uint8_t *)name);
 
-//  if(ret){
-//    PRINTF("aci_gatt_update_char_value failed.\n");            
-//    while(1);
-//  }
-//  
-//  ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
-//                                     OOB_AUTH_DATA_ABSENT,
-//                                     NULL,
-//                                     7,
-//                                     16,
-//                                     USE_FIXED_PIN_FOR_PAIRING,
-//                                     123456,
-//                                     BONDING);
-//  if (ret == BLE_STATUS_SUCCESS) {
-//    PRINTF("BLE Stack Initialized.\n");
-//  }
-//  
-//  PRINTF("SERVER: BLE Stack Initialized\n");
-//  
-//  ret = Add_Acc_Service();
-//  
-//  if(ret == BLE_STATUS_SUCCESS)
-//    PRINTF("Acc service added successfully.\n");
-//  else
-//    PRINTF("Error while adding Acc service.\n");
-//  
-//  ret = Add_Environmental_Sensor_Service();
-//  
-//  if(ret == BLE_STATUS_SUCCESS)
-//    PRINTF("Environmental Sensor service added successfully.\n");
-//  else
-//    PRINTF("Error while adding Environmental Sensor service.\n");
+  if(ret){
+    PRINTF("aci_gatt_update_char_value failed.\n");            
+    while(1);
+  }
+  
+  ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
+                                     OOB_AUTH_DATA_ABSENT,
+                                     NULL,
+                                     7,
+                                     16,
+                                     USE_FIXED_PIN_FOR_PAIRING,
+                                     123456,
+                                     BONDING);
+  if (ret == BLE_STATUS_SUCCESS) {
+    PRINTF("BLE Stack Initialized.\n");
+  }
+  
+  PRINTF("SERVER: BLE Stack Initialized\n");
+  
+  ret = Add_Acc_Service();
+  
+  if(ret == BLE_STATUS_SUCCESS)
+    PRINTF("Acc service added successfully.\n");
+  else
+    PRINTF("Error while adding Acc service.\n");
+  
+  ret = Add_Environmental_Sensor_Service();
+  
+  if(ret == BLE_STATUS_SUCCESS)
+    PRINTF("Environmental Sensor service added successfully.\n");
+  else
+    PRINTF("Error while adding Environmental Sensor service.\n");
 
-//#if NEW_SERVICES
-//  /* Instantiate Timer Service with two characteristics:
-//   * - seconds characteristic (Readable only)
-//   * - minutes characteristics (Readable and Notifiable )
-//   */
-//  ret = Add_Time_Service(); 
-//  
-//  if(ret == BLE_STATUS_SUCCESS)
-//    PRINTF("Time service added successfully.\n");
-//  else
-//    PRINTF("Error while adding Time service.\n");  
-//  
-//  /* Instantiate LED Button Service with one characteristic:
-//   * - LED characteristic (Readable and Writable)
-//   */  
-//  ret = Add_LED_Service();
+#if NEW_SERVICES
+  /* Instantiate Timer Service with two characteristics:
+   * - seconds characteristic (Readable only)
+   * - minutes characteristics (Readable and Notifiable )
+   */
+  ret = Add_Time_Service(); 
+  
+  if(ret == BLE_STATUS_SUCCESS)
+    PRINTF("Time service added successfully.\n");
+  else
+    PRINTF("Error while adding Time service.\n");  
+  
+  /* Instantiate LED Button Service with one characteristic:
+   * - LED characteristic (Readable and Writable)
+   */  
+  ret = Add_LED_Service();
 
-//  if(ret == BLE_STATUS_SUCCESS)
-//    PRINTF("LED service added successfully.\n");
-//  else
-//    PRINTF("Error while adding LED service.\n");  
-//#endif
+  if(ret == BLE_STATUS_SUCCESS)
+    PRINTF("LED service added successfully.\n");
+  else
+    PRINTF("Error while adding LED service.\n");  
+#endif
 
-//  /* Set output power level */
-//  ret = aci_hal_set_tx_power_level(1,4);
+  /* Set output power level */
+  ret = aci_hal_set_tx_power_level(1,4);
 
 	pBuffer = 0x11;
 
   while(1)
   {
 		
-			Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1);
+			// Check for Discovery flag trigger that indicates new data as available
+			if (DISCOVERY_SPI_FLAG == 1){
+				printf("Discovery flag set low\n");
+				Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1);
+				DISCOVERY_SPI_FLAG = 0;
+			}
+			
 //    HCI_Process();
 //    User_Process(&axes_data);
 //#if NEW_SERVICES
@@ -328,6 +337,17 @@ void User_Process(AxesRaw_t* p_axes)
   }
 }
 
+/**
+ * @brief  EXTI line detection callback.
+ * @param  Specifies the pins connected EXTI line
+ * @retval None
+ */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+  
+	if (GPIO_Pin == GPIO_PIN_0) HCI_Isr();
+	else if (GPIO_Pin == GPIO_PIN_4) DISCOVERY_SPI_FLAG = 1;
+	
+}
 
 /**
  * @brief  This function is used for low level initialization of the SPI 
@@ -341,9 +361,11 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 	
 	if (hspi->Instance == SPI2){
 		
-		/* Enable Discovery CS line clock */
+		/* Enable proper clock lines */
+		__GPIOA_CLK_ENABLE();
 		__GPIOB_CLK_ENABLE();
- 
+		
+		/* Setup SPI lines */
 		GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;
 		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
 		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
@@ -362,6 +384,17 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		
 		/* Deselect : Chip Select high */
 		DISCOVERY_CS_HIGH();
+		
+		/* Setup input interrupt line from Discovery */
+		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+		
+		GPIO_InitStruct.Pin = DISCOVERY_SPI_INTERRUPT_PIN;
+		HAL_GPIO_Init(DISCOVERY_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
+		
+		/* Configure the NVIC for SPI */  
+    HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
+    HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 		
 	}
   else if(hspi->Instance==BNRG_SPI_INSTANCE)

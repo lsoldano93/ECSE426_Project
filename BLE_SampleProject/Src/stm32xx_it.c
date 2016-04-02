@@ -41,6 +41,9 @@
 #include "stm32xx_it.h"
 #include "debug.h"
 
+#define DISCOVERY_SPI_INTERRUPT_PORT		GPIOA
+#define DISCOVERY_SPI_INTERRUPT_PIN			GPIO_PIN_4	// GPIO_A4
+
 /** @addtogroup X-CUBE-BLE1_Applications
  *  @{
  */
@@ -142,11 +145,18 @@ void SysTick_Handler(void)
   * @param  None
   * @retval None
   */
-void BNRG_SPI_EXTI_IRQHandler(void)
-{
+void BNRG_SPI_EXTI_IRQHandler(void){
   HAL_GPIO_EXTI_IRQHandler(BNRG_SPI_EXTI_PIN);
 }
 
+/**
+  * @brief  This function handles External line interrupt request for Discovery SPI interrupt.
+  * @param  None
+  * @retval None
+  */
+void EXTI4_IRQHandler(void){
+	HAL_GPIO_EXTI_IRQHandler(DISCOVERY_SPI_INTERRUPT_PIN);
+}
 
 /**
   * @brief  This function handles the Push Button interrupt request.

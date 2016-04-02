@@ -416,8 +416,8 @@ tBleStatus Humidity_Update(uint16_t humidity)
 void setConnectable(void)
 {  
   tBleStatus ret;
-  
-  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+																													
+  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','T','L','E','_','G','4'};
   
   /* disable scan response */
   hci_le_set_scan_resp_data(0,NULL);

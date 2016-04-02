@@ -187,11 +187,11 @@ int main (void) {
 	/* User codes goes here*/
 	init_TIM3();															/* Initialize timer 3 				     	*/
   
-//	ADC_config();														  /* Initialize temp sensor ADC     	*/
-//	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
+	ADC_config();														  /* Initialize temp sensor ADC     	*/
+	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
 	
-//	Accelerometer_config();										/* Initialize accelerometer         */
-//	start_Thread_Accelerometer();							/* Start accelerometer thread       */
+	Accelerometer_config();										/* Initialize accelerometer         */
+	start_Thread_Accelerometer();							/* Start accelerometer thread       */
 	
 //	UserInterface_config();										/* Initialize LED pins              */
 //	start_Thread_UserInterface();				  		/* Start UI thread                  */

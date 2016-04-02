@@ -149,7 +149,7 @@ void NucleoSPI_Config(void){
 	
   HAL_SPI_DeInit(&SpiHandleDiscovery);
   SpiHandleDiscovery.Instance 							= SPI2;
-  SpiHandleDiscovery.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  SpiHandleDiscovery.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   SpiHandleDiscovery.Init.Direction 				= SPI_DIRECTION_2LINES; // set full duplex communication
   SpiHandleDiscovery.Init.CLKPhase 					= SPI_PHASE_1EDGE;
   SpiHandleDiscovery.Init.CLKPolarity 			= SPI_POLARITY_LOW;

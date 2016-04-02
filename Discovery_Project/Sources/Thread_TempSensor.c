@@ -5,7 +5,8 @@ float temperatureValue;
 
 /* Private variables ---------------------------------------------------------*/
 
-osThreadId tid_Thread_TempSensor;   
+osThreadId tid_Thread_TempSensor;  
+
 ADC_HandleTypeDef ADC1_Handle;
 kalman_t kalman_temperature;
 const void* temperatureMutexPtr;
@@ -38,6 +39,7 @@ void Thread_TempSensor (void const *argument){
 		
 		Status_TempSensor = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);
 		updateTemp();
+		osSignalSet(tid_Thread_SPICommunication, (int32_t) THREAD_GREEN_LIGHT);
 
 	}                                                       
 }

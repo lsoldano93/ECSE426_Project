@@ -37,10 +37,10 @@
 #define NUCLEO_SPI_CS_GPIO_PORT			GPIOA
 #define NUCLEO_SPI_CS_PIN						GPIO_PIN_15  // GPIO_A15
 
+#define NUCLEO_SPI_INTERRUPT_PORT		GPIOA
+#define NUCLEO_SPI_INTERRUPT_PIN		GPIO_PIN_8	 // GPIO_A8
+
 /* Private Variables ---------------------------------------------------------*/
-
-
-
 /* Private function prototypes -----------------------------------------------*/
 
 /**  Initiates SPI Communication thread
