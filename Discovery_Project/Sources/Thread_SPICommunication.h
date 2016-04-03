@@ -57,36 +57,7 @@ int start_Thread_SPICommunication (void);
    */
 void Thread_SPICommunication (void const *argument);
 
-/**
-  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @param  Data: Data to be transmitted.
-  * @retval None
-  */
-void Slave_Spi_SendData(SPI_HandleTypeDef *hspi, uint16_t Data);
-
-/**
-  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @retval The value of the received data.
-  */
-uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi);
-
-/**
-  * @brief  Sends a Byte through the SPI interface and return the Byte received from the SPI bus.
-  * @param  Byte : Byte send.
-  * @retval The received byte value
-  */
-static uint8_t Slave_SendByte(uint8_t byte);
-
-static uint8_t Slave_ReadByte(void);
-
-/**
-  * @brief  Basic management of the timeout situation.
-  * @param  None.
-  * @retval None.
-  */
-uint32_t NUCLEO_TIMEOUT_UserCallback(void);
+void Discovery_SPI_Read(void);
 
 /**
   * @brief  Initialize SPI handle for slave device (Discovery board)

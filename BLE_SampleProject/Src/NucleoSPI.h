@@ -53,20 +53,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 
-/**
-  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @param  Data: Data to be transmitted.
-  * @retval None
-  */
-void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data);
-
-/**
-  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @retval The value of the received data.
-  */
-uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi);
 
 /**
   * @brief  Basic management of the timeout situation.
@@ -90,7 +76,7 @@ static uint8_t Discovery_SendByte(uint8_t byte);
   * @param  NumByteToWrite: Number of bytes to write.
   * @retval None
   */
-void Discovery_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite);
+void Discovery_Write(void);
 
 /**
   * @brief  Reads a block of data from the Discovery board.
