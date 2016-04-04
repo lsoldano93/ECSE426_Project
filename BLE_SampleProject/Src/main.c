@@ -285,7 +285,7 @@ int main(void)
 
 	pBuffer = 0x11;
 
-  /=while(1){
+  while(1){
 		
 		/* TODO: Might be a good idea to add functionality that causes this statement not to trigger until Discovery has booted up
 			 EG: Add an external line to discovery, where discovey sets/keeps it at high once ready   - Luke */
@@ -295,7 +295,7 @@ int main(void)
 			if (DISCOVERY_SPI_FLAG == 1){
 				printf("Discovery flag set low\n");
 				// TODO: Order of operations should be: Read temperature, Read accelerometer, Write LEDState - Luke
-				Discovery_Write(); // Just doing a write for testin purposes
+				Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
 				DISCOVERY_SPI_FLAG = 0;
 			}
 
@@ -367,9 +367,6 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 	
 	if (hspi->Instance == SPI2){
 		
-		/*	Enable SPI2 Peripheral Clock */
-		__SPI2_CLK_ENABLE();
-		
 		/* Enable proper clock lines */
 		__GPIOA_CLK_ENABLE();
 		__GPIOB_CLK_ENABLE();
@@ -380,39 +377,25 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 
-		/*	SPI SCK Config */
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_SCK_PIN;
-		GPIO_InitStruct.Pull  = GPIO_NOPULL;
+		GPIO_InitStruct.Pin = DISCOVERY_SPI_MOSI_PIN | DISCOVERY_SPI_MISO_PIN | DISCOVERY_SPI_SCK_PIN;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 		
-		/*	SPI MOSI Config */
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_MOSI_PIN;
-		GPIO_InitStruct.Pull  = GPIO_NOPULL;
-		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-		
-		/*	SPI MISO Config */
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_SCK_PIN;
-		GPIO_InitStruct.Pull  = GPIO_NOPULL;
-		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-		
-		/*	SPI Chip Select Config */
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_CS_PIN;
 		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull  = GPIO_NOPULL;
+		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-	
+
+		GPIO_InitStruct.Pin = DISCOVERY_SPI_CS_PIN;
 		HAL_GPIO_Init(DISCOVERY_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
 		
 		/* Deselect : Chip Select high */
 		DISCOVERY_CS_HIGH();
 		
 		/* Setup input interrupt line from Discovery */
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_INTERRUPT_PIN;
 		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
-		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		
+		GPIO_InitStruct.Pin = DISCOVERY_SPI_INTERRUPT_PIN;
 		HAL_GPIO_Init(DISCOVERY_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
 		
 		/* Configure the NVIC for SPI */  
@@ -420,7 +403,8 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 		
 	}
-  else if(hspi->Instance==BNRG_SPI_INSTANCE) {
+  else if(hspi->Instance==BNRG_SPI_INSTANCE)
+{
     /* Enable peripherals clock */
 
     /* Enable GPIO Ports Clock */  

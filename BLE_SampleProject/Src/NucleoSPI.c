@@ -7,6 +7,41 @@ __IO uint32_t  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
 SPI_HandleTypeDef    SpiHandleDiscovery;
 
 
+/**
+  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
+  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
+  * @param  Data: Data to be transmitted.
+  * @retval None
+  */
+void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data){ 
+  /* Write in the DR register the data to be sent */
+  hspi->Instance->DR = Data;
+}
+
+
+/**
+  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
+  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
+  * @retval The value of the received data.
+  */
+uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi){
+  /* Return the data in the DR register */
+  return hspi->Instance->DR;
+}
+
+
+/**
+  * @brief  Basic management of the timeout situation.
+  * @param  None.
+  * @retval None.
+  */
+uint32_t DISCOVERY_TIMEOUT_UserCallback(void){
+  
+	printf("Discovery communication timed out \n");
+	
+	return 0;
+}
+
 
 /**
   * @brief  Sends a Byte through the SPI interface and return the Byte received
@@ -14,6 +49,30 @@ SPI_HandleTypeDef    SpiHandleDiscovery;
   * @param  Byte : Byte send.
   * @retval The received byte value
   */
+static uint8_t Discovery_SendByte(uint8_t byte){
+	
+  /* Loop while DR register in not empty */
+  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
+  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_TXE) == RESET)
+  {
+    if((DiscoveryTimeout--) == 0) return DISCOVERY_TIMEOUT_UserCallback();
+  }
+
+  /* Send a Byte through the SPI peripheral */
+  SPI_SendData(&SpiHandleDiscovery,  byte);
+
+  /* Wait to receive a Byte */
+  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
+  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_RXNE) == RESET)
+  {
+    if((DiscoveryTimeout--) == 0) {
+			return DISCOVERY_TIMEOUT_UserCallback();
+		}
+  }
+
+  /* Return the Byte read from the SPI bus */ 
+  return SPI_ReceiveData(&SpiHandleDiscovery);
+}
 
 
 /**
@@ -23,28 +82,21 @@ SPI_HandleTypeDef    SpiHandleDiscovery;
   * @param  NumByteToWrite: Number of bytes to write.
   * @retval None
   */
-void Discovery_Write(void){
-	
-	uint8_t buff[12];
-	buff[0] = 1;
-	buff[1] = 2;
-	buff[2] = 3;
-	buff[3] = 4;
-	buff[4] = 5;
-	buff[5] = 6;
-	buff[6] = 7;
-	buff[7] = 8;
-	buff[8] = 9;
-	buff[9] = 10;
-	buff[10] = 11;
-	buff[11] = 12;
+void Discovery_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite){
 
   /* Set chip select Low at the start of the transmission */
   DISCOVERY_CS_LOW();
 
-  HAL_SPI_Transmit(&SpiHandleDiscovery, buff, 12, 4096);
-				
-
+  /* Send the Address of the indexed register */
+  Discovery_SendByte(VariableToWrite);
+	
+  /* Send the data that will be written into the device (MSB First) */
+  while(NumByteToWrite >= 0x01)
+  {
+    Discovery_SendByte(*pBuffer);
+    NumByteToWrite--;
+    pBuffer++;
+  }
 
   /* Set chip select High at the end of the transmission */
   DISCOVERY_CS_HIGH();
@@ -64,13 +116,13 @@ void Discovery_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteTo
   DISCOVERY_CS_LOW();
 
   /* Send the Address of the indexed register */
-  //Discovery_SendByte(VariableToRead);
+  Discovery_SendByte(VariableToRead);
 
   /* Receive the data that will be read from the device (MSB First) */
   while(NumByteToRead > 0x00)
   {
     /* Send dummy byte (0x00) to generate the SPI clock to Discovery (Slave device) */
-   // *pBuffer = Discovery_SendByte(DUMMY_BYTE);
+    *pBuffer = Discovery_SendByte(DUMMY_BYTE);
     NumByteToRead--;
     pBuffer++;
   }
@@ -88,10 +140,12 @@ void Discovery_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteTo
   */
 void NucleoSPI_Config(void){
 	
+	GPIO_InitTypeDef GPIO_InitStructure;
+
   /* SPI configuration -------------------------------------------------------*/
 	/* Enable the SPI periph */
-	__HAL_RCC_SPI2_CLK_ENABLE();
-
+  __SPI2_CLK_ENABLE();
+	
   HAL_SPI_DeInit(&SpiHandleDiscovery);
   SpiHandleDiscovery.Instance 							= SPI2;
   SpiHandleDiscovery.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;

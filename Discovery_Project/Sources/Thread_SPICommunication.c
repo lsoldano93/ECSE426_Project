@@ -6,7 +6,7 @@
 /* Private Variables ---------------------------------------------------------*/
 
 osThreadId tid_Thread_SPICommunication;   
-SPI_HandleTypeDef DiscoverySpiHandle;
+SPI_HandleTypeDef NucleoSpiHandle;
 
 osThreadDef(Thread_SPICommunication, osPriorityNormal, 1, NULL); 
 
@@ -51,16 +51,16 @@ void Thread_SPICommunication (void const *argument){
 		
 		// Wait for chip select line to go low so information can be read
 		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
-		Discovery_SPI_Read();
-//		returnValue = Slave_ReadByte();
-//		
-//		// For the sake of debugging...
-//		if(returnValue != 0) printf("Should be 0x80 = 164, returnValue = %d\n", returnValue);
-//		
-//		returnValue = Slave_ReadByte();
-//		
-//		// For the sake of debugging...
-//		if(returnValue != 0) printf("Should be 0x11 = 17, returnValue = %d\n", returnValue);
+		
+		returnValue = Slave_ReadByte();
+		
+		// For the sake of debugging...
+		if(returnValue != 0) printf("Should be 0x80 = 164, returnValue = %d\n", returnValue);
+		
+		returnValue = Slave_ReadByte();
+		
+		// For the sake of debugging...
+		if(returnValue != 0) printf("Should be 0x11 = 17, returnValue = %d\n", returnValue);
 		
 		// TODO: After GPIO Interrupt read, be ready to read in first value from Nucleo
 		
@@ -77,20 +77,91 @@ void Thread_SPICommunication (void const *argument){
 }
 
 
-void Discovery_SPI_Read(void) {
-	uint8_t buff[12];
-	HAL_StatusTypeDef readStatus;
-	
-	printf("Begine Read\n");
-	printf("bytes 1,2,3,4,5,6,: %d, %d, %d, %d, %d, %d \n", buff[0], buff[1], buff[2], buff[3],buff[4],buff[5]);
-	printf("bytes 7,8,9,10,11,12: %d, %d, %d, %d, %d, %d \n", buff[6], buff[7], buff[8],buff[9], buff[10], buff[11] );
-	printf("SPI READ NOW!\n");
-	
-	readStatus = HAL_SPI_Receive(&DiscoverySpiHandle, buff, 12, 4096);
-	printf("After Read\n");
-	printf("bytes 1,2,3,4,5,6,: %d, %d, %d, %d, %d, %d \n", buff[0], buff[1], buff[2], buff[3],buff[4],buff[5]);
-	printf("bytes 7,8,9,10,11,12: %d, %d, %d, %d, %d, %d \n", buff[6], buff[7], buff[8],buff[9], buff[10], buff[11] );
+/**
+  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
+  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
+  * @param  Data: Data to be transmitted.
+  * @retval None
+  */
+void Slave_Spi_SendData(SPI_HandleTypeDef *hspi, uint16_t Data)
+{ 
+  /* Write in the DR register the data to be sent */
+  hspi->Instance->DR = Data;
 }
+
+
+/**
+  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
+  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
+  * @retval The value of the received data.
+  */
+uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi)
+{
+  /* Return the data in the DR register */
+  return hspi->Instance->DR;
+}
+
+
+
+/**
+  * @brief  Sends a Byte through the SPI interface and return the Byte received from the SPI bus.
+  * @param  Byte : Byte send.
+  * @retval The received byte value
+  */
+static uint8_t Slave_SendByte(uint8_t byte) {
+  /* Loop while DR register in not empty */
+	SPI_Timeout = SPI_Timeout_Flag;
+  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET)
+  {
+    if((SPI_Timeout--) == 0){
+			NUCLEO_TIMEOUT_UserCallback();
+			return 0;
+		}
+  }
+
+  /* Send a Byte through the SPI peripheral */
+  Slave_Spi_SendData(&NucleoSpiHandle,  byte);
+
+  /* Wait to receive a Byte */
+  SPI_Timeout = SPI_Timeout_Flag;
+  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET)
+  {
+    if((SPI_Timeout--) == 0) {
+			NUCLEO_TIMEOUT_UserCallback();
+			return 0;
+		}
+  }
+
+  /* Return the Byte read from the SPI bus */ 
+  return Slave_Spi_ReceiveData(&NucleoSpiHandle);
+}
+
+
+static uint8_t Slave_ReadByte(void) {
+	/* Wait to receive a Byte */
+  SPI_Timeout = SPI_Timeout_Flag;
+  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET) {
+    if((SPI_Timeout--) == 0) {
+			NUCLEO_TIMEOUT_UserCallback();
+			return 0;
+		}
+  }
+	/* Return the Byte read from the SPI bus */ 
+  return Slave_Spi_ReceiveData(&NucleoSpiHandle);
+}
+
+/**
+  * @brief  Basic management of the timeout situation.
+  * @param  None.
+  * @retval None.
+  */
+uint32_t NUCLEO_TIMEOUT_UserCallback(void){
+  
+	printf("Nucleo communication timed out \n");
+	
+	return 0;
+}
+
 /**
   * @brief  Initialize SPI handle for slave device (Discovery board)
   * @param  None
@@ -104,23 +175,22 @@ void SPICommunication_config(void){
 	/* Enable the SPI periph */
   __SPI3_CLK_ENABLE();
 	
-  HAL_SPI_DeInit(&DiscoverySpiHandle);
-  DiscoverySpiHandle.Instance 							  = SPI3;
-  DiscoverySpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_2;
-  DiscoverySpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
-  DiscoverySpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
-  DiscoverySpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
-  DiscoverySpiHandle.Init.CRCCalculation			= SPI_CRCCALCULATION_DISABLED;
-  DiscoverySpiHandle.Init.CRCPolynomial 			= 7;
-  DiscoverySpiHandle.Init.DataSize 					= SPI_DATASIZE_8BIT;
-  DiscoverySpiHandle.Init.FirstBit 					= SPI_FIRSTBIT_MSB;
-  DiscoverySpiHandle.Init.NSS 								= SPI_NSS_SOFT;
-  DiscoverySpiHandle.Init.TIMode 						= SPI_TIMODE_DISABLED;
-  DiscoverySpiHandle.Init.Mode 							= SPI_MODE_SLAVE;
+  HAL_SPI_DeInit(&NucleoSpiHandle);
+  NucleoSpiHandle.Instance 							  = SPI3;
+  NucleoSpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_2;
+  NucleoSpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
+  NucleoSpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
+  NucleoSpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
+  NucleoSpiHandle.Init.CRCCalculation			= SPI_CRCCALCULATION_DISABLED;
+  NucleoSpiHandle.Init.CRCPolynomial 			= 7;
+  NucleoSpiHandle.Init.DataSize 					= SPI_DATASIZE_8BIT;
+  NucleoSpiHandle.Init.FirstBit 					= SPI_FIRSTBIT_MSB;
+  NucleoSpiHandle.Init.NSS 								= SPI_NSS_SOFT;
+  NucleoSpiHandle.Init.TIMode 						= SPI_TIMODE_DISABLED;
+  NucleoSpiHandle.Init.Mode 							= SPI_MODE_SLAVE;
 		
-	if (HAL_SPI_Init(&DiscoverySpiHandle) != HAL_OK) printf ("ERROR: Error in initialising SPI DiscoverySpiHandle \n");
-  __HAL_SPI_ENABLE(&DiscoverySpiHandle);
-	
+	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) printf ("ERROR: Error in initialising SPI Nucleo \n");
+  
 	/* SPI3 Handle is for comm between discovery and nucleo */
 	/* Enable SCK, MOSI, CS and MISO GPIO clocks */
 	__GPIOA_CLK_ENABLE();
@@ -167,6 +237,6 @@ void SPICommunication_config(void){
 	
 	HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
 	
-	
+	__HAL_SPI_ENABLE(&NucleoSpiHandle);
 	
 }
