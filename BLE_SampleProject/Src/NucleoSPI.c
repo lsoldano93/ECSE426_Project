@@ -3,7 +3,7 @@
 #include "NucleoSPI.h"
 
 /* Private variables ---------------------------------------------------------*/
-__IO uint32_t  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
+__IO uint32_t  MasterTimeout = MASTER_FLAG_TIMEOUT;
 SPI_HandleTypeDef    SpiHandleDiscovery;
 
 
@@ -35,7 +35,7 @@ uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi){
   * @param  None.
   * @retval None.
   */
-uint32_t DISCOVERY_TIMEOUT_UserCallback(void){
+uint32_t MASTER_TIMEOUT_UserCallback(void){
   
 	printf("Discovery communication timed out \n");
 	
@@ -49,24 +49,25 @@ uint32_t DISCOVERY_TIMEOUT_UserCallback(void){
   * @param  Byte : Byte send.
   * @retval The received byte value
   */
-static uint8_t Discovery_SendByte(uint8_t byte){
+static uint8_t Master_SendByte(uint8_t byte){
 	
   /* Loop while DR register in not empty */
-  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
+  MasterTimeout = MASTER_FLAG_TIMEOUT;
   while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_TXE) == RESET)
   {
-    if((DiscoveryTimeout--) == 0) return DISCOVERY_TIMEOUT_UserCallback();
+    if((MasterTimeout--) == 0) return MASTER_TIMEOUT_UserCallback();
   }
 
   /* Send a Byte through the SPI peripheral */
   SPI_SendData(&SpiHandleDiscovery,  byte);
 
   /* Wait to receive a Byte */
-  DiscoveryTimeout = DISCOVERY_FLAG_TIMEOUT;
+  MasterTimeout = MASTER_FLAG_TIMEOUT;
   while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_RXNE) == RESET)
   {
-    if((DiscoveryTimeout--) == 0) {
-			return DISCOVERY_TIMEOUT_UserCallback();
+		//Master_SendByte(DUMMY_BYTE);   /// TODO: Is this necessary to generate clock? If not remove ***********
+    if((MasterTimeout--) == 0) {
+			return MASTER_TIMEOUT_UserCallback();
 		}
   }
 
@@ -82,18 +83,18 @@ static uint8_t Discovery_SendByte(uint8_t byte){
   * @param  NumByteToWrite: Number of bytes to write.
   * @retval None
   */
-void Discovery_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite){
+void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite){
 
   /* Set chip select Low at the start of the transmission */
   DISCOVERY_CS_LOW();
 
   /* Send the Address of the indexed register */
-  Discovery_SendByte(VariableToWrite);
+  Master_SendByte(VariableToWrite);
 	
   /* Send the data that will be written into the device (MSB First) */
   while(NumByteToWrite >= 0x01)
   {
-    Discovery_SendByte(*pBuffer);
+    Master_SendByte(*pBuffer);
     NumByteToWrite--;
     pBuffer++;
   }
@@ -116,13 +117,13 @@ void Discovery_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteTo
   DISCOVERY_CS_LOW();
 
   /* Send the Address of the indexed register */
-  Discovery_SendByte(VariableToRead);
+  Master_SendByte(VariableToRead);
 
   /* Receive the data that will be read from the device (MSB First) */
   while(NumByteToRead > 0x00)
   {
     /* Send dummy byte (0x00) to generate the SPI clock to Discovery (Slave device) */
-    *pBuffer = Discovery_SendByte(DUMMY_BYTE);
+    *pBuffer = Master_SendByte(DUMMY_BYTE);
     NumByteToRead--;
     pBuffer++;
   }

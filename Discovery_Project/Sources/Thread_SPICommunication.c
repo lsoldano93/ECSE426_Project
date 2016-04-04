@@ -47,10 +47,10 @@ void Thread_SPICommunication (void const *argument){
 		osSignalWait(THREAD_GREEN_LIGHT, THREAD_TIMEOUT);
 	
 		// Set GPIO interrupt pin low to communication with Nucleo that new data is available
-		HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(DISCOVERY_SPI_INTERRUPT_PORT, DISCOVERY_SPI_INTERRUPT_PIN, GPIO_PIN_RESET);
 		
 		// Wait for chip select line to go low so information can be read
-		while(HAL_GPIO_ReadPin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN) == GPIO_PIN_SET);
+		while(HAL_GPIO_ReadPin(DISCOVERY_SPI_CS_GPIO_PORT, DISCOVERY_SPI_CS_PIN) == GPIO_PIN_SET);
 		
 		returnValue = Slave_ReadByte();
 		
@@ -71,7 +71,7 @@ void Thread_SPICommunication (void const *argument){
 		//       Gain access to shared variable and then send it to Nucleo
 		
 		// Set GPIO interrupt pin back to high
-		HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(DISCOVERY_SPI_INTERRUPT_PORT, DISCOVERY_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
 
 	}                                                       
 }
@@ -197,45 +197,45 @@ void SPICommunication_config(void){
 	__GPIOB_CLK_ENABLE();
 	
 	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
 
 	// PI3_MISO = PB4
-	GPIO_InitStructure.Pin = NUCLEO_SPI_MISO_PIN;
-	HAL_GPIO_Init(NUCLEO_SPI_MISO_GPIO_PORT, &GPIO_InitStructure);
+	GPIO_InitStructure.Pin = DISCOVERY_SPI_MISO_PIN;
+	HAL_GPIO_Init(DISCOVERY_SPI_MISO_GPIO_PORT, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
 	
 	// SPI3_MOSI = PB5
-	GPIO_InitStructure.Pin = NUCLEO_SPI_MOSI_PIN;
-	HAL_GPIO_Init(NUCLEO_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
+	GPIO_InitStructure.Pin = DISCOVERY_SPI_MOSI_PIN;
+	HAL_GPIO_Init(DISCOVERY_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
 	
-	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;			// TODO: Maybe this pin should be an input with no pull??
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;			// TODO: Maybe this pin should be an input with no pull??
+	//GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
 	
 	// SPI3_SCK = PB3
-	GPIO_InitStructure.Pin = NUCLEO_SPI_SCK_PIN;
-	HAL_GPIO_Init(NUCLEO_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
+	GPIO_InitStructure.Pin = DISCOVERY_SPI_SCK_PIN;
+	HAL_GPIO_Init(DISCOVERY_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
 	
 	// SPI3 CS = PA15  (Input - Active Low)
-	GPIO_InitStructure.Pin   = NUCLEO_SPI_CS_PIN;
+	GPIO_InitStructure.Pin   = DISCOVERY_SPI_CS_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
+	HAL_GPIO_Init(DISCOVERY_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
 	
 	// Nucleo GPIO Interrupt (Out - Active Low)
-	GPIO_InitStructure.Pin   = NUCLEO_SPI_INTERRUPT_PIN;
+	GPIO_InitStructure.Pin   = DISCOVERY_SPI_INTERRUPT_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_SPI_INTERRUPT_PORT, &GPIO_InitStructure);
+	HAL_GPIO_Init(DISCOVERY_SPI_INTERRUPT_PORT, &GPIO_InitStructure);
 	
-	HAL_GPIO_WritePin(NUCLEO_SPI_INTERRUPT_PORT, NUCLEO_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(DISCOVERY_SPI_INTERRUPT_PORT, DISCOVERY_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
 	
 	__HAL_SPI_ENABLE(&NucleoSpiHandle);
 	

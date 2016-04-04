@@ -295,16 +295,16 @@ int main(void)
 			if (DISCOVERY_SPI_FLAG == 1){
 				printf("Discovery flag set low\n");
 				// TODO: Order of operations should be: Read temperature, Read accelerometer, Write LEDState - Luke
-				Discovery_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
+				Master_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
 				DISCOVERY_SPI_FLAG = 0;
 			}
 
 // Uncomment this for BT functionality		
-//    HCI_Process();
-//    User_Process(&axes_data);
-//#if NEW_SERVICES
-//    Update_Time_Characteristics();
-//#endif
+    HCI_Process();
+    User_Process(&axes_data);
+#if NEW_SERVICES
+    Update_Time_Characteristics();
+#endif
 			
   }
 }
@@ -377,7 +377,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_MOSI_PIN | DISCOVERY_SPI_MISO_PIN | DISCOVERY_SPI_SCK_PIN;
+		GPIO_InitStruct.Pin = NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_SCK_PIN;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 		
 		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
@@ -385,8 +385,8 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_CS_PIN;
-		HAL_GPIO_Init(DISCOVERY_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
+		GPIO_InitStruct.Pin = NUCLEO_SPI_CS_PIN;
+		HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
 		
 		/* Deselect : Chip Select high */
 		DISCOVERY_CS_HIGH();
@@ -395,8 +395,8 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		
-		GPIO_InitStruct.Pin = DISCOVERY_SPI_INTERRUPT_PIN;
-		HAL_GPIO_Init(DISCOVERY_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
+		GPIO_InitStruct.Pin = NUCLEO_SPI_INTERRUPT_PIN;
+		HAL_GPIO_Init(NUCLEO_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
 		
 		/* Configure the NVIC for SPI */  
     HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    

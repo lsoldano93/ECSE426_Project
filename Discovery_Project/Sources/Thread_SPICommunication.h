@@ -24,21 +24,21 @@
 
 #define SPI_Timeout_Flag 4096
 
-/* Pins associated with Nucleo signal */
-#define NUCLEO_SPI_SCK_GPIO_PORT		GPIOC
-#define NUCLEO_SPI_SCK_PIN					GPIO_PIN_10  // GPIO_C10
+/* DISCOVERY Pins associated with Nucleo signal */
+#define DISCOVERY_SPI_SCK_GPIO_PORT			GPIOC
+#define DISCOVERY_SPI_SCK_PIN						GPIO_PIN_10  // GPIO_C10
 
-#define NUCLEO_SPI_MISO_GPIO_PORT		GPIOC
-#define NUCLEO_SPI_MISO_PIN					GPIO_PIN_11  // GPIO_C11
+#define DISCOVERY_SPI_MISO_GPIO_PORT		GPIOC
+#define DISCOVERY_SPI_MISO_PIN					GPIO_PIN_11  // GPIO_C11
 
-#define NUCLEO_SPI_MOSI_GPIO_PORT		GPIOC
-#define NUCLEO_SPI_MOSI_PIN					GPIO_PIN_12  // GPIO_C12
+#define DISCOVERY_SPI_MOSI_GPIO_PORT		GPIOC
+#define DISCOVERY_SPI_MOSI_PIN					GPIO_PIN_12  // GPIO_C12
 
-#define NUCLEO_SPI_CS_GPIO_PORT			GPIOA
-#define NUCLEO_SPI_CS_PIN						GPIO_PIN_15  // GPIO_A15
+#define DISCOVERY_SPI_CS_GPIO_PORT			GPIOA
+#define DISCOVERY_SPI_CS_PIN						GPIO_PIN_15  // GPIO_A15
 
-#define NUCLEO_SPI_INTERRUPT_PORT		GPIOA
-#define NUCLEO_SPI_INTERRUPT_PIN		GPIO_PIN_8	 // GPIO_A8
+#define DISCOVERY_SPI_INTERRUPT_PORT		GPIOA
+#define DISCOVERY_SPI_INTERRUPT_PIN			GPIO_PIN_8	 // GPIO_A8
 
 /* Private Variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

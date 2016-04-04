@@ -24,31 +24,31 @@
 #define COMMAND_WRITE_LED_PATTERN				((uint8_t)0x80)
 
 /* Values for Discovery SPI communications */
-#define DISCOVERY_FLAG_TIMEOUT      	  ((uint32_t)0x1000)
+#define MASTER_FLAG_TIMEOUT      	  ((uint32_t)0x1000)
 
 /* Refer to page 33 of the following document
    http://www.st.com/web/en/resource/technical/document/user_manual/DM00105823.pdf */
-#define DISCOVERY_SPI_SCK_GPIO_PORT			GPIOB
-#define DISCOVERY_SPI_SCK_PIN						GPIO_PIN_13  // GPIO_B13
+#define NUCLEO_SPI_SCK_GPIO_PORT			GPIOB
+#define NUCLEO_SPI_SCK_PIN						GPIO_PIN_13  // GPIO_B13
 
-#define DISCOVERY_SPI_MISO_GPIO_PORT		GPIOB
-#define DISCOVERY_SPI_MISO_PIN					GPIO_PIN_14  // GPIO_B14
+#define NUCLEO_SPI_MISO_GPIO_PORT		GPIOB
+#define NUCLEO_SPI_MISO_PIN					GPIO_PIN_14  // GPIO_B14
 
-#define DISCOVERY_SPI_MOSI_GPIO_PORT		GPIOB
-#define DISCOVERY_SPI_MOSI_PIN					GPIO_PIN_15  // GPIO_B15
+#define NUCLEO_SPI_MOSI_GPIO_PORT		GPIOB
+#define NUCLEO_SPI_MOSI_PIN					GPIO_PIN_15  // GPIO_B15
 
-#define DISCOVERY_SPI_CS_GPIO_PORT			GPIOB
-#define DISCOVERY_SPI_CS_PIN						GPIO_PIN_6  // GPIO_B6
+#define NUCLEO_SPI_CS_GPIO_PORT			GPIOB
+#define NUCLEO_SPI_CS_PIN						GPIO_PIN_6  // GPIO_B6
 
-#define DISCOVERY_SPI_INTERRUPT_PORT		GPIOA
-#define DISCOVERY_SPI_INTERRUPT_PIN			GPIO_PIN_4	// GPIO_A4
+#define NUCLEO_SPI_INTERRUPT_PORT		GPIOA
+#define NUCLEO_SPI_INTERRUPT_PIN			GPIO_PIN_4	// GPIO_A4
 
 
 /* Private macros ------------------------------------------------------------*/
 
 /* Macros for Discovery SPI communications */
-#define DISCOVERY_CS_LOW()       				HAL_GPIO_WritePin(DISCOVERY_SPI_CS_GPIO_PORT, DISCOVERY_SPI_CS_PIN, GPIO_PIN_RESET)
-#define DISCOVERY_CS_HIGH()     		  	HAL_GPIO_WritePin(DISCOVERY_SPI_CS_GPIO_PORT, DISCOVERY_SPI_CS_PIN, GPIO_PIN_SET)
+#define DISCOVERY_CS_LOW()       				HAL_GPIO_WritePin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN, GPIO_PIN_RESET)
+#define DISCOVERY_CS_HIGH()     		  	HAL_GPIO_WritePin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN, GPIO_PIN_SET)
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -73,7 +73,7 @@ uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi);
   * @param  None.
   * @retval None.
   */
-uint32_t DISCOVERY_TIMEOUT_UserCallback(void);
+uint32_t MASTER_TIMEOUT_UserCallback(void);
 
 /**
   * @brief  Sends a Byte through the SPI interface and return the Byte received
@@ -81,7 +81,7 @@ uint32_t DISCOVERY_TIMEOUT_UserCallback(void);
   * @param  Byte : Byte send.
   * @retval The received byte value
   */
-static uint8_t Discovery_SendByte(uint8_t byte);
+static uint8_t Master_SendByte(uint8_t byte);
 
 /**
   * @brief  Writes one byte to the Discovery board
@@ -90,7 +90,7 @@ static uint8_t Discovery_SendByte(uint8_t byte);
   * @param  NumByteToWrite: Number of bytes to write.
   * @retval None
   */
-void Discovery_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite);
+void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite);
 
 /**
   * @brief  Reads a block of data from the Discovery board.
@@ -99,7 +99,7 @@ void Discovery_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByte
   * @param  NumByteToRead : number of bytes to read from the Discovery.
   * @retval None
   */
-void Discovery_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteToRead);
+void Master_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteToRead);
 
 /**
   * @brief  Configures Nucleo board for SPI communication with Discovery board

@@ -22,12 +22,20 @@ Dialog DLL:      TCM.DLL V1.14.5.0
  
 <h2>Project:</h2>
 C:\zzz\ECSE426_Project\Discovery_Project\Blinky.uvprojx
-Project File Date:  04/02/2016
+Project File Date:  04/04/2016
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Lab4'
-".\Objects\Blinky.axf" - 0 Error(s), 0 Warning(s).
+compiling Thread_SPICommunication.c...
+Sources\Thread_SPICommunication.h(99): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_SPICommunication.c(111): warning:  #177-D: function "Slave_SendByte" was declared but never referenced
+  static uint8_t Slave_SendByte(uint8_t byte) {
+Sources\Thread_SPICommunication.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=45604 RO-data=836 RW-data=156 ZI-data=8180  
+".\Objects\Blinky.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
