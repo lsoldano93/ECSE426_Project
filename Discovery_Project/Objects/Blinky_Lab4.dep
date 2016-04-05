@@ -43,7 +43,7 @@ I (Sources\Thread_Accelerometer.h)(0x5702E2CE)
 I (.\Accelerometer\inc\lis3dsh.h)(0x5702E2CE)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x54C2FC88)
 I (Sources\Thread_UserInterface.h)(0x5702E2CE)
-I (Sources\Thread_SPICommunication.h)(0x5702E531)
+I (Sources\Thread_SPICommunication.h)(0x57040EE4)
 F (.\Sources\main.h)(0x5702E2CE)()
 F (.\Sources\global_vars.h)(0x5702E2CE)()
 F (.\Sources\Thread_TempSensor.c)(0x5702E2CE)(-c --cpu Cortex-M4.fp -D__RTX -D__MICROLIB -g -O0 --apcs=interwork -I.\Headers -I.\Accelerometer\inc-I C:\zzz\ECSE426_Project\Discovery_Project\RTE-I C:\zzz\ECSE426_Project\Discovery_Project\RTE\Device\STM32F407VGTx-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc-D__UVISION_VERSION="515" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx -D__FPU_PRESENT="1" -DHSE_VALUE="8000000"-o .\objects\thread_tempsensor.o --omf_browse .\objects\thread_tempsensor.crf --depend .\objects\thread_tempsensor.d)
@@ -208,8 +208,8 @@ I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc
 I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x5644EB5A)
 I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_usart.h)(0x5644EB5C)
 F (.\Sources\Kalmanfilter_asm.s)(0x5702E2CE)(--cpu Cortex-M4.fp --pd "__RTX SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\zzz\ECSE426_Project\Discovery_Project\RTE-I C:\zzz\ECSE426_Project\Discovery_Project\RTE\Device\STM32F407VGTx-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc--pd "__UVISION_VERSION SETA 515" --pd "_RTE_ SETA 1" --pd "STM32F407xx SETA 1"--list .\listings\kalmanfilter_asm.lst --xref -o .\objects\kalmanfilter_asm.o --depend .\objects\kalmanfilter_asm.d)
-F (.\Sources\Thread_SPICommunication.c)(0x5702F6AA)(-c --cpu Cortex-M4.fp -D__RTX -D__MICROLIB -g -O0 --apcs=interwork -I.\Headers -I.\Accelerometer\inc-I C:\zzz\ECSE426_Project\Discovery_Project\RTE-I C:\zzz\ECSE426_Project\Discovery_Project\RTE\Device\STM32F407VGTx-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc-D__UVISION_VERSION="515" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx -D__FPU_PRESENT="1" -DHSE_VALUE="8000000"-o .\objects\thread_spicommunication.o --omf_browse .\objects\thread_spicommunication.crf --depend .\objects\thread_spicommunication.d)
-I (Sources\Thread_SPICommunication.h)(0x5702E531)
+F (.\Sources\Thread_SPICommunication.c)(0x5704116A)(-c --cpu Cortex-M4.fp -D__RTX -D__MICROLIB -g -O0 --apcs=interwork -I.\Headers -I.\Accelerometer\inc-I C:\zzz\ECSE426_Project\Discovery_Project\RTE-I C:\zzz\ECSE426_Project\Discovery_Project\RTE\Device\STM32F407VGTx-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc-D__UVISION_VERSION="515" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx -D__FPU_PRESENT="1" -DHSE_VALUE="8000000"-o .\objects\thread_spicommunication.o --omf_browse .\objects\thread_spicommunication.crf --depend .\objects\thread_spicommunication.d)
+I (Sources\Thread_SPICommunication.h)(0x57040EE4)
 I (Sources\global_vars.h)(0x5702E2CE)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54C2FC88)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54C2FC88)
@@ -247,7 +247,7 @@ I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc
 I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h)(0x5644EB5C)
 I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h)(0x5644EB5A)
 I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_usart.h)(0x5644EB5C)
-F (.\Sources\Thread_SPICommunication.h)(0x5702E531)()
+F (.\Sources\Thread_SPICommunication.h)(0x57040EE4)()
 F (.\Accelerometer\src\LIS3DSH.c)(0x5702E2CE)(-c --cpu Cortex-M4.fp -D__RTX -D__MICROLIB -g -O0 --apcs=interwork -I.\Headers -I.\Accelerometer\inc-I C:\zzz\ECSE426_Project\Discovery_Project\RTE-I C:\zzz\ECSE426_Project\Discovery_Project\RTE\Device\STM32F407VGTx-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\RTOS\RTX\INC-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-I C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc-D__UVISION_VERSION="515" -D_RTE_ -DSTM32F407xx -DUSE_HAL_DRIVER -DSTM32F407xx -D__FPU_PRESENT="1" -DHSE_VALUE="8000000"-o .\objects\lis3dsh.o --omf_browse .\objects\lis3dsh.crf --depend .\objects\lis3dsh.d)
 I (.\Accelerometer\inc\lis3dsh.h)(0x5702E2CE)
 I (C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.7.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h)(0x5644EB5A)

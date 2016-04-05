@@ -488,7 +488,7 @@
       <bLintAuto>0</bLintAuto>
       <SystemViewers>
         <Entry>
-          <Name>System Viewer\SPI3</Name>
+          <Name>System Viewer\SPI2</Name>
           <WinId>35905</WinId>
         </Entry>
       </SystemViewers>
@@ -978,7 +978,7 @@
 
   <Group>
     <GroupName>::Device</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>1</RteFlg>

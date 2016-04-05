@@ -296,6 +296,7 @@ int main(void)
 				printf("Discovery flag set low\n");
 				// TODO: Order of operations should be: Read temperature, Read accelerometer, Write LEDState - Luke
 				Master_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
+				
 				DISCOVERY_SPI_FLAG = 0;
 			}
 
@@ -381,7 +382,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 		
 		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
+		GPIO_InitStruct.Pull  = GPIO_PULLUP;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 
@@ -393,6 +394,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		
 		/* Setup input interrupt line from Discovery */
 		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
+		GPIO_InitStruct.Pull = GPIO_PULLUP;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		
 		GPIO_InitStruct.Pin = NUCLEO_SPI_INTERRUPT_PIN;

@@ -7,73 +7,73 @@ __IO uint32_t  MasterTimeout = MASTER_FLAG_TIMEOUT;
 SPI_HandleTypeDef    SpiHandleDiscovery;
 
 
-/**
-  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @param  Data: Data to be transmitted.
-  * @retval None
-  */
-void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data){ 
-  /* Write in the DR register the data to be sent */
-  hspi->Instance->DR = Data;
-}
+///**
+//  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
+//  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
+//  * @param  Data: Data to be transmitted.
+//  * @retval None
+//  */
+//void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data){ 
+//  /* Write in the DR register the data to be sent */
+//  hspi->Instance->DR = Data;
+//}
 
 
-/**
-  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @retval The value of the received data.
-  */
-uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi){
-  /* Return the data in the DR register */
-  return hspi->Instance->DR;
-}
+///**
+//  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
+//  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
+//  * @retval The value of the received data.
+//  */
+//uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi){
+//  /* Return the data in the DR register */
+//  return hspi->Instance->DR;
+//}
 
 
-/**
-  * @brief  Basic management of the timeout situation.
-  * @param  None.
-  * @retval None.
-  */
-uint32_t MASTER_TIMEOUT_UserCallback(void){
-  
-	printf("Discovery communication timed out \n");
-	
-	return 0;
-}
+///**
+//  * @brief  Basic management of the timeout situation.
+//  * @param  None.
+//  * @retval None.
+//  */
+//uint32_t MASTER_TIMEOUT_UserCallback(void){
+//  
+//	printf("Discovery communication timed out \n");
+//	
+//	return 0;
+//}
 
 
-/**
-  * @brief  Sends a Byte through the SPI interface and return the Byte received
-  *         from the SPI bus.
-  * @param  Byte : Byte send.
-  * @retval The received byte value
-  */
-static uint8_t Master_SendByte(uint8_t byte){
-	
-  /* Loop while DR register in not empty */
-  MasterTimeout = MASTER_FLAG_TIMEOUT;
-  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_TXE) == RESET)
-  {
-    if((MasterTimeout--) == 0) return MASTER_TIMEOUT_UserCallback();
-  }
+///**
+//  * @brief  Sends a Byte through the SPI interface and return the Byte received
+//  *         from the SPI bus.
+//  * @param  Byte : Byte send.
+//  * @retval The received byte value
+//  */
+//static uint8_t Master_SendByte(uint8_t byte){
+//	
+//  /* Loop while DR register in not empty */
+//  MasterTimeout = MASTER_FLAG_TIMEOUT;
+//  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_TXE) == RESET)
+//  {
+//    if((MasterTimeout--) == 0) return MASTER_TIMEOUT_UserCallback();
+//  }
 
-  /* Send a Byte through the SPI peripheral */
-  SPI_SendData(&SpiHandleDiscovery,  byte);
+//  /* Send a Byte through the SPI peripheral */
+//  SPI_SendData(&SpiHandleDiscovery,  byte);
 
-  /* Wait to receive a Byte */
-  MasterTimeout = MASTER_FLAG_TIMEOUT;
-  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_RXNE) == RESET)
-  {
-		//Master_SendByte(DUMMY_BYTE);   /// TODO: Is this necessary to generate clock? If not remove ***********
-    if((MasterTimeout--) == 0) {
-			return MASTER_TIMEOUT_UserCallback();
-		}
-  }
+//  /* Wait to receive a Byte */
+//  MasterTimeout = MASTER_FLAG_TIMEOUT;
+//  while (__HAL_SPI_GET_FLAG(&SpiHandleDiscovery, SPI_FLAG_RXNE) == RESET)
+//  {
+//		//Master_SendByte(DUMMY_BYTE);   /// TODO: Is this necessary to generate clock? If not remove ***********
+//    if((MasterTimeout--) == 0) {
+//			return MASTER_TIMEOUT_UserCallback();
+//		}
+//  }
 
-  /* Return the Byte read from the SPI bus */ 
-  return SPI_ReceiveData(&SpiHandleDiscovery);
-}
+//  /* Return the Byte read from the SPI bus */ 
+//  return SPI_ReceiveData(&SpiHandleDiscovery);
+//}
 
 
 /**
@@ -85,22 +85,31 @@ static uint8_t Master_SendByte(uint8_t byte){
   */
 void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite){
 
+	HAL_StatusTypeDef errorCode;
+	
   /* Set chip select Low at the start of the transmission */
   DISCOVERY_CS_LOW();
 
-  /* Send the Address of the indexed register */
-  Master_SendByte(VariableToWrite);
+	errorCode = HAL_SPI_Transmit(&SpiHandleDiscovery, pBuffer, NumByteToWrite, MASTER_FLAG_TIMEOUT);
+	if(errorCode == HAL_OK) printf("HAL SPI Transmission succesful!\n");
+	else printf("Error in HAL SPI Transmit call!\n");
 	
-  /* Send the data that will be written into the device (MSB First) */
-  while(NumByteToWrite >= 0x01)
-  {
-    Master_SendByte(*pBuffer);
-    NumByteToWrite--;
-    pBuffer++;
-  }
+  /* Send the Address of the indexed register */
+//  Master_SendByte(VariableToWrite);
+//	
+//  /* Send the data that will be written into the device (MSB First) */
+//  while(NumByteToWrite >= 0x01)
+//  {
+//    Master_SendByte(*pBuffer);
+//    NumByteToWrite--;
+//    pBuffer++;
+//  }
 
   /* Set chip select High at the end of the transmission */
   DISCOVERY_CS_HIGH();
+	
+	//printf("Value of rBuffer: %x\n", rBuffer);
+	
 }
 
 
@@ -117,16 +126,16 @@ void Discovery_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteTo
   DISCOVERY_CS_LOW();
 
   /* Send the Address of the indexed register */
-  Master_SendByte(VariableToRead);
+//  Master_SendByte(VariableToRead);
 
-  /* Receive the data that will be read from the device (MSB First) */
-  while(NumByteToRead > 0x00)
-  {
-    /* Send dummy byte (0x00) to generate the SPI clock to Discovery (Slave device) */
-    *pBuffer = Master_SendByte(DUMMY_BYTE);
-    NumByteToRead--;
-    pBuffer++;
-  }
+//  /* Receive the data that will be read from the device (MSB First) */
+//  while(NumByteToRead > 0x00)
+//  {
+//    /* Send dummy byte (0x00) to generate the SPI clock to Discovery (Slave device) */
+//    *pBuffer = Master_SendByte(DUMMY_BYTE);
+//    NumByteToRead--;
+//    pBuffer++;
+//  }
 
   /* Set chip select High at the end of the transmission */
   DISCOVERY_CS_HIGH();

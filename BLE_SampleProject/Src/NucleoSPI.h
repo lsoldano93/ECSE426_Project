@@ -41,7 +41,7 @@
 #define NUCLEO_SPI_CS_PIN						GPIO_PIN_6  // GPIO_B6
 
 #define NUCLEO_SPI_INTERRUPT_PORT		GPIOA
-#define NUCLEO_SPI_INTERRUPT_PIN			GPIO_PIN_4	// GPIO_A4
+#define NUCLEO_SPI_INTERRUPT_PIN		GPIO_PIN_4	// GPIO_A4
 
 
 /* Private macros ------------------------------------------------------------*/
