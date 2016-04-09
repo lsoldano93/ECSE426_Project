@@ -59,21 +59,21 @@
   * @param  Data: Data to be transmitted.
   * @retval None
   */
-void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data);
+//void SPI_SendData(SPI_HandleTypeDef *hspi, uint16_t Data);
 
 /**
   * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
   * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
   * @retval The value of the received data.
   */
-uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi);
+//uint8_t SPI_ReceiveData(SPI_HandleTypeDef *hspi);
 
 /**
   * @brief  Basic management of the timeout situation.
   * @param  None.
   * @retval None.
   */
-uint32_t MASTER_TIMEOUT_UserCallback(void);
+//uint32_t MASTER_TIMEOUT_UserCallback(void);
 
 /**
   * @brief  Sends a Byte through the SPI interface and return the Byte received
@@ -81,7 +81,7 @@ uint32_t MASTER_TIMEOUT_UserCallback(void);
   * @param  Byte : Byte send.
   * @retval The received byte value
   */
-static uint8_t Master_SendByte(uint8_t byte);
+//static uint8_t Master_SendByte(uint8_t byte);
 
 /**
   * @brief  Writes one byte to the Discovery board
@@ -90,7 +90,7 @@ static uint8_t Master_SendByte(uint8_t byte);
   * @param  NumByteToWrite: Number of bytes to write.
   * @retval None
   */
-void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite);
+//void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite);
 
 /**
   * @brief  Reads a block of data from the Discovery board.
@@ -99,14 +99,14 @@ void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToW
   * @param  NumByteToRead : number of bytes to read from the Discovery.
   * @retval None
   */
-void Master_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteToRead);
+//void Master_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteToRead);
 
 /**
   * @brief  Configures Nucleo board for SPI communication with Discovery board
   * @param  None
   * @retval None
   */
-void NucleoSPI_Config(void);
+//void NucleoSPI_Config(void);
 
 
 #endif

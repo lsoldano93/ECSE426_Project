@@ -196,7 +196,7 @@ int main (void) {
 //	UserInterface_config();										/* Initialize LED pins              */
 //	start_Thread_UserInterface();				  		/* Start UI thread                  */
 	
-	SPICommunication_config();								/* Initialize parameters for SPI    */
+	//SPICommunication_config();								/* Initialize parameters for SPI    */
 	start_Thread_SPICommunication();				  /* Start SPI thread                 */
 
 	/* User codes ends here*/

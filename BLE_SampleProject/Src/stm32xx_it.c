@@ -154,10 +154,21 @@ void BNRG_SPI_EXTI_IRQHandler(void){
   * @param  None
   * @retval None
   */
-void EXTI4_IRQHandler(void){
-	HAL_GPIO_EXTI_IRQHandler(DISCOVERY_SPI_INTERRUPT_PIN);
-}
+//void EXTI4_IRQHandler(void){
+	//HAL_GPIO_EXTI_IRQHandler(DISCOVERY_SPI_INTERRUPT_PIN);
+//}
 
+
+
+/**
+  * @brief  This function handles SPI interrupt request.
+  * @param  None
+  * @retval None
+  */
+void SPI2_IRQHandler(void)
+{
+  HAL_SPI_IRQHandler(&SpiHandle);
+}
 /**
   * @brief  This function handles the Push Button interrupt request.
   * @param  None
