@@ -182,7 +182,7 @@ void SPICommunication_config(void){
 	
   HAL_SPI_DeInit(&NucleoSpiHandle);
   NucleoSpiHandle.Instance 							  = SPI2;
-  NucleoSpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_2;
+  NucleoSpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_256;
   NucleoSpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES; // set full duplex communication
   NucleoSpiHandle.Init.CLKPhase 					= SPI_PHASE_1EDGE;
   NucleoSpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
@@ -217,6 +217,8 @@ void SPICommunication_config(void){
 	
 	// SPI2_MOSI = PB5
 	GPIO_InitStructure.Pin = DISCOVERY_SPI_MOSI_PIN;
+  GPIO_InitStructure.Pull  = GPIO_NOPULL;
+	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	HAL_GPIO_Init(DISCOVERY_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
 	
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;			// TODO: Maybe this pin should be an input with no pull??
@@ -226,9 +228,10 @@ void SPICommunication_config(void){
 	
 	// SPI2_SCK = PB3
 	GPIO_InitStructure.Pin = DISCOVERY_SPI_SCK_PIN;
+  GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	HAL_GPIO_Init(DISCOVERY_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
 	
-	// SPI3 CS = PA15  (Input - Active Low)
+	// SPI2 CS = PA15  (Input - Active Low)
 	GPIO_InitStructure.Pin   = DISCOVERY_SPI_CS_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;

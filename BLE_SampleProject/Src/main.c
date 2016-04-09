@@ -128,7 +128,7 @@ int main(void)
   uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
   uint8_t bdaddr[BDADDR_SIZE];
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
-	uint8_t pBuffer; 
+	uint8_t pBuffer[4]; 
 	uint16_t NumByteToWrite;
   
   uint8_t  hwVersion;
@@ -283,7 +283,12 @@ int main(void)
   /* Set output power level */
   ret = aci_hal_set_tx_power_level(1,4);
 
-	pBuffer = 0x11;
+	//pBuffer = 0x11;
+  pBuffer[0]= 10;
+  pBuffer[1]= 20;
+  pBuffer[2]= 30;
+  pBuffer[3]= 40;
+  
 
   while(1){
 		
@@ -369,6 +374,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 	if (hspi->Instance == SPI2){
 		
 		/* Enable proper clock lines */
+    __SPI2_CLK_ENABLE();
 		__GPIOA_CLK_ENABLE();
 		__GPIOB_CLK_ENABLE();
 		
@@ -377,27 +383,40 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
 		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+    
+    /* Configure SCK */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_SCK_PIN;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    
+    /* Configure MOSI */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_MOSI_PIN;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    
+    /* Configure MISO */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_MISO_PIN;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-		GPIO_InitStruct.Pin = NUCLEO_SPI_MOSI_PIN | NUCLEO_SPI_MISO_PIN | NUCLEO_SPI_SCK_PIN;
-		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-		
-		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull  = GPIO_PULLUP;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 
 		GPIO_InitStruct.Pin = NUCLEO_SPI_CS_PIN;
+		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+		GPIO_InitStruct.Pull  = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+
 		HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
 		
 		/* Deselect : Chip Select high */
 		DISCOVERY_CS_HIGH();
 		
 		/* Setup input interrupt line from Discovery */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_INTERRUPT_PIN;
 		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
-		GPIO_InitStruct.Pull = GPIO_PULLUP;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+		GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+		GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
 		
-		GPIO_InitStruct.Pin = NUCLEO_SPI_INTERRUPT_PIN;
 		HAL_GPIO_Init(NUCLEO_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
 		
 		/* Configure the NVIC for SPI */  
