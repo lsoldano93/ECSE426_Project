@@ -35,6 +35,7 @@ extern SPI_HandleTypeDef NucleoSpiHandle;
 
 // Timer 3 values
 extern TIM_HandleTypeDef handle_tim3;
+extern TIM_HandleTypeDef handle_tim4;
 extern uint32_t timingDelay;
 
 /* @brief Structure for the Kalman filter  */ 

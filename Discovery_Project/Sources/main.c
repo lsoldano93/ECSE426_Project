@@ -59,12 +59,9 @@ void SystemClock_Config(void) {
 }
 
 
-
-/**  Timer3 initialization function
-   * @brief  Function to initialize timer 3 **/
 void init_TIM3(void) {
 	
-	TIM_Base_InitTypeDef init_TIM;
+	TIM_Base_InitTypeDef init_TIM3;
 	
 	// Enable clock for TIM3 
 	__HAL_RCC_TIM3_CLK_ENABLE();
@@ -74,20 +71,19 @@ void init_TIM3(void) {
 		 need to setup period and prescaler
 		 set rate to 500Hz
 		 Initialize timer 3 initialization struct     */
-	init_TIM.Period = 83;  // Period is in MHz
-	init_TIM.Prescaler = 999;
-	init_TIM.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	init_TIM.CounterMode = TIM_COUNTERMODE_UP;
+	init_TIM3.Period = 83;  // Period is in MHz
+	init_TIM3.Prescaler = 999;
+	init_TIM3.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	init_TIM3.CounterMode = TIM_COUNTERMODE_UP;
 	
 	// Initialize timer 3 handle struct
 	handle_tim3.Instance = TIM3;
-	handle_tim3.Init = init_TIM;
+	handle_tim3.Init = init_TIM3;
 	handle_tim3.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
 	handle_tim3.Lock = HAL_UNLOCKED;
 	handle_tim3.State = HAL_TIM_STATE_READY;
 
 	// Initialize timer 3 handle and enable interrupts
-	HAL_TIM_Base_MspInit(&handle_tim3);
 	HAL_TIM_Base_Init(&handle_tim3);
 	HAL_TIM_Base_Start_IT(&handle_tim3);
 		
@@ -106,16 +102,6 @@ void init_TIM3(void) {
 void EXTI0_IRQHandler(void){
 	// Handle external interrupts on pin 0
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
-	
-}
-
-
-/**
-  * @}
-  */ 
-void TIM3_IRQHandler(void) {
-	// Handle interrupts deriving from timer 3
-	HAL_TIM_IRQHandler(&handle_tim3);
 	
 }
 
@@ -185,7 +171,8 @@ int main (void) {
 	printf("Beginning Program\n");
 	
 	/* User codes goes here*/
-	init_TIM3();															/* Initialize timer 3 				     	*/
+	init_TIM4();															/* Initialize timer 4 				     	*/
+	init_TIM3();	// TODO: Was causing bug		/* Initialize timer 3 				     	*/
   
 	ADC_config();														  /* Initialize temp sensor ADC     	*/
 	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
@@ -193,11 +180,10 @@ int main (void) {
 	Accelerometer_config();										/* Initialize accelerometer         */
 	start_Thread_Accelerometer();							/* Start accelerometer thread       */
 	
-//	UserInterface_config();										/* Initialize LED pins              */
-//	start_Thread_UserInterface();				  		/* Start UI thread                  */
+	start_Thread_UserInterface();				  		/* Start UI thread                  */
 	
-	SPICommunication_config();								/* Initialize parameters for SPI    */
-	start_Thread_SPICommunication();				  /* Start SPI thread                 */
+	//SPICommunication_config();								/* Initialize parameters for SPI    */
+	//start_Thread_SPICommunication();				  /* Start SPI thread                 */
 
 	/* User codes ends here*/
   

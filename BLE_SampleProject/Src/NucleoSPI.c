@@ -91,19 +91,19 @@ void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToW
   /* Set chip select Low at the start of the transmission */
   DISCOVERY_CS_LOW();
 
-//	errorCode = HAL_SPI_Transmit(&SpiHandleDiscovery, pBuffer, NumByteToWrite, MASTER_FLAG_TIMEOUT);
-//	if(errorCode == HAL_OK) printf("HAL SPI Transmission succesful!\n");
-//	else printf("Error in HAL SPI Transmit call!\n");
+	errorCode = HAL_SPI_Transmit(&SpiHandleDiscovery, pBuffer, NumByteToWrite, MASTER_FLAG_TIMEOUT);
+	if(errorCode == HAL_OK) printf("HAL SPI Transmission succesful!\n");
+  else printf("Error in HAL SPI Transmit call!\n");
 	
   /* Send the Address of the indexed register */
-  Master_SendByte(VariableToWrite);
+  //Master_SendByte(VariableToWrite);
 	
 //  /* Send the data that will be written into the device (MSB First) */
-  while(NumByteToWrite >= 0x01) {
-    Master_SendByte(*pBuffer);
-    NumByteToWrite--;
-    pBuffer++;
-  }
+//  while(NumByteToWrite >= 0x01) {
+//    Master_SendByte(*pBuffer);
+//    NumByteToWrite--;
+//    pBuffer++;
+//  }
 
   /* Set chip select High at the end of the transmission */
   DISCOVERY_CS_HIGH();

@@ -300,7 +300,7 @@ int main(void)
 			if (DISCOVERY_SPI_FLAG == 1){
 				printf("Discovery flag set low\n");
 				// TODO: Order of operations should be: Read temperature, Read accelerometer, Write LEDState - Luke
-				Master_Write(&pBuffer, COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
+				Master_Write(&pBuffer[0], COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
 				
 				DISCOVERY_SPI_FLAG = 0;
 			}

@@ -7,12 +7,12 @@
 
 
 /* Private define ------------------------------------------------------------*/
-#define UI_THREAD_OSDELAY 10  // Delay in milliseconds
-#define DISPLAY_DELAY 1			 // Delay in milliseconds
-#define DEBOUNCE_DELAY 25    // Delay in milliseconds
+#define UI_THREAD_OSDELAY 100  // Delay in milliseconds
 
-#define ROWS 4
-#define COLS 3
+#define LED1 							GPIO_PIN_12
+#define LED2 							GPIO_PIN_13
+#define LED3 							GPIO_PIN_14
+#define LED4 							GPIO_PIN_15
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,7 +44,9 @@ void ledsOff(void);
 
 /**  Configures system for user interface
    * @brief  Initializes pins for display and clock for keypad **/
-void UserInterface_config(void);
+void init_TIM4(void);
+
+void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim);
 
 
 #endif
