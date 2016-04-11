@@ -13,8 +13,10 @@ TIM_OC_InitTypeDef init_OC;
 uint8_t ledState = 1;
 uint8_t rotateClockwise = 0;
 uint8_t currentLED = 1;
+uint8_t dutyCyclePrescaler = 16;
 
-uint32_t selectedDutyCycle = 8399/16;
+uint32_t DutyCycle = 8399;
+uint32_t selectedDutyCycle;
 
 const void* ledStateMutexPtr;
 
@@ -42,15 +44,18 @@ int start_Thread_UserInterface (void) {
    */
 void Thread_UserInterface (void const *argument){
 	
-	//ledsOff();
-	
 	while(1){
 		
+		// TODO: To implement LED speed take in a value  with LED state that adds/subtracts this osDelay
+		// TODO: Take in message with LED state that adjusts the selectedDutyCycle prescaler
 		osDelay(UI_THREAD_OSDELAY);
 		
 		osMutexWait(ledStateMutex, (uint32_t) THREAD_TIMEOUT);
 		//ledState = LED_ROTATE_STATE;
+		//dutyCyclePrescaler = LED_DC_PRESCALER;
 		osMutexRelease(ledStateMutex);
+		
+		selectedDutyCycle = DutyCycle/dutyCyclePrescaler;
 		
 		/* LED_ROTATE_STATE = 0  -> Off
 			 LED_ROTATE_STATE = 1  -> All On
@@ -168,7 +173,6 @@ void ledsOn(void) {
 	HAL_TIM_OC_ConfigChannel(&handle_tim4, &init_OC, TIM_CHANNEL_2);
 	HAL_TIM_OC_Start(&handle_tim4, TIM_CHANNEL_2);
 	
-	init_OC.Pulse = selectedDutyCycle;
 	HAL_TIM_OC_ConfigChannel(&handle_tim4, &init_OC, TIM_CHANNEL_1);
 	HAL_TIM_OC_Start(&handle_tim4, TIM_CHANNEL_1);
 	

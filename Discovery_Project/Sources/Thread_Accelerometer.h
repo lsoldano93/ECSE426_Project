@@ -22,6 +22,8 @@
 #define ACC30 -0.0328 
 #define DEGREES(x) (180.0*x/PI)
 
+#define TAP_THRESHOLD 450
+
 // TODO: Determine these values
 #define accelKalman_x_q 0.1
 #define accelKalman_x_r 2.0

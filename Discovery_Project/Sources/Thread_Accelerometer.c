@@ -1,12 +1,18 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "Thread_Accelerometer.h"
+#include "stdlib.h"
 
 /* Private variables ---------------------------------------------------------*/
 
 osThreadId tid_Thread_Accelerometer;
 
 float accelerometer_out[3];
+float movingZ[3];
+uint8_t i = 0;
+uint8_t lastTapI = 15;
+uint8_t firstZ = 1;
+uint8_t numTaps = 0;
 accelerometer_values accel;
 float accel_x, accel_y, accel_z;
 float rollValue, pitchValue;
@@ -35,6 +41,9 @@ int start_Thread_Accelerometer (void) {
 	 * @param  Locations where updated values will be stored **/
 void Thread_Accelerometer (void const *argument){
 	
+	uint8_t j;
+	float difference;
+	
 	osEvent Status_Accelerometer;
 	// Update accelerometer values when signaled to do so, clear said signal after execution
 	while(1){
@@ -42,6 +51,28 @@ void Thread_Accelerometer (void const *argument){
 		Status_Accelerometer = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);
 		accelerometer_mode();
 		osSignalSet(tid_Thread_SPICommunication, (int32_t) THREAD_GREEN_LIGHT);
+		//printf("%f,\n", accel.z);
+		
+		// Ghetto Double tap code
+		for(j=0;j<3;j++){
+			difference = movingZ[i] - movingZ[j];
+			//if(i == lastTapI) lastTapI = 15;
+			if(difference > TAP_THRESHOLD){
+					//if(lastTapI == 15){
+						numTaps++;
+						firstZ = 1;
+						//lastTapI = i;
+						if (numTaps == 1) printf("IT BEEN TAPPED!\n");
+						else if(numTaps > 1){
+							printf("IT BEEN TAPPED TWICE!\n");
+							// TODO: Send a message
+							numTaps = 0;
+						}
+						osDelay(400);
+					}
+			//}
+			if(firstZ) break;
+		}
 		
 	}
 	
@@ -102,9 +133,26 @@ void config_accelerometer_kalman(void) {
    * @brief  Updates x, y, z parameters of accelerometer by reading from MEMs device
 	 * @param  Locations where updated values will be stored **/
 void update_accel_values(float Ax, float Ay, float Az) {
+	
+	uint8_t j;
+	
 	accel.x = Ax*ACC11 + Ay*ACC12 + Az*ACC13 + ACC10;
 	accel.y = Ax*ACC21 + Ay*ACC22 + Az*ACC23 + ACC20;
 	accel.z = Ax*ACC31 + Ay*ACC32 + Az*ACC33 + ACC30;
+	
+	// Double tap moving array code
+	if (firstZ){
+		for(j=0;j<3;j++){
+			movingZ[j] = accel.z;
+		}
+		firstZ = 0;
+		i = 1;
+	}
+	else{ 
+		movingZ[i] = accel.z;
+		i++;
+		if(i>2) i = 0;
+	}
 	
 }
 
