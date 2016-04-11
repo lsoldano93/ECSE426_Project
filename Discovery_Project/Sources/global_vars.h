@@ -28,6 +28,7 @@ extern float temperatureValue;
 extern float accelerometer_out[3];
 extern float rollValue, pitchValue;
 extern int alarmCount;
+extern uint8_t LED_ROTATE_STATE;
 
 // SPI Handles
 extern SPI_HandleTypeDef SpiHandle;

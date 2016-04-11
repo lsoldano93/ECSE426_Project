@@ -7,7 +7,7 @@
 
 
 /* Private define ------------------------------------------------------------*/
-#define UI_THREAD_OSDELAY 100  // Delay in milliseconds
+#define UI_THREAD_OSDELAY 300  // Delay in milliseconds
 
 #define LED1 							GPIO_PIN_12
 #define LED2 							GPIO_PIN_13

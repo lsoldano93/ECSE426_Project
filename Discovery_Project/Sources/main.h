@@ -10,6 +10,7 @@
 
 osMutexId temperatureMutex;
 osMutexId tiltAnglesMutex;
+osMutexId ledStateMutex;
 TIM_HandleTypeDef handle_tim3;
 
 uint8_t tim3_ticks;

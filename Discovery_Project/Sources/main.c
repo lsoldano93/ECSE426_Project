@@ -105,6 +105,12 @@ void EXTI0_IRQHandler(void){
 	
 }
 
+void TIM3_IRQHandler(void) {
+	// Handle interrupts deriving from timer 3
+	HAL_TIM_IRQHandler(&handle_tim3);
+	
+}
+
 
 /**
   * @brief  Input Capture callback in non blocking mode 
@@ -171,8 +177,8 @@ int main (void) {
 	printf("Beginning Program\n");
 	
 	/* User codes goes here*/
+	init_TIM3();															/* Initialize timer 3 				     	*/
 	init_TIM4();															/* Initialize timer 4 				     	*/
-	init_TIM3();	// TODO: Was causing bug		/* Initialize timer 3 				     	*/
   
 	ADC_config();														  /* Initialize temp sensor ADC     	*/
 	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
