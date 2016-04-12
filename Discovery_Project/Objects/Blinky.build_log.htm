@@ -26,7 +26,59 @@ Project File Date:  04/12/2016
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Build target 'Lab4'
+Rebuild target 'Lab4'
+compiling main.c...
+Sources\Thread_TempSensor.h(25): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_Accelerometer.h(105): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_UserInterface.h(35): warning:  #1295-D: Deprecated declaration resetPins - give arg types
+  void resetPins();
+Sources\Thread_UserInterface.h(52): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_SPICommunication.h(83): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\main.h(44): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\main.c: 6 warnings, 0 errors
+compiling Thread_TempSensor.c...
+Sources\Thread_TempSensor.h(25): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_TempSensor.c(35): warning:  #550-D: variable "Status_TempSensor" was set but never used
+        osEvent Status_TempSensor;
+Sources\Thread_TempSensor.c: 2 warnings, 0 errors
+compiling Thread_Accelerometer.c...
+Sources\Thread_Accelerometer.h(105): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_Accelerometer.c(48): warning:  #550-D: variable "Status_Accelerometer" was set but never used
+        osEvent Status_Accelerometer;
+Sources\Thread_Accelerometer.c(142): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        accel.x = Ax*
+CC11 + Ay*ACC12 + Az*ACC13 + ACC10;
+Sources\Thread_Accelerometer.c(143): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        accel.y = Ax*
+CC21 + Ay*
+CC22 + Az*ACC23 + ACC20;
+Sources\Thread_Accelerometer.c(144): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        accel.z = Ax*
+CC31 + Ay*
+CC32 + Az*
+CC33 + ACC30;
+Sources\Thread_Accelerometer.c(182): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        return 90.0 - 
+EGREES(acos(accel.z/1000.0));
+Sources\Thread_Accelerometer.c(233): warning:  #1-D: last line of file ends without a newline
+  }
+Sources\Thread_Accelerometer.c: 7 warnings, 0 errors
+compiling Thread_UserInterface.c...
+Sources\Thread_UserInterface.h(35): warning:  #1295-D: Deprecated declaration resetPins - give arg types
+  void resetPins();
+Sources\Thread_UserInterface.h(52): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_UserInterface.c: 2 warnings, 0 errors
+compiling supporting_functions.c...
+compiling fput_debug.c...
+assembling Kalmanfilter_asm.s...
 compiling Thread_SPICommunication.c...
 Sources\Thread_SPICommunication.h(83): warning:  #1-D: last line of file ends without a newline
   #endif
@@ -47,9 +99,45 @@ Sources\Thread_SPICommunication.c(245): warning:  #550-D: variable "doubleTap" w
 Sources\Thread_SPICommunication.c(246): warning:  #177-D: variable "ledState" was declared but never referenced
         uint8_t ledState;
 Sources\Thread_SPICommunication.c: 9 warnings, 0 errors
+compiling LIS3DSH.c...
+Accelerometer\src\LIS3DSH.c(368): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(378): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_4G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(388): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_6G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(398): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_8G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(408): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_16G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c: 5 warnings, 0 errors
+compiling RTX_Conf_CM.c...
+compiling stm32f4xx_hal.c...
+compiling stm32f4xx_hal_adc.c...
+compiling stm32f4xx_hal_adc_ex.c...
+compiling stm32f4xx_hal_cortex.c...
+compiling stm32f4xx_hal_dma.c...
+compiling stm32f4xx_hal_dma_ex.c...
+compiling stm32f4xx_hal_gpio.c...
+compiling stm32f4xx_hal_pwr.c...
+compiling stm32f4xx_hal_pwr_ex.c...
+compiling stm32f4xx_hal_rcc.c...
+compiling stm32f4xx_hal_rcc_ex.c...
+compiling stm32f4xx_hal_spi.c...
+compiling stm32f4xx_hal_tim.c...
+compiling stm32f4xx_hal_tim_ex.c...
+compiling stm32f4xx_hal_uart.c...
+compiling stm32f4xx_hal_usart.c...
+assembling startup_stm32f407xx.s...
+compiling system_stm32f4xx.c...
 linking...
 Program Size: Code=53436 RO-data=996 RW-data=188 ZI-data=8188  
-".\Objects\Blinky.axf" - 0 Error(s), 9 Warning(s).
+".\Objects\Blinky.axf" - 0 Error(s), 31 Warning(s).
 
 <h2>Software Packages used:</h2>
 
