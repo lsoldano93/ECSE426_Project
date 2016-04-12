@@ -18,6 +18,8 @@ uint8_t dutyCyclePrescaler = 1;
 uint32_t DutyCycle = 8399;
 uint32_t selectedDutyCycle;
 
+uint8_t LED_ROTATE_STATE;
+uint8_t LED_DC_PRESCALER;
 const void* ledStateMutexPtr;
 
 osThreadDef(Thread_UserInterface, osPriorityNormal, 1, NULL);  // TODO: See if below normal priority helps with constant calling

@@ -300,8 +300,9 @@ int main(void)
 				Master_Communication(LED_STATE, returnArray); 
 				
 				temperature = returnArray[0];
-				pitch = returnArray[1];
-				roll = returnArray[2];
+				printf("Temperature: %f\n", temperature);
+				//pitch = returnArray[1];
+				//roll = returnArray[2];
 				
 				// TODO: If double tap code has been initiated then...
 				if((int) returnArray[3] == 1){

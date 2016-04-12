@@ -79,7 +79,92 @@ void Reset_DataLines(){
 
 void Slave_Write(float input){
 	
-	return;
+	int i;
+	
+	// Can only write decimal values between 0.0 & 0.99
+	int numIntegerDigits = 0;
+	int tempDecimalValue = 0;
+	int tempIntegerValue = 0;
+	
+	int integerValue[8];
+	int decimalValue[8];
+	int tempArray[4];
+	
+	// Find number of integer values
+	for(i=0;i<3;i++){
+		if(input/pow(10,i) > 0) numIntegerDigits = i+1;
+		else break;
+	}
+	
+	// Calculate integer value
+	if(numIntegerDigits == 3){
+		tempIntegerValue = ((int)(input/100))*100;
+		tempIntegerValue += (((int)(input/10)) - ((int)(tempIntegerValue/10)))*10 ;
+		tempIntegerValue += ((int) input) - tempIntegerValue;
+	}
+	else if(numIntegerDigits == 2){
+		tempIntegerValue = ((int)(input/10));
+		tempIntegerValue += ((int) input) - tempIntegerValue;
+	}
+	else if(numIntegerDigits == 1){
+		tempIntegerValue = (int) input;
+	}
+	
+	// Calculate decimal value
+	tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
+	
+	// Convert values to bit streams
+	for (i= 0;i<8;i++){ 
+		integerValue[7-i] = tempIntegerValue & (1 << i) ? 1 : 0;
+		decimalValue[7-i] = tempDecimalValue & (1 << i) ? 1 : 0;
+	}
+	
+	
+	// Write first four bits of integer value (MSB first)
+	for(i=0;i<4;i++)integerValue[i]=tempArray[i];
+	Set_DataLines(tempArray);
+	
+	// Signal to Nucleo that pins are ready
+	HAL_GPIO_WritePin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN, GPIO_PIN_RESET);
+	
+	// Wait for Nucleo to finish reading
+	while(HAL_GPIO_ReadPin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN) == GPIO_PIN_SET);
+	
+	// Write next four bits of integer value (MSB first)
+	for(i=0;i<4;i++)integerValue[i+4]=tempArray[i];
+	Set_DataLines(tempArray);
+	
+	// Signal to Nucleo that pins are ready
+	HAL_GPIO_WritePin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN, GPIO_PIN_SET);
+	
+	// Wait for Nucleo to finish reading
+	while(HAL_GPIO_ReadPin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN) == GPIO_PIN_RESET);
+	
+	
+	// Write first four bits of decimal value (MSB first)
+	for(i=0;i<4;i++)decimalValue[i]=tempArray[i];
+	Set_DataLines(tempArray);
+	
+	// Signal to Nucleo that pins are ready
+	HAL_GPIO_WritePin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN, GPIO_PIN_RESET);
+	
+	// Wait for Nucleo to finish reading
+	while(HAL_GPIO_ReadPin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN) == GPIO_PIN_SET);
+	
+	// Write next four bits of decimal value (MSB first)
+	for(i=0;i<4;i++)decimalValue[i+4]=tempArray[i];
+	Set_DataLines(tempArray);
+	
+	// Signal to Nucleo that pins are ready
+	HAL_GPIO_WritePin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN, GPIO_PIN_SET);
+	
+	// Wait for Nucleo to finish reading
+	while(HAL_GPIO_ReadPin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN) == GPIO_PIN_RESET);
+	
+	Reset_DataLines();
+	
+	return; 
+	
 }
 	
 
@@ -184,23 +269,23 @@ void Thread_SPICommunication (void const *argument){
 		
 		// Write temperature value
 		Slave_Write(temperature);
-	
+		printf("Temperature: %f\n", temperature);
 		// Set GPIO interrupt pin back to high
 		HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_SET);
 		
 		// Write pitch value
-		Slave_Write(pitch);
+		//Slave_Write(pitch);
 	
 		// Write roll value
-		Slave_Write(roll);
+		//Slave_Write(roll);
 	
 		// Write double tap boolean
-		Slave_Write_Boolean(doubleTap);
+		//Slave_Write_Boolean(doubleTap);
 	
 		// Read LED_State & Duty Cycle
-		Slave_Read();
+		//Slave_Read();
 		
-
+		return;
 	}                                                       
 }
 
@@ -213,8 +298,8 @@ void SPICommunication_config(void){
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
-	DISCOVERY_DATAi_CLOCK_ENABLE();
-	DISCOVERY_DATAo_CLOCK_ENABLE();                                                 
+	DISCOVERY_DATAio_CLOCK_ENABLE();
+	DISCOVERY_HSI_CLOCK_ENABLE();                                                 
 	
 	// Discovery Output Pin 0  (Output - Active High)
 	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;

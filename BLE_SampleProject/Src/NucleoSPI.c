@@ -212,16 +212,16 @@ void Master_Communication(uint8_t LED_STATE, float* returnArray){
 	returnArray[0] = Master_Read();
 	
 	// Read pitch value
-	returnArray[1] = Master_Read();
+	//returnArray[1] = Master_Read();
 	
 	// Read roll value
-	returnArray[2] = Master_Read();
+	//returnArray[2] = Master_Read();
 	
 	// Read double tap boolean
-	returnArray[3] = Master_Read_Boolean();
+	//returnArray[3] = Master_Read_Boolean();
 	
 	// Send LED_State & Duty Cycle
-	Master_Write(LED_STATE);
+	//Master_Write(LED_STATE);
 	
 	return;
 }
@@ -235,8 +235,8 @@ void NucleoSPI_Config(void){
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
-	NUCLEO_DATAi_CLOCK_ENABLE();
-	NUCLEO_DATAo_CLOCK_ENABLE();                                                 
+	NUCLEO_DATAio_CLOCK_ENABLE();
+	NUCLEO_HSI_CLOCK_ENABLE();                                                 
 	
 	// NUCLEO Output Pin 0  (Output - Active High)
 	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
