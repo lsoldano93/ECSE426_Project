@@ -5,40 +5,46 @@
 #include "global_vars.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_rcc.h"
-#include "stm32f4xx_hal_spi.h"
 
 
 /* Private defines -----------------------------------------------------------*/
 
-/* Dummy Byte Send by the SPI Master device in order to generate the Clock to the Slave device */
-#define DUMMY_BYTE                 			((uint8_t)0x00)
-
-/* Command signals for Discovery to indicate variable of interest */
-#define COMMAND_READ_TEMPERATURE				((uint8_t)0x20)
-
-#define COMMAND_READ_ACCELEROMETER_X		((uint8_t)0x40)
-#define COMMAND_READ_ACCELEROMETER_Y		((uint8_t)0x50)
-#define COMMAND_READ_ACCELEROMETER_Z		((uint8_t)0x60)
-
-#define COMMAND_WRITE_LED_PATTERN				((uint8_t)0x80)
- 
-#define SPI_Timeout_Flag ((uint32_t)4096)
-
 /* DISCOVERY Pins associated with Nucleo signal */
-#define DISCOVERY_SPI_SCK_GPIO_PORT			GPIOB
-#define DISCOVERY_SPI_SCK_PIN						GPIO_PIN_13  // GPIO_B13
+#define DISCOVERY_DATAi0_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAi0_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define DISCOVERY_SPI_MISO_GPIO_PORT		GPIOB
-#define DISCOVERY_SPI_MISO_PIN					GPIO_PIN_14  // GPIO_B14
+#define DISCOVERY_DATAi1_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAi1_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define DISCOVERY_SPI_MOSI_GPIO_PORT		GPIOB
-#define DISCOVERY_SPI_MOSI_PIN					GPIO_PIN_15  // GPIO_B15
+#define DISCOVERY_DATAi2_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAi2_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define DISCOVERY_SPI_CS_GPIO_PORT			GPIOB
-#define DISCOVERY_SPI_CS_PIN						GPIO_PIN_12  // GPIO_B12
+#define DISCOVERY_DATAi3_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAi3_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define DISCOVERY_SPI_INTERRUPT_PORT		GPIOA
-#define DISCOVERY_SPI_INTERRUPT_PIN			GPIO_PIN_8	 // GPIO_A8
+#define DISCOVERY_DATAo0_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAo0_PIN						GPIO_PIN_12  // GPIO_B12
+
+#define DISCOVERY_DATAo1_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAo1_PIN						GPIO_PIN_12  // GPIO_B12
+
+#define DISCOVERY_DATAo2_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAo2_PIN						GPIO_PIN_12  // GPIO_B12
+
+#define DISCOVERY_DATAo3_GPIO_PORT			GPIOB
+#define DISCOVERY_DATAo3_PIN						GPIO_PIN_12  // GPIO_B12
+
+#define NUCLEO_TO_DISCOVERY_GPIO_PORT			GPIOB
+#define NUCLEO_TO_DISCOVERY_PIN						GPIO_PIN_12  // GPIO_B12
+
+#define DISCOVERY_TO_NUCLEO_GPIO_PORT			GPIOB
+#define DISCOVERY_TO_NUCLEO_PIN						GPIO_PIN_12  // GPIO_B12
+
+#define DISCOVERY_INTERRUPT_PORT				GPIOA
+#define DISCOVERY_INTERRUPT_PIN					GPIO_PIN_8	 // GPIO_A8
+
+#define DISCOVERY_DATAi_CLOCK_ENABLE()		__GPIOA_CLK_ENABLE()
+#define DISCOVERY_DATAo_CLOCK_ENABLE()		__GPIOB_CLK_ENABLE()
 
 /* Private Variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -58,21 +64,6 @@ int start_Thread_SPICommunication (void);
 void Thread_SPICommunication (void const *argument);
 
 /**
-  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @param  Data: Data to be transmitted.
-  * @retval None
-  */
-void Slave_Spi_SendData(SPI_HandleTypeDef *hspi, uint16_t Data);
-
-/**
-  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
-  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-  * @retval The value of the received data.
-  */
-uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi);
-
-/**
   * @brief  Sends a Byte through the SPI interface and return the Byte received from the SPI bus.
   * @param  Byte : Byte send.
   * @retval The received byte value
@@ -80,13 +71,6 @@ uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi);
 static uint8_t Slave_SendByte(uint8_t byte);
 
 static uint8_t Slave_ReadByte(void);
-
-/**
-  * @brief  Basic management of the timeout situation.
-  * @param  None.
-  * @retval None.
-  */
-uint32_t NUCLEO_TIMEOUT_UserCallback(void);
 
 /**
   * @brief  Initialize SPI handle for slave device (Discovery board)

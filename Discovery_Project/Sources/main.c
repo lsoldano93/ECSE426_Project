@@ -188,8 +188,8 @@ int main (void) {
 	
 	start_Thread_UserInterface();				  		/* Start UI thread                  */
 	
-	//SPICommunication_config();								/* Initialize parameters for SPI    */
-	//start_Thread_SPICommunication();				  /* Start SPI thread                 */
+	SPICommunication_config();								/* Initialize parameters for SPI    */
+	start_Thread_SPICommunication();				  /* Start SPI thread                 */
 
 	/* User codes ends here*/
   

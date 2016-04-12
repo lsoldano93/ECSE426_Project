@@ -6,77 +6,54 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_rcc.h"
-#include "stm32f4xx_hal_spi.h"
 
 
 /* Private defines -----------------------------------------------------------*/
 
-/* Dummy Byte Send by the SPI Master device in order to generate the Clock to the Slave device */
-#define DUMMY_BYTE                 			((uint8_t)0x00)
+/* DISCOVERY Pins associated with Nucleo signal */
+#define NUCLEO_DATAi0_GPIO_PORT			GPIOB
+#define NUCLEO_DATAi0_PIN						GPIO_PIN_12  // GPIO_B12
 
-/* Command signals for Discovery to indicate variable of interest */
-#define COMMAND_READ_TEMPERATURE				((uint8_t)0x20)
+#define NUCLEO_DATAi1_GPIO_PORT			GPIOB
+#define NUCLEO_DATAi1_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define COMMAND_READ_ACCELEROMETER_X		((uint8_t)0x40)
-#define COMMAND_READ_ACCELEROMETER_Y		((uint8_t)0x50)
-#define COMMAND_READ_ACCELEROMETER_Z		((uint8_t)0x60)
+#define NUCLEO_DATAi2_GPIO_PORT			GPIOB
+#define NUCLEO_DATAi2_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define COMMAND_WRITE_LED_PATTERN				((uint8_t)0x80)
+#define NUCLEO_DATAi3_GPIO_PORT			GPIOB
+#define NUCLEO_DATAi3_PIN						GPIO_PIN_12  // GPIO_B12
 
-/* Values for Discovery SPI communications */
-#define MASTER_FLAG_TIMEOUT      	  ((uint32_t)0x1000)
+#define NUCLEO_DATAo0_GPIO_PORT			GPIOB
+#define NUCLEO_DATAo0_PIN						GPIO_PIN_12  // GPIO_B12
 
-/* Refer to page 33 of the following document
-   http://www.st.com/web/en/resource/technical/document/user_manual/DM00105823.pdf */
-#define NUCLEO_SPI_SCK_GPIO_PORT			GPIOB
-#define NUCLEO_SPI_SCK_PIN						GPIO_PIN_13  // GPIO_B13
+#define NUCLEO_DATAo1_GPIO_PORT			GPIOB
+#define NUCLEO_DATAo1_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define NUCLEO_SPI_MISO_GPIO_PORT		GPIOB
-#define NUCLEO_SPI_MISO_PIN					GPIO_PIN_14  // GPIO_B14
+#define NUCLEO_DATAo2_GPIO_PORT			GPIOB
+#define NUCLEO_DATAo2_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define NUCLEO_SPI_MOSI_GPIO_PORT		GPIOB
-#define NUCLEO_SPI_MOSI_PIN					GPIO_PIN_15  // GPIO_B15
+#define NUCLEO_DATAo3_GPIO_PORT			GPIOB
+#define NUCLEO_DATAo3_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define NUCLEO_SPI_CS_GPIO_PORT			GPIOB
-#define NUCLEO_SPI_CS_PIN						GPIO_PIN_6  // GPIO_B6
+#define NUCLEO_TO_DISCOVERY_GPIO_PORT			GPIOB
+#define NUCLEO_TO_DISCOVERY_PIN						GPIO_PIN_12  // GPIO_B12
 
-#define NUCLEO_SPI_INTERRUPT_PORT		GPIOA
-#define NUCLEO_SPI_INTERRUPT_PIN		GPIO_PIN_4	// GPIO_A4
+#define DISCOVERY_TO_NUCLEO_GPIO_PORT			GPIOB
+#define DISCOVERY_TO_NUCLEO_PIN						GPIO_PIN_12  // GPIO_B12
 
+#define NUCLEO_INTERRUPT_PORT				GPIOA
+#define NUCLEO_INTERRUPT_PIN				GPIO_PIN_4	// GPIO_A4
 
-/* Private macros ------------------------------------------------------------*/
-
-/* Macros for Discovery SPI communications */
-#define DISCOVERY_CS_LOW()       				HAL_GPIO_WritePin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN, GPIO_PIN_RESET)
-#define DISCOVERY_CS_HIGH()     		  	HAL_GPIO_WritePin(NUCLEO_SPI_CS_GPIO_PORT, NUCLEO_SPI_CS_PIN, GPIO_PIN_SET)
+#define NUCLEO_DATAi_CLOCK_ENABLE()		__GPIOA_CLK_ENABLE()
+#define NUCLEO_DATAo_CLOCK_ENABLE()		__GPIOB_CLK_ENABLE()
 
 
 /* Private function prototypes -----------------------------------------------*/
 
+// float* = float[4] = {temperature, pitch, roll, double tap boolean}
+// uint8_t = bits[7..2] = Duty cycle prescalar, bits[1..0] = LED state
+void Master_Communication(uint8_t LED_STATE, float* returnArray);
 
-/**
-  * @brief  Writes one byte to the Discovery board
-  * @param  pBuffer : pointer to the buffer  containing the data to be written to Discovery.
-  * @param  VariableToWrite : Discovery's variable to be written to.
-  * @param  NumByteToWrite: Number of bytes to write.
-  * @retval None
-  */
-void Master_Write(uint8_t* pBuffer, uint8_t VariableToWrite, uint16_t NumByteToWrite);
-
-/**
-  * @brief  Reads a block of data from the Discovery board.
-  * @param  pBuffer : pointer to the buffer that receives the data read from Discovery.
-	* @param	VariableToRead: Discovery's variable to be read from.
-  * @param  NumByteToRead : number of bytes to read from the Discovery.
-  * @retval None
-  */
-void Master_Read(uint8_t* pBuffer, uint8_t VariableToRead, uint16_t NumByteToRead);
-
-/**
-  * @brief  Configures Nucleo board for SPI communication with Discovery board
-  * @param  None
-  * @retval None
-  */
 void NucleoSPI_Config(void);
 
 

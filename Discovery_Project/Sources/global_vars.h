@@ -27,9 +27,9 @@ extern osMutexId ledStateMutex;
 extern float temperatureValue;
 extern float accelerometer_out[3];
 extern float rollValue, pitchValue;
-extern int alarmCount;
 extern uint8_t LED_ROTATE_STATE;
 extern uint8_t LED_DC_PRESCALER;
+extern int DOUBLE_TAP_BOOLEAN;
 
 // SPI Handles
 extern SPI_HandleTypeDef SpiHandle;

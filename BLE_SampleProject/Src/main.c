@@ -86,6 +86,7 @@ extern volatile int connected;
 extern AxesRaw_t axes_data;
 uint8_t bnrg_expansion_board = IDB04A1; /* at startup, suppose the X-NUCLEO-IDB04A1 is used */
 uint8_t DISCOVERY_SPI_FLAG = 0;
+uint8_t LED_STATE; 
 /**
  * @}
  */
@@ -128,11 +129,13 @@ int main(void)
   uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
   uint8_t bdaddr[BDADDR_SIZE];
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
-	uint8_t pBuffer[4]; 
 	uint16_t NumByteToWrite;
   
   uint8_t  hwVersion;
   uint16_t fwVersion;
+	
+	float temperature, pitch, roll;
+	float returnArray[4];
   
   int ret;  
   
@@ -282,12 +285,6 @@ int main(void)
 
   /* Set output power level */
   ret = aci_hal_set_tx_power_level(1,4);
-
-	//pBuffer = 0x11;
-  pBuffer[0]= 10;
-  pBuffer[1]= 20;
-  pBuffer[2]= 30;
-  pBuffer[3]= 40;
   
 
   while(1){
@@ -299,8 +296,18 @@ int main(void)
 			// Check for Discovery flag trigger that indicates new data as available
 			if (DISCOVERY_SPI_FLAG == 1){
 				printf("Discovery flag set low\n");
-				// TODO: Order of operations should be: Read temperature, Read accelerometer, Write LEDState - Luke
-				Master_Write(&pBuffer[0], COMMAND_WRITE_LED_PATTERN , 1); // Just doing a write for testin purposes
+				
+				Master_Communication(LED_STATE, returnArray); 
+				
+				temperature = returnArray[0];
+				pitch = returnArray[1];
+				roll = returnArray[2];
+				
+				// TODO: If double tap code has been initiated then...
+				if((int) returnArray[3] == 1){
+					
+				}
+				
 				
 				DISCOVERY_SPI_FLAG = 0;
 			}
@@ -370,57 +377,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
-	
-	if (hspi->Instance == SPI2){
 		
-		/* Enable proper clock lines */
-    __SPI2_CLK_ENABLE();
-		__GPIOA_CLK_ENABLE();
-		__GPIOB_CLK_ENABLE();
-		
-		/* Configure CS */
-		GPIO_InitStruct.Pin = NUCLEO_SPI_CS_PIN;
-		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull  = GPIO_PULLUP;
-		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
-		//GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-		HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
-		
-		/* Deselect : Chip Select high */
-		DISCOVERY_CS_HIGH();
-		
-		/* Setup non-CS SPI lines */
-		GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;
-		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
-		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-		GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    
-    /* Configure SCK */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_SCK_PIN;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    
-    /* Configure MOSI */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_MOSI_PIN;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    
-    /* Configure MISO */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_MISO_PIN;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-		
-		/* Setup input interrupt line from Discovery */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_INTERRUPT_PIN;
-		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
-		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
-		
-		HAL_GPIO_Init(NUCLEO_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
-		
-		/* Configure the NVIC for SPI */  
-    HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
-    HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-		
-	}
-  else if(hspi->Instance==BNRG_SPI_INSTANCE)
+  if(hspi->Instance==BNRG_SPI_INSTANCE)
 {
     /* Enable peripherals clock */
 

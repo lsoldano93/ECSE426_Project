@@ -17,6 +17,7 @@ accelerometer_values accel;
 float accel_x, accel_y, accel_z;
 float rollValue, pitchValue;
 kalman_t kalmanX, kalmanY, kalmanZ;
+int DOUBLE_TAP_BOOLEAN = 0;
 const void* tiltAnglesMutexPtr;
 
 /* Private functions ---------------------------------------------------------*/
@@ -65,7 +66,9 @@ void Thread_Accelerometer (void const *argument){
 						if (numTaps == 1) printf("IT BEEN TAPPED!\n");
 						else if(numTaps > 1){
 							printf("IT BEEN TAPPED TWICE!\n");
-							// TODO: Send a message
+							osMutexWait(tiltAnglesMutex, (uint32_t) THREAD_TIMEOUT);
+							DOUBLE_TAP_BOOLEAN = 1;
+							osMutexRelease(tiltAnglesMutex);
 							numTaps = 0;
 						}
 						osDelay(400);

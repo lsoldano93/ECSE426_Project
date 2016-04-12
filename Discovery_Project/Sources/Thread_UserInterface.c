@@ -13,7 +13,7 @@ TIM_OC_InitTypeDef init_OC;
 uint8_t ledState = 1;
 uint8_t rotateClockwise = 0;
 uint8_t currentLED = 1;
-uint8_t dutyCyclePrescaler = 16;
+uint8_t dutyCyclePrescaler = 1;
 
 uint32_t DutyCycle = 8399;
 uint32_t selectedDutyCycle;
@@ -44,15 +44,20 @@ int start_Thread_UserInterface (void) {
    */
 void Thread_UserInterface (void const *argument){
 	
+	// Initialize these values
+	osMutexWait(ledStateMutex, (uint32_t) THREAD_TIMEOUT);
+	LED_ROTATE_STATE = ledState;
+	LED_DC_PRESCALER = dutyCyclePrescaler;
+	osMutexRelease(ledStateMutex);
+	
 	while(1){
 		
 		// TODO: To implement LED speed take in a value  with LED state that adds/subtracts this osDelay
-		// TODO: Take in message with LED state that adjusts the selectedDutyCycle prescaler
 		osDelay(UI_THREAD_OSDELAY);
 		
 		osMutexWait(ledStateMutex, (uint32_t) THREAD_TIMEOUT);
-		//ledState = LED_ROTATE_STATE;
-		//dutyCyclePrescaler = LED_DC_PRESCALER;
+		ledState = LED_ROTATE_STATE;
+		dutyCyclePrescaler = LED_DC_PRESCALER;
 		osMutexRelease(ledStateMutex);
 		
 		selectedDutyCycle = DutyCycle/dutyCyclePrescaler;
