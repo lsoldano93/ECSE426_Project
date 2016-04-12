@@ -54,14 +54,18 @@ void Thread_SPICommunication (void const *argument){
 		// Wait for chip select line to go low so information can be read
 		//while(HAL_GPIO_ReadPin(DISCOVERY_SPI_CS_GPIO_PORT, DISCOVERY_SPI_CS_PIN) == GPIO_PIN_SET);
 		
-		//returnValue = Slave_ReadByte();
+		// Receive byte from master
 		errorCode = HAL_SPI_Receive(&NucleoSpiHandle, &returnValue, sizeof(uint8_t), SPI_Timeout_Flag);
-		
-		// For the sake of debugging...
 		if(errorCode == HAL_OK) printf("Should be 0x11, returnValue = %x\n", returnValue);
 		else if (errorCode == HAL_TIMEOUT) printf("HAL SPI Receive call timed out!\n");
 		else if (errorCode == HAL_BUSY) printf("HAL SPI Handle is busy!\n");
 		else printf("Error in HAL SPI Receive call!\n");
+		
+		// Send byte back to confirm
+		errorCode = HAL_SPI_Transmit(&NucleoSpiHandle, &returnValue, sizeof(uint8_t), SPI_Timeout_Flag);
+		if (errorCode == HAL_TIMEOUT) printf("HAL SPI Transmit call timed out!\n");
+		else if (errorCode == HAL_BUSY) printf("HAL SPI (Transmit) Handle is busy!\n");
+		else printf("Error in HAL SPI Transmit call!\n");
 		
 		
 		// TODO: After GPIO Interrupt read, be ready to read in first value from Nucleo
@@ -81,92 +85,6 @@ void Thread_SPICommunication (void const *argument){
 	}                                                       
 }
 
-
-///**
-//  * @brief  Transmits a Data through the SPIx/I2Sx peripheral.
-//  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-//  * @param  Data: Data to be transmitted.
-//  * @retval None
-//  */
-//void Slave_Spi_SendData(SPI_HandleTypeDef *hspi, uint16_t Data)
-//{ 
-//  /* Write in the DR register the data to be sent */
-//  hspi->Instance->DR = Data;
-//}
-
-
-///**
-//  * @brief  Returns the most recent received data by the SPIx/I2Sx peripheral. 
-//  * @param  *hspi: Pointer to the SPI handle. Its member Instance can point to either SPI1, SPI2 or SPI3 
-//  * @retval The value of the received data.
-//  */
-//uint8_t Slave_Spi_ReceiveData(SPI_HandleTypeDef *hspi)
-//{
-//  /* Return the data in the DR register */
-//  return hspi->Instance->DR;
-//}
-
-
-
-///**
-//  * @brief  Sends a Byte through the SPI interface and return the Byte received from the SPI bus.
-//  * @param  Byte : Byte send.
-//  * @retval The received byte value
-//  */
-//static uint8_t Slave_SendByte(uint8_t byte) {
-//  /* Loop while DR register in not empty */
-//	SPI_Timeout = SPI_Timeout_Flag;
-//  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET)
-//  {
-//    if((SPI_Timeout--) == 0){
-//			NUCLEO_TIMEOUT_UserCallback();
-//			return 0;
-//		}
-//  }
-
-//  /* Send a Byte through the SPI peripheral */
-//  Slave_Spi_SendData(&NucleoSpiHandle,  byte);
-
-//  /* Wait to receive a Byte */
-//  SPI_Timeout = SPI_Timeout_Flag;
-//  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET)
-//  {
-//    if((SPI_Timeout--) == 0) {
-//			NUCLEO_TIMEOUT_UserCallback();
-//			return 0;
-//		}
-//  }
-
-//  /* Return the Byte read from the SPI bus */ 
-//  return Slave_Spi_ReceiveData(&NucleoSpiHandle);
-//}
-
-
-//static uint8_t Slave_ReadByte(void) {
-//	/* Wait to receive a Byte */
-//  SPI_Timeout = SPI_Timeout_Flag;
-//  while (__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET) {
-//    if((SPI_Timeout--) == 0) {
-//			NUCLEO_TIMEOUT_UserCallback();
-//			return 0;
-//		}
-//  }
-//	/* Return the Byte read from the SPI bus */ 
-//  return Slave_Spi_ReceiveData(&NucleoSpiHandle);
-//}
-
-///**
-//  * @brief  Basic management of the timeout situation.
-//  * @param  None.
-//  * @retval None.
-//  */
-//uint32_t NUCLEO_TIMEOUT_UserCallback(void){
-//  
-//	printf("Nucleo communication timed out \n");
-//	
-//	return 0;
-//}
-
 /**
   * @brief  Initialize SPI handle for slave device (Discovery board)
   * @param  None
@@ -178,7 +96,7 @@ void SPICommunication_config(void){
 	
   /* SPI configuration -------------------------------------------------------*/
 	/* Enable the SPI periph */
-  __SPI2_CLK_ENABLE();
+  __HAL_RCC_SPI2_CLK_ENABLE();
 	
   HAL_SPI_DeInit(&NucleoSpiHandle);
   NucleoSpiHandle.Instance 							  = SPI2;
@@ -195,43 +113,41 @@ void SPICommunication_config(void){
   NucleoSpiHandle.Init.Mode 							= SPI_MODE_SLAVE;
 		
 	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) printf ("ERROR: Error in initialising SPI Nucleo \n");
-  
+	
+	/* Enable the SPI periph */
+  __SPI2_CLK_ENABLE();
+	
 	/* SPI2 Handle is for comm between discovery and nucleo */
 	/* Enable SCK, MOSI, CS and MISO GPIO clocks */
 	__GPIOA_CLK_ENABLE();
 	__GPIOB_CLK_ENABLE();
 	
+	// SPI2_MISO = PB4
 	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
 	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF5_SPI2;
-
-	// SPI2_MISO = PB4
 	GPIO_InitStructure.Pin = DISCOVERY_SPI_MISO_PIN;
 	HAL_GPIO_Init(DISCOVERY_SPI_MISO_GPIO_PORT, &GPIO_InitStructure);
 	
+	// SPI2_MOSI = PB5
 	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
 	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF5_SPI2;
-	
-	// SPI2_MOSI = PB5
 	GPIO_InitStructure.Pin = DISCOVERY_SPI_MOSI_PIN;
-  GPIO_InitStructure.Pull  = GPIO_NOPULL;
-	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	HAL_GPIO_Init(DISCOVERY_SPI_MOSI_GPIO_PORT, &GPIO_InitStructure);
 	
-	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;			// TODO: Maybe this pin should be an input with no pull??
-	//GPIO_InitStructure.Pull  = GPIO_NOPULL;
+	// SPI2_SCK = PB3
+	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;			
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
 	GPIO_InitStructure.Alternate = GPIO_AF5_SPI2;
-	
-	// SPI2_SCK = PB3
 	GPIO_InitStructure.Pin = DISCOVERY_SPI_SCK_PIN;
-  GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	HAL_GPIO_Init(DISCOVERY_SPI_SCK_GPIO_PORT, &GPIO_InitStructure);
 	
 	// SPI2 CS = PA15  (Input - Active Low)
+	GPIO_InitStructure.Pull  = GPIO_PULLUP;
 	GPIO_InitStructure.Pin   = DISCOVERY_SPI_CS_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
@@ -243,6 +159,7 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(DISCOVERY_SPI_INTERRUPT_PORT, &GPIO_InitStructure);
+	
 	
 	HAL_GPIO_WritePin(DISCOVERY_SPI_INTERRUPT_PORT, DISCOVERY_SPI_INTERRUPT_PIN, GPIO_PIN_SET);
 	

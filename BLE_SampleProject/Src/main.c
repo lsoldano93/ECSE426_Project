@@ -378,44 +378,40 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 		__GPIOA_CLK_ENABLE();
 		__GPIOB_CLK_ENABLE();
 		
-		/* Setup SPI lines */
-		GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;
-		GPIO_InitStruct.Pull  = GPIO_PULLDOWN;
-		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
-		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-    
-    /* Configure SCK */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_SCK_PIN;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    
-    /* Configure MOSI */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_MOSI_PIN;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    
-    /* Configure MISO */
-    GPIO_InitStruct.Pin = NUCLEO_SPI_MISO_PIN;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-
+		/* Configure CS */
 		GPIO_InitStruct.Pin = NUCLEO_SPI_CS_PIN;
 		GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-		GPIO_InitStruct.Pull  = GPIO_NOPULL;
-		GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
-		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-
+		GPIO_InitStruct.Pull  = GPIO_PULLUP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+		//GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
 		HAL_GPIO_Init(NUCLEO_SPI_CS_GPIO_PORT, &GPIO_InitStruct);
 		
 		/* Deselect : Chip Select high */
 		DISCOVERY_CS_HIGH();
 		
+		/* Setup non-CS SPI lines */
+		GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;
+		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+		GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+		GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    
+    /* Configure SCK */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_SCK_PIN;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    
+    /* Configure MOSI */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_MOSI_PIN;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    
+    /* Configure MISO */
+    GPIO_InitStruct.Pin = NUCLEO_SPI_MISO_PIN;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+		
 		/* Setup input interrupt line from Discovery */
     GPIO_InitStruct.Pin = NUCLEO_SPI_INTERRUPT_PIN;
 		GPIO_InitStruct.Mode  = GPIO_MODE_IT_FALLING;
-		GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-		GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
 		
 		HAL_GPIO_Init(NUCLEO_SPI_INTERRUPT_PORT, &GPIO_InitStruct);
 		
