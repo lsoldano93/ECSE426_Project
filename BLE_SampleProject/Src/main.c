@@ -294,7 +294,7 @@ int main(void)
 
 			// Check for Discovery flag trigger that indicates new data as available
 			//if (DISCOVERY_SPI_FLAG == 1){
-			if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET){
+			if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET){
 				
 				HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
 				while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
@@ -310,11 +310,12 @@ int main(void)
 				// TODO: If double tap code has been initiated then...
 				//if((int) returnArray[3] == 1){
 					
-				//}
-				
+				//}				
 				
 				//DISCOVERY_SPI_FLAG = 0;
 			}
+		//else printf("reading a high pin dumbass\n");
+
 
 // Uncomment this for BT functionality		
 //    HCI_Process();

@@ -281,35 +281,35 @@ void NucleoSPI_Config(void){
 	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
 	
 	// NUCLEO Input Pin 0  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Pin   = NUCLEO_DATAi0_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(NUCLEO_DATAi0_GPIO_PORT, &GPIO_InitStructure);
 	
 	// NUCLEO Input Pin 1  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Pin   = NUCLEO_DATAi1_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(NUCLEO_DATAi1_GPIO_PORT, &GPIO_InitStructure);
 	
 	// NUCLEO Input Pin 2  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Pin   = NUCLEO_DATAi2_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(NUCLEO_DATAi2_GPIO_PORT, &GPIO_InitStructure);
 	
 	// NUCLEO Input Pin 3  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Pin   = NUCLEO_DATAi3_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	HAL_GPIO_Init(NUCLEO_DATAi3_GPIO_PORT, &GPIO_InitStructure);
 	
 	// Discovery to Nucleo Handshake Pin  (Input - Active Low)
-	GPIO_InitStructure.Pull  = GPIO_PULLUP;
+	GPIO_InitStructure.Pull  = GPIO_NOPULL;
 	GPIO_InitStructure.Pin   = DISCOVERY_TO_NUCLEO_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
