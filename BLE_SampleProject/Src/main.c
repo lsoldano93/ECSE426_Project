@@ -293,12 +293,12 @@ int main(void)
 			 EG: Add an external line to discovery, where discovey sets/keeps it at high once ready   - Luke */
 
 			// Check for Discovery flag trigger that indicates new data as available
-			//if (DISCOVERY_SPI_FLAG == 1){
-			if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET){
+			if (DISCOVERY_SPI_FLAG == 1){
+			//if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET){
 				
-				HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
-				while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
-				HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
+				//HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
+				//while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
+				//HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
 				
 				Master_Communication(LED_STATE, returnArray); 
 				
@@ -312,7 +312,7 @@ int main(void)
 					
 				//}				
 				
-				//DISCOVERY_SPI_FLAG = 0;
+				DISCOVERY_SPI_FLAG = 0;
 			}
 		//else printf("reading a high pin dumbass\n");
 
