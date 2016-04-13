@@ -292,10 +292,13 @@ int main(void)
 		/* TODO: Might be a good idea to add functionality that causes this statement not to trigger until Discovery has booted up
 			 EG: Add an external line to discovery, where discovey sets/keeps it at high once ready   - Luke */
 
-// Uncomment this for SPI functionality		
 			// Check for Discovery flag trigger that indicates new data as available
-			if (DISCOVERY_SPI_FLAG == 1){
-				printf("Discovery flag set low\n");
+			//if (DISCOVERY_SPI_FLAG == 1){
+			if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET){
+				
+				HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
+				while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
 				
 				Master_Communication(LED_STATE, returnArray); 
 				
@@ -305,20 +308,20 @@ int main(void)
 				//roll = returnArray[2];
 				
 				// TODO: If double tap code has been initiated then...
-				if((int) returnArray[3] == 1){
+				//if((int) returnArray[3] == 1){
 					
-				}
+				//}
 				
 				
-				DISCOVERY_SPI_FLAG = 0;
+				//DISCOVERY_SPI_FLAG = 0;
 			}
 
 // Uncomment this for BT functionality		
-    HCI_Process();
-    User_Process(&axes_data);
-#if NEW_SERVICES
-    Update_Time_Characteristics();
-#endif
+//    HCI_Process();
+//    User_Process(&axes_data);
+//#if NEW_SERVICES
+//    Update_Time_Characteristics();
+//#endif
 			
   }
 }

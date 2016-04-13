@@ -235,7 +235,8 @@ void NucleoSPI_Config(void){
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
-	NUCLEO_DATAio_CLOCK_ENABLE();
+	NUCLEO_DATAi_CLOCK_ENABLE();
+	NUCLEO_DATAo_CLOCK_ENABLE();
 	NUCLEO_HSI_CLOCK_ENABLE();                                                 
 	
 	// NUCLEO Output Pin 0  (Output - Active High)
@@ -315,15 +316,15 @@ void NucleoSPI_Config(void){
 	HAL_GPIO_Init(DISCOVERY_TO_NUCLEO_GPIO_PORT, &GPIO_InitStructure);
 	
 	/* Setup input interrupt line from Discovery */
-  GPIO_InitStructure.Pin = NUCLEO_INTERRUPT_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_IT_FALLING;
-	GPIO_InitStructure.Pull = GPIO_NOPULL;
-	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_INTERRUPT_PORT, &GPIO_InitStructure);
+//  GPIO_InitStructure.Pin = NUCLEO_INTERRUPT_PIN;
+//	GPIO_InitStructure.Mode  = GPIO_MODE_IT_FALLING;
+//	GPIO_InitStructure.Pull = GPIO_NOPULL;
+//	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+//	HAL_GPIO_Init(NUCLEO_INTERRUPT_PORT, &GPIO_InitStructure);
 		
 	/* Configure the NVIC for SPI */  
-  HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+  //HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
+  //HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 	
 }
 

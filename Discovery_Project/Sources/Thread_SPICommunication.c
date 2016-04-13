@@ -265,7 +265,10 @@ void Thread_SPICommunication (void const *argument){
 		osMutexRelease(tiltAnglesMutex);
 		
 		// Set GPIO interrupt pin low to communication with Nucleo that new data is available
-		HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN, GPIO_PIN_RESET);
+		while(HAL_GPIO_ReadPin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN) == GPIO_PIN_SET);
+		HAL_GPIO_WritePin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN, GPIO_PIN_SET);
+		osDelay(10);
 		
 		// Write temperature value
 		Slave_Write(temperature);
@@ -377,12 +380,12 @@ void SPICommunication_config(void){
 	HAL_GPIO_Init(NUCLEO_TO_DISCOVERY_GPIO_PORT, &GPIO_InitStructure);
 	
 	// Discovery to Nucleo GPIO Interrupt (Out - Active Low)
-	GPIO_InitStructure.Pin   = DISCOVERY_INTERRUPT_PIN;
-	GPIO_InitStructure.Pull  = GPIO_PULLUP;
-	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(DISCOVERY_INTERRUPT_PORT, &GPIO_InitStructure);
-	
-	HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_SET);
+//	GPIO_InitStructure.Pin   = DISCOVERY_INTERRUPT_PIN;
+//	GPIO_InitStructure.Pull  = GPIO_PULLUP;
+//	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
+//	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
+//	HAL_GPIO_Init(DISCOVERY_INTERRUPT_PORT, &GPIO_InitStructure);
+//	
+//	HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_SET);
 	
 }
