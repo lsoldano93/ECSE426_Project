@@ -196,7 +196,7 @@ I (.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\debug.h)(0x570D3B51)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x54C2FC88)
 I (.\Drivers\BSP\X-NUCLEO-IDB04A1\stm32_bluenrg_ble.h)(0x570D3B51)
 I (.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\bluenrg_utils.h)(0x570D3B51)
-I (Src\NucleoSPI.h)(0x570D8D6F)
+I (Src\NucleoSPI.h)(0x570DA1A4)
 F (.\Src\sensor_service.c)(0x570D3B52)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork --split_sections -I.\Inc -I.\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I.\Drivers\STM32F4xx_HAL_Driver\Inc -I.\Drivers\BSP\STM32F4xx-Nucleo -I.\Drivers\BSP\X-NUCLEO-IDB04A1 -I.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes -I.\Drivers\CMSIS\Include -I.\RTE --C99 --gnu -D__UVISION_VERSION="515" -D_RTE_ -DSTM32F401xE -DUSE_HAL_DRIVER -DSTM32F401xE -DUSE_STM32F4XX_NUCLEO -DDEBUG-o .\objects\sensor_service.o --omf_browse .\objects\sensor_service.crf --depend .\objects\sensor_service.d)
 I (.\Inc\sensor_service.h)(0x570D3B51)
 I (.\Inc\cube_hal.h)(0x570D3B51)
@@ -250,8 +250,8 @@ I (.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\hal.h)(0x570D3B51)
 I (.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\sm.h)(0x570D3B51)
 I (.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\debug.h)(0x570D3B51)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x54C2FC88)
-F (.\Src\NucleoSPI.c)(0x570D9F09)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork --split_sections -I.\Inc -I.\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I.\Drivers\STM32F4xx_HAL_Driver\Inc -I.\Drivers\BSP\STM32F4xx-Nucleo -I.\Drivers\BSP\X-NUCLEO-IDB04A1 -I.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes -I.\Drivers\CMSIS\Include -I.\RTE --C99 --gnu -D__UVISION_VERSION="515" -D_RTE_ -DSTM32F401xE -DUSE_HAL_DRIVER -DSTM32F401xE -DUSE_STM32F4XX_NUCLEO -DDEBUG-o .\objects\nucleospi.o --omf_browse .\objects\nucleospi.crf --depend .\objects\nucleospi.d)
-I (Src\NucleoSPI.h)(0x570D8D6F)
+F (.\Src\NucleoSPI.c)(0x570DA239)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork --split_sections -I.\Inc -I.\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I.\Drivers\STM32F4xx_HAL_Driver\Inc -I.\Drivers\BSP\STM32F4xx-Nucleo -I.\Drivers\BSP\X-NUCLEO-IDB04A1 -I.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes -I.\Drivers\CMSIS\Include -I.\RTE --C99 --gnu -D__UVISION_VERSION="515" -D_RTE_ -DSTM32F401xE -DUSE_HAL_DRIVER -DSTM32F401xE -DUSE_STM32F4XX_NUCLEO -DDEBUG-o .\objects\nucleospi.o --omf_browse .\objects\nucleospi.crf --depend .\objects\nucleospi.d)
+I (Src\NucleoSPI.h)(0x570DA1A4)
 I (.\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x570D3B51)
 I (.\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f401xe.h)(0x570D3B51)
 I (.\Drivers\CMSIS\Include\core_cm4.h)(0x570D3B51)
@@ -281,7 +281,7 @@ I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h)(0x570D3B51)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h)(0x570D3B51)
 I (.\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_spi.h)(0x570D3B51)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x54C2FC88)
-F (.\Src\NucleoSPI.h)(0x570D8D6F)()
+F (.\Src\NucleoSPI.h)(0x570DA1A4)()
 F (.\Src\main.h)(0x570D3B52)()
 F (.\Src\fput_debug.c)(0x570D3B52)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork --split_sections -I.\Inc -I.\Drivers\CMSIS\Device\ST\STM32F4xx\Include -I.\Drivers\STM32F4xx_HAL_Driver\Inc -I.\Drivers\BSP\STM32F4xx-Nucleo -I.\Drivers\BSP\X-NUCLEO-IDB04A1 -I.\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes -I.\Drivers\CMSIS\Include -I.\RTE --C99 --gnu -D__UVISION_VERSION="515" -D_RTE_ -DSTM32F401xE -DUSE_HAL_DRIVER -DSTM32F401xE -DUSE_STM32F4XX_NUCLEO -DDEBUG-o .\objects\fput_debug.o --omf_browse .\objects\fput_debug.crf --depend .\objects\fput_debug.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54C2FC88)
