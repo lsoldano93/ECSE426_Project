@@ -293,9 +293,9 @@ int main(void)
 
 			// Check for Discovery flag trigger that indicates new data as available
 			if (TEMPERATURE_FLAG == 1){
-				
+				LED_STATE++;
 				temperature = Master_Read(COMMAND_TEMPERATURE); 
-				printf("Temperature: %f\n", temperature);
+				printf("Temperature: %f, Value: %d\n", temperature, LED_STATE);
 				TEMPERATURE_FLAG = 0;
 				
 			}

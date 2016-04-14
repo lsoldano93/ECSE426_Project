@@ -2123,46 +2123,46 @@ Image Symbol Table
     i.list_remove_head                       0x08004ed0   Section        0  list.o(i.list_remove_head)
     i.list_remove_node                       0x08004efa   Section        0  list.o(i.list_remove_node)
     i.main                                   0x08004f1c   Section        0  main.o(i.main)
-    i.move_list                              0x08005234   Section        0  hci.o(i.move_list)
-    move_list                                0x08005235   Thumb Code    36  hci.o(i.move_list)
-    i.set_irq_as_input                       0x08005258   Section        0  stm32_bluenrg_ble.o(i.set_irq_as_input)
-    i.set_irq_as_output                      0x08005290   Section        0  stm32_bluenrg_ble.o(i.set_irq_as_output)
-    i.stdout_putchar                         0x080052bc   Section        0  retarget_io.o(i.stdout_putchar)
-    stdout_putchar                           0x080052bd   Thumb Code    12  retarget_io.o(i.stdout_putchar)
-    i.us150Delay                             0x080052c8   Section        0  stm32_bluenrg_ble.o(i.us150Delay)
-    us150Delay                               0x080052c9   Thumb Code    28  stm32_bluenrg_ble.o(i.us150Delay)
-    locale$$code                             0x080052e4   Section       44  lc_numeric_c.o(locale$$code)
-    x$fpl$dretinf                            0x08005310   Section       12  dretinf.o(x$fpl$dretinf)
-    $v0                                      0x08005310   Number         0  dretinf.o(x$fpl$dretinf)
-    x$fpl$f2d                                0x0800531c   Section       86  f2d.o(x$fpl$f2d)
-    $v0                                      0x0800531c   Number         0  f2d.o(x$fpl$f2d)
-    x$fpl$fnaninf                            0x08005372   Section      140  fnaninf.o(x$fpl$fnaninf)
-    $v0                                      0x08005372   Number         0  fnaninf.o(x$fpl$fnaninf)
-    x$fpl$fpinit                             0x080053fe   Section       10  fpinit.o(x$fpl$fpinit)
-    $v0                                      0x080053fe   Number         0  fpinit.o(x$fpl$fpinit)
-    x$fpl$printf1                            0x08005408   Section        4  printf1.o(x$fpl$printf1)
-    $v0                                      0x08005408   Number         0  printf1.o(x$fpl$printf1)
-    .constdata                               0x0800540c   Section        4  clock.o(.constdata)
-    x$fpl$usenofp                            0x0800540c   Section        0  usenofp.o(x$fpl$usenofp)
-    .constdata                               0x08005410   Section        5  stm32f4xx_nucleo.o(.constdata)
-    .constdata                               0x08005415   Section       16  stm32f4xx_hal_rcc.o(.constdata)
-    .constdata                               0x08005425   Section       23  retarget_io.o(.constdata)
-    .constdata                               0x0800543c   Section       40  _printf_hex_int.o(.constdata)
-    uc_hextab                                0x0800543c   Data          20  _printf_hex_int.o(.constdata)
-    lc_hextab                                0x08005450   Data          20  _printf_hex_int.o(.constdata)
-    .constdata                               0x08005464   Section       17  __printf_flags_wp.o(.constdata)
-    maptable                                 0x08005464   Data          17  __printf_flags_wp.o(.constdata)
-    .constdata                               0x08005478   Section      148  bigflt0.o(.constdata)
-    tenpwrs_x                                0x08005478   Data          60  bigflt0.o(.constdata)
-    tenpwrs_i                                0x080054b4   Data          64  bigflt0.o(.constdata)
-    .conststring                             0x0800550c   Section      222  sensor_service.o(.conststring)
-    locale$$data                             0x0800560c   Section       28  lc_numeric_c.o(locale$$data)
-    __lcnum_c_name                           0x08005610   Data           2  lc_numeric_c.o(locale$$data)
-    __lcnum_c_start                          0x08005618   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_point                          0x08005624   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_thousands                      0x08005626   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_grouping                       0x08005627   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_end                            0x08005628   Data           0  lc_numeric_c.o(locale$$data)
+    i.move_list                              0x08005250   Section        0  hci.o(i.move_list)
+    move_list                                0x08005251   Thumb Code    36  hci.o(i.move_list)
+    i.set_irq_as_input                       0x08005274   Section        0  stm32_bluenrg_ble.o(i.set_irq_as_input)
+    i.set_irq_as_output                      0x080052ac   Section        0  stm32_bluenrg_ble.o(i.set_irq_as_output)
+    i.stdout_putchar                         0x080052d8   Section        0  retarget_io.o(i.stdout_putchar)
+    stdout_putchar                           0x080052d9   Thumb Code    12  retarget_io.o(i.stdout_putchar)
+    i.us150Delay                             0x080052e4   Section        0  stm32_bluenrg_ble.o(i.us150Delay)
+    us150Delay                               0x080052e5   Thumb Code    28  stm32_bluenrg_ble.o(i.us150Delay)
+    locale$$code                             0x08005300   Section       44  lc_numeric_c.o(locale$$code)
+    x$fpl$dretinf                            0x0800532c   Section       12  dretinf.o(x$fpl$dretinf)
+    $v0                                      0x0800532c   Number         0  dretinf.o(x$fpl$dretinf)
+    x$fpl$f2d                                0x08005338   Section       86  f2d.o(x$fpl$f2d)
+    $v0                                      0x08005338   Number         0  f2d.o(x$fpl$f2d)
+    x$fpl$fnaninf                            0x0800538e   Section      140  fnaninf.o(x$fpl$fnaninf)
+    $v0                                      0x0800538e   Number         0  fnaninf.o(x$fpl$fnaninf)
+    x$fpl$fpinit                             0x0800541a   Section       10  fpinit.o(x$fpl$fpinit)
+    $v0                                      0x0800541a   Number         0  fpinit.o(x$fpl$fpinit)
+    x$fpl$printf1                            0x08005424   Section        4  printf1.o(x$fpl$printf1)
+    $v0                                      0x08005424   Number         0  printf1.o(x$fpl$printf1)
+    .constdata                               0x08005428   Section        4  clock.o(.constdata)
+    x$fpl$usenofp                            0x08005428   Section        0  usenofp.o(x$fpl$usenofp)
+    .constdata                               0x0800542c   Section        5  stm32f4xx_nucleo.o(.constdata)
+    .constdata                               0x08005431   Section       16  stm32f4xx_hal_rcc.o(.constdata)
+    .constdata                               0x08005441   Section       23  retarget_io.o(.constdata)
+    .constdata                               0x08005458   Section       40  _printf_hex_int.o(.constdata)
+    uc_hextab                                0x08005458   Data          20  _printf_hex_int.o(.constdata)
+    lc_hextab                                0x0800546c   Data          20  _printf_hex_int.o(.constdata)
+    .constdata                               0x08005480   Section       17  __printf_flags_wp.o(.constdata)
+    maptable                                 0x08005480   Data          17  __printf_flags_wp.o(.constdata)
+    .constdata                               0x08005494   Section      148  bigflt0.o(.constdata)
+    tenpwrs_x                                0x08005494   Data          60  bigflt0.o(.constdata)
+    tenpwrs_i                                0x080054d0   Data          64  bigflt0.o(.constdata)
+    .conststring                             0x08005528   Section      222  sensor_service.o(.conststring)
+    locale$$data                             0x08005628   Section       28  lc_numeric_c.o(locale$$data)
+    __lcnum_c_name                           0x0800562c   Data           2  lc_numeric_c.o(locale$$data)
+    __lcnum_c_start                          0x08005634   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_point                          0x08005640   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_thousands                      0x08005642   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_grouping                       0x08005643   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_end                            0x08005644   Data           0  lc_numeric_c.o(locale$$data)
     .data                                    0x20000000   Section        5  stm32xx_it.o(.data)
     .data                                    0x20000005   Section        5  main.o(.data)
     .data                                    0x2000000c   Section       30  sensor_service.o(.data)
@@ -2546,29 +2546,29 @@ Image Symbol Table
     list_is_empty                            0x08004eaf   Thumb Code    34  list.o(i.list_is_empty)
     list_remove_head                         0x08004ed1   Thumb Code    42  list.o(i.list_remove_head)
     list_remove_node                         0x08004efb   Thumb Code    32  list.o(i.list_remove_node)
-    main                                     0x08004f1d   Thumb Code   382  main.o(i.main)
-    set_irq_as_input                         0x08005259   Thumb Code    48  stm32_bluenrg_ble.o(i.set_irq_as_input)
-    set_irq_as_output                        0x08005291   Thumb Code    40  stm32_bluenrg_ble.o(i.set_irq_as_output)
-    _get_lc_numeric                          0x080052e5   Thumb Code    44  lc_numeric_c.o(locale$$code)
-    __fpl_dretinf                            0x08005311   Thumb Code    12  dretinf.o(x$fpl$dretinf)
-    __aeabi_f2d                              0x0800531d   Thumb Code     0  f2d.o(x$fpl$f2d)
-    _f2d                                     0x0800531d   Thumb Code    86  f2d.o(x$fpl$f2d)
-    __fpl_fnaninf                            0x08005373   Thumb Code   140  fnaninf.o(x$fpl$fnaninf)
-    _fp_init                                 0x080053ff   Thumb Code    10  fpinit.o(x$fpl$fpinit)
-    __fplib_config_fpu_vfp                   0x08005407   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    __fplib_config_pureend_doubles           0x08005407   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    _printf_fp_dec                           0x08005409   Thumb Code     4  printf1.o(x$fpl$printf1)
-    CLOCK_SECOND                             0x0800540c   Data           4  clock.o(.constdata)
-    __I$use$fp                               0x0800540c   Number         0  usenofp.o(x$fpl$usenofp)
-    GPIO_PIN                                 0x08005410   Data           2  stm32f4xx_nucleo.o(.constdata)
-    BUTTON_PIN                               0x08005412   Data           2  stm32f4xx_nucleo.o(.constdata)
-    BUTTON_IRQn                              0x08005414   Data           1  stm32f4xx_nucleo.o(.constdata)
-    APBAHBPrescTable                         0x08005415   Data          16  stm32f4xx_hal_rcc.o(.constdata)
-    __stdin_name                             0x08005425   Data           7  retarget_io.o(.constdata)
-    __stdout_name                            0x0800542c   Data           8  retarget_io.o(.constdata)
-    __stderr_name                            0x08005434   Data           8  retarget_io.o(.constdata)
-    Region$$Table$$Base                      0x080055ec   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x0800560c   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x08004f1d   Thumb Code   398  main.o(i.main)
+    set_irq_as_input                         0x08005275   Thumb Code    48  stm32_bluenrg_ble.o(i.set_irq_as_input)
+    set_irq_as_output                        0x080052ad   Thumb Code    40  stm32_bluenrg_ble.o(i.set_irq_as_output)
+    _get_lc_numeric                          0x08005301   Thumb Code    44  lc_numeric_c.o(locale$$code)
+    __fpl_dretinf                            0x0800532d   Thumb Code    12  dretinf.o(x$fpl$dretinf)
+    __aeabi_f2d                              0x08005339   Thumb Code     0  f2d.o(x$fpl$f2d)
+    _f2d                                     0x08005339   Thumb Code    86  f2d.o(x$fpl$f2d)
+    __fpl_fnaninf                            0x0800538f   Thumb Code   140  fnaninf.o(x$fpl$fnaninf)
+    _fp_init                                 0x0800541b   Thumb Code    10  fpinit.o(x$fpl$fpinit)
+    __fplib_config_fpu_vfp                   0x08005423   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    __fplib_config_pureend_doubles           0x08005423   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    _printf_fp_dec                           0x08005425   Thumb Code     4  printf1.o(x$fpl$printf1)
+    CLOCK_SECOND                             0x08005428   Data           4  clock.o(.constdata)
+    __I$use$fp                               0x08005428   Number         0  usenofp.o(x$fpl$usenofp)
+    GPIO_PIN                                 0x0800542c   Data           2  stm32f4xx_nucleo.o(.constdata)
+    BUTTON_PIN                               0x0800542e   Data           2  stm32f4xx_nucleo.o(.constdata)
+    BUTTON_IRQn                              0x08005430   Data           1  stm32f4xx_nucleo.o(.constdata)
+    APBAHBPrescTable                         0x08005431   Data          16  stm32f4xx_hal_rcc.o(.constdata)
+    __stdin_name                             0x08005441   Data           7  retarget_io.o(.constdata)
+    __stdout_name                            0x08005448   Data           8  retarget_io.o(.constdata)
+    __stderr_name                            0x08005450   Data           8  retarget_io.o(.constdata)
+    Region$$Table$$Base                      0x08005608   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08005628   Number         0  anon$$obj.o(Region$$Table)
     ms_counter                               0x20000000   Data           4  stm32xx_it.o(.data)
     button_event                             0x20000004   Data           1  stm32xx_it.o(.data)
     bnrg_expansion_board                     0x20000005   Data           1  main.o(.data)
@@ -2618,9 +2618,9 @@ Memory Map of the image
 
   Image Entry point : 0x080002a1
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x00005698, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x08000000, Size: 0x000056b4, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Base: 0x08000000, Size: 0x00005628, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Base: 0x08000000, Size: 0x00005644, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -2875,31 +2875,31 @@ Memory Map of the image
     0x08004ed0   0x0000002a   Code   RO         1577    i.list_remove_head  list.o
     0x08004efa   0x00000020   Code   RO         1578    i.list_remove_node  list.o
     0x08004f1a   0x00000002   PAD
-    0x08004f1c   0x00000318   Code   RO          328    i.main              main.o
-    0x08005234   0x00000024   Code   RO          648    i.move_list         hci.o
-    0x08005258   0x00000038   Code   RO         1928    i.set_irq_as_input  stm32_bluenrg_ble.o
-    0x08005290   0x0000002c   Code   RO         1929    i.set_irq_as_output  stm32_bluenrg_ble.o
-    0x080052bc   0x0000000c   Code   RO         3726    i.stdout_putchar    retarget_io.o
-    0x080052c8   0x0000001c   Code   RO         1930    i.us150Delay        stm32_bluenrg_ble.o
-    0x080052e4   0x0000002c   Code   RO         4016    locale$$code        c_w.l(lc_numeric_c.o)
-    0x08005310   0x0000000c   Code   RO         3949    x$fpl$dretinf       fz_wm.l(dretinf.o)
-    0x0800531c   0x00000056   Code   RO         3878    x$fpl$f2d           fz_wm.l(f2d.o)
-    0x08005372   0x0000008c   Code   RO         3951    x$fpl$fnaninf       fz_wm.l(fnaninf.o)
-    0x080053fe   0x0000000a   Code   RO         4024    x$fpl$fpinit        fz_wm.l(fpinit.o)
-    0x08005408   0x00000004   Code   RO         3880    x$fpl$printf1       fz_wm.l(printf1.o)
-    0x0800540c   0x00000000   Code   RO         3953    x$fpl$usenofp       fz_wm.l(usenofp.o)
-    0x0800540c   0x00000004   Data   RO          150    .constdata          clock.o
-    0x08005410   0x00000005   Data   RO         1719    .constdata          stm32f4xx_nucleo.o
-    0x08005415   0x00000010   Data   RO         3286    .constdata          stm32f4xx_hal_rcc.o
-    0x08005425   0x00000017   Data   RO         3727    .constdata          retarget_io.o
-    0x0800543c   0x00000028   Data   RO         3820    .constdata          c_w.l(_printf_hex_int.o)
-    0x08005464   0x00000011   Data   RO         3850    .constdata          c_w.l(__printf_flags_wp.o)
-    0x08005475   0x00000003   PAD
-    0x08005478   0x00000094   Data   RO         3983    .constdata          c_w.l(bigflt0.o)
-    0x0800550c   0x000000de   Data   RO          441    .conststring        sensor_service.o
-    0x080055ea   0x00000002   PAD
-    0x080055ec   0x00000020   Data   RO         4255    Region$$Table       anon$$obj.o
-    0x0800560c   0x0000001c   Data   RO         4015    locale$$data        c_w.l(lc_numeric_c.o)
+    0x08004f1c   0x00000334   Code   RO          328    i.main              main.o
+    0x08005250   0x00000024   Code   RO          648    i.move_list         hci.o
+    0x08005274   0x00000038   Code   RO         1928    i.set_irq_as_input  stm32_bluenrg_ble.o
+    0x080052ac   0x0000002c   Code   RO         1929    i.set_irq_as_output  stm32_bluenrg_ble.o
+    0x080052d8   0x0000000c   Code   RO         3726    i.stdout_putchar    retarget_io.o
+    0x080052e4   0x0000001c   Code   RO         1930    i.us150Delay        stm32_bluenrg_ble.o
+    0x08005300   0x0000002c   Code   RO         4016    locale$$code        c_w.l(lc_numeric_c.o)
+    0x0800532c   0x0000000c   Code   RO         3949    x$fpl$dretinf       fz_wm.l(dretinf.o)
+    0x08005338   0x00000056   Code   RO         3878    x$fpl$f2d           fz_wm.l(f2d.o)
+    0x0800538e   0x0000008c   Code   RO         3951    x$fpl$fnaninf       fz_wm.l(fnaninf.o)
+    0x0800541a   0x0000000a   Code   RO         4024    x$fpl$fpinit        fz_wm.l(fpinit.o)
+    0x08005424   0x00000004   Code   RO         3880    x$fpl$printf1       fz_wm.l(printf1.o)
+    0x08005428   0x00000000   Code   RO         3953    x$fpl$usenofp       fz_wm.l(usenofp.o)
+    0x08005428   0x00000004   Data   RO          150    .constdata          clock.o
+    0x0800542c   0x00000005   Data   RO         1719    .constdata          stm32f4xx_nucleo.o
+    0x08005431   0x00000010   Data   RO         3286    .constdata          stm32f4xx_hal_rcc.o
+    0x08005441   0x00000017   Data   RO         3727    .constdata          retarget_io.o
+    0x08005458   0x00000028   Data   RO         3820    .constdata          c_w.l(_printf_hex_int.o)
+    0x08005480   0x00000011   Data   RO         3850    .constdata          c_w.l(__printf_flags_wp.o)
+    0x08005491   0x00000003   PAD
+    0x08005494   0x00000094   Data   RO         3983    .constdata          c_w.l(bigflt0.o)
+    0x08005528   0x000000de   Data   RO          441    .conststring        sensor_service.o
+    0x08005606   0x00000002   PAD
+    0x08005608   0x00000020   Data   RO         4255    Region$$Table       anon$$obj.o
+    0x08005628   0x0000001c   Data   RO         4015    locale$$data        c_w.l(lc_numeric_c.o)
 
 
     Execution Region ER_RW (Base: 0x20000000, Size: 0x00000070, Max: 0xffffffff, ABSOLUTE)
@@ -2956,7 +2956,7 @@ Image component sizes
         44          0          0          0          0       1784   gp_timer.o
       1076         64          0         19        700      32739   hci.o
        194          0          0          0          0       6753   list.o
-      1304        444          0          5          0      42554   main.o
+      1332        456          0          5          0      42558   main.o
        620         68          0          0         88       2202   nucleospi.o
         40          0          0          0          0       1364   osal.o
        388         30         23          0          0       6786   retarget_io.o
@@ -2973,7 +2973,7 @@ Image component sizes
        100         18          0         20          0       1193   system_stm32f4xx.o
 
     ----------------------------------------------------------------------
-     13222       1336        708        100       2424     443079   Object Totals
+     13250       1348        708        100       2424     443083   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         22          0          2          5          0          0   (incl. Padding)
 
@@ -3087,15 +3087,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     21112       1744        944        112       3000     435295   Grand Totals
-     21112       1744        944        112       3000     435295   ELF Image Totals
-     21112       1744        944        112          0          0   ROM Totals
+     21140       1756        944        112       3000     435299   Grand Totals
+     21140       1756        944        112       3000     435299   ELF Image Totals
+     21140       1756        944        112          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                22056 (  21.54kB)
+    Total RO  Size (Code + RO Data)                22084 (  21.57kB)
     Total RW  Size (RW Data + ZI Data)              3112 (   3.04kB)
-    Total ROM Size (Code + RO Data + RW Data)      22168 (  21.65kB)
+    Total ROM Size (Code + RO Data + RW Data)      22196 (  21.68kB)
 
 ==============================================================================
 

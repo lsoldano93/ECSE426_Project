@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Blinky.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Blinky.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050169: Last Updated: Thu Apr 14 01:51:02 2016
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050169: Last Updated: Thu Apr 14 02:11:26 2016
 <BR><P>
 <H3>Maximum Stack Usage =        408 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -570,7 +570,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI2_ISR
 </UL>
 
-<P><STRONG><a name="[a1]"></a>SPI2_ISR</STRONG> (Thumb, 390 bytes, Stack size 40 bytes, thread_spicommunication.o(.text))
+<P><STRONG><a name="[a1]"></a>SPI2_ISR</STRONG> (Thumb, 454 bytes, Stack size 40 bytes, thread_spicommunication.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 400<LI>Call Chain = SPI2_ISR &rArr; Slave_Write &rArr; __hardfp_pow &rArr; __kernel_poly &rArr; __aeabi_dmul &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Slave_Read
@@ -585,7 +585,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> thread_spicommunication.o(.text)
 </UL>
-<P><STRONG><a name="[a9]"></a>SPICommunication_config</STRONG> (Thumb, 530 bytes, Stack size 32 bytes, thread_spicommunication.o(.text))
+<P><STRONG><a name="[a9]"></a>SPICommunication_config</STRONG> (Thumb, 502 bytes, Stack size 32 bytes, thread_spicommunication.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = SPICommunication_config &rArr; HAL_SPI_Init &rArr; HAL_SPI_MspInit &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_Init

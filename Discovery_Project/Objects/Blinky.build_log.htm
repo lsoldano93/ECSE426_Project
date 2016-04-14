@@ -27,7 +27,34 @@ Project File Date:  04/13/2016
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Lab4'
-".\Objects\Blinky.axf" - 0 Error(s), 0 Warning(s).
+compiling Thread_SPICommunication.c...
+Sources\Thread_SPICommunication.h(38): warning:  #1295-D: Deprecated declaration SPI2_ISR - give arg types
+  void SPI2_ISR();
+Sources\Thread_SPICommunication.h(57): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_SPICommunication.c(65): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
+Sources\Thread_SPICommunication.c(65): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
+Sources\Thread_SPICommunication.c(78): warning:  #188-D: enumerated type mixed with another type
+        if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, 
+PI_FLAG_BSY, !RESET, 
+PI_TIMEOUT)!=HAL_OK) return; 
+Sources\Thread_SPICommunication.c(99): warning:  #188-D: enumerated type mixed with another type
+        if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, 
+PI_FLAG_BSY, !RESET, 
+PI_TIMEOUT)!=HAL_OK) return; 
+Sources\Thread_SPICommunication.c(90): warning:  #177-D: variable "i" was declared but never referenced
+        int i;
+Sources\Thread_SPICommunication.c(124): warning:  #177-D: variable "ledState" was declared but never referenced
+        uint8_t ledState;
+Sources\Thread_SPICommunication.c(234): warning:  #513-D: a value of type "void (*)()" cannot be assigned to an entity of type "void (*)(struct __SPI_HandleTypeDef *)"
+        NucleoSpiHandle.RxISR                     = SPI2_ISR;
+Sources\Thread_SPICommunication.c: 9 warnings, 0 errors
+compiling RTX_Conf_CM.c...
+linking...
+Program Size: Code=53068 RO-data=980 RW-data=184 ZI-data=8280  
+".\Objects\Blinky.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 

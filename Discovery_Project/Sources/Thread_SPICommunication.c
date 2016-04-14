@@ -195,6 +195,8 @@ void SPI2_ISR(){
 		HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_RESET);
 		
 	}
+	else if(returnValue == 0);
+	else NVIC_SystemReset();
 	
 		
 	__HAL_SPI_ENABLE_IT(&NucleoSpiHandle, SPI_FLAG_RXNE);
