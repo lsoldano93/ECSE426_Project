@@ -27,23 +27,33 @@ Project File Date:  04/13/2016
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Application'
+compiling stm32xx_it.c...
+Src\NucleoSpi.h(53): warning:  #1-D: last line of file ends without a newline
+  #endif
+Src\stm32xx_it.c: 1 warning, 0 errors
 compiling main.c...
-Src\NucleoSPI.h(51): warning:  #1-D: last line of file ends without a newline
+Src\NucleoSPI.h(53): warning:  #1-D: last line of file ends without a newline
   #endif
 Src\main.c(134): warning:  #177-D: variable "NumByteToWrite" was declared but never referenced
         uint16_t NumByteToWrite;
-Src\main.c(139): warning:  #550-D: variable "temperature" was set but never used
-        float temperature, pitch, roll;
 Src\main.c(139): warning:  #177-D: variable "pitch" was declared but never referenced
         float temperature, pitch, roll;
 Src\main.c(139): warning:  #177-D: variable "roll" was declared but never referenced
         float temperature, pitch, roll;
 Src\main.c(140): warning:  #177-D: variable "returnArray" was declared but never referenced
         float returnArray[4];
-Src\main.c: 6 warnings, 0 errors
+Src\main.c: 5 warnings, 0 errors
+compiling NucleoSPI.c...
+Src\NucleoSPI.h(53): warning:  #1-D: last line of file ends without a newline
+  #endif
+Src\NucleoSPI.c(13): warning:  #550-D: variable "returnValue" was set but never used
+        uint16_t returnValue = 0;
+Src\NucleoSPI.c(14): warning:  #550-D: variable "tempValue" was set but never used
+        uint8_t tempValue = 0;
+Src\NucleoSPI.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=17244 RO-data=768 RW-data=112 ZI-data=3000  
-".\Objects\BLE_SampleProject.axf" - 0 Error(s), 6 Warning(s).
+Program Size: Code=21112 RO-data=944 RW-data=112 ZI-data=3000  
+".\Objects\BLE_SampleProject.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 

@@ -12,7 +12,9 @@
 /* Private defines -----------------------------------------------------------*/
 
 #define COMMAND_TEMPERATURE				((uint16_t) 0x1111)
-#define COMMAND_ACCELEROMETER			((uint16_t) 0x6666)
+#define COMMAND_PITCH							((uint16_t) 0x6666)
+#define COMMAND_ROLL							((uint16_t) 0x7777)
+#define COMMAND_DTAP							((uint16_t) 0x8888)
 #define COMMAND_LEDSTATE					((uint16_t) 0xffff)
 
 /* Nucleo Pins associated with Discovery signal */

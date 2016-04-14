@@ -8,9 +8,28 @@
 
 SPI_HandleTypeDef NucleoSpiHandle;
 
-
 /* Private Functions ---------------------------------------------------------*/
 
+/**
+  * @brief This function handles SPI Communication Timeout.
+  * @param  hspi: pointer to a SPI_HandleTypeDef structure that contains
+  *                the configuration information for SPI module.
+  * @param  Flag: SPI flag to check
+  * @param  Status: Flag status to check: RESET or set
+  * @param  Timeout: Timeout duration
+  * @retval HAL status
+  */
+static HAL_StatusTypeDef SPI_WaitOnFlagUntilTimeout(SPI_HandleTypeDef *hspi, uint32_t Flag, FlagStatus Status, uint32_t Timeout)  
+{
+  int timeRemaining = Timeout;
+	
+	while(__HAL_SPI_GET_FLAG(hspi, Flag) == Status){
+		timeRemaining--;
+		if(timeRemaining == 0) return HAL_ERROR;
+	}
+	
+  return HAL_OK;
+}
 
 void Slave_Write(float input){
 	
@@ -51,12 +70,12 @@ void Slave_Write(float input){
 	
 	// Write message to Data register for transfer
 	NucleoSpiHandle.Instance->DR = messageValue;
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET);
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET);
+	if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, SPI_FLAG_TXE, RESET, SPI_TIMEOUT)!=HAL_OK) return; 
+	if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, SPI_FLAG_RXNE, RESET, SPI_TIMEOUT)!=HAL_OK) return;  
 	
 	// Go through proper wait protocol for transfer to complete
 	messageValue = NucleoSpiHandle.Instance->DR;
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_BSY) != RESET);
+	if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, SPI_FLAG_BSY, !RESET, SPI_TIMEOUT)!=HAL_OK) return; 
 	
 	return; 
 	
@@ -71,14 +90,13 @@ void Slave_Read(){
 	int i;
 	
 	// Wait for Nucleo to finish writing
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == SET);
+	if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, SPI_FLAG_RXNE, RESET, SPI_TIMEOUT)!=HAL_OK) return; 
 	
 	// Read message
 	messageValue = NucleoSpiHandle.Instance->DR;
 	NucleoSpiHandle.Instance->DR = 0x0000;
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET);
-	
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_BSY) != RESET);
+	if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, SPI_FLAG_TXE, RESET, SPI_TIMEOUT)!=HAL_OK) return;  
+	if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, SPI_FLAG_BSY, !RESET, SPI_TIMEOUT)!=HAL_OK) return; 
 	
 	// Convert data into relevant outputs
 	dcPrescaler = (uint8_t) messageValue >> 2;
@@ -126,19 +144,45 @@ void SPI2_ISR(){
 		HAL_GPIO_WritePin(TEMPERATURE_INTERRUPT_PORT, TEMPERATURE_INTERRUPT_PIN, GPIO_PIN_RESET);
 		
 	}
-	else if(returnValue == COMMAND_ACCELEROMETER){
+	else if(returnValue == COMMAND_PITCH){
 	
 		// Read in latest accelerometer values
 		osMutexWait(tiltAnglesMutex, (uint32_t) THREAD_TIMEOUT);
-		roll = rollValue;
 		pitch = pitchValue;
-		doubleTap = DOUBLE_TAP_BOOLEAN;
-		DOUBLE_TAP_BOOLEAN = 0;   // Clear flag
 		osMutexRelease(tiltAnglesMutex);
 		
 		// Write pitch value
 		Slave_Write(pitch);
 		printf("Pitch: %f\n", pitch);
+		
+		HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
+		
+	}
+	else if(returnValue == COMMAND_ROLL){
+	
+		// Read in latest accelerometer values
+		osMutexWait(tiltAnglesMutex, (uint32_t) THREAD_TIMEOUT);
+		roll = rollValue;
+		osMutexRelease(tiltAnglesMutex);
+		
+		// Write pitch value
+		Slave_Write(roll);
+		printf("Roll: %f\n", roll);
+		
+		HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
+		
+	}
+	else if(returnValue == COMMAND_DTAP){
+	
+		// Read in latest accelerometer values
+		osMutexWait(tiltAnglesMutex, (uint32_t) THREAD_TIMEOUT);
+		doubleTap = DOUBLE_TAP_BOOLEAN;
+		DOUBLE_TAP_BOOLEAN = 0;   // Clear flag
+		osMutexRelease(tiltAnglesMutex);
+		
+		// Write pitch value
+		Slave_Write(doubleTap);
+		printf("Double Tap: %d\n", doubleTap);
 		
 		HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
 		

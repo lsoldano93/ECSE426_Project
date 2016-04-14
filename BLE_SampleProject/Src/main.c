@@ -295,12 +295,15 @@ int main(void)
 			if (TEMPERATURE_FLAG == 1){
 				
 				temperature = Master_Read(COMMAND_TEMPERATURE); 
+				printf("Temperature: %f\n", temperature);
 				TEMPERATURE_FLAG = 0;
 				
 			}
 //			if (ACCELEROMETER_FLAG == 1){   // TODO: Must be able to read pitch and roll
 //				
-//				pitch = Master_Read(COMMAND_ACCELEROMETER);
+//				pitch = Master_Read(COMMAND_PITCH);
+//				roll = Master_Read(COMMAND_ROLL);
+//				if(Master_Read(COMMAND_DTAP)) // TODO: Execute some code;
 //				ACCELEROMETER_FLAG = 0;
 //				
 //			}
