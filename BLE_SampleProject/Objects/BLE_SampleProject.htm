@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\BLE_SampleProject.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\BLE_SampleProject.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050169: Last Updated: Thu Apr 14 02:37:24 2016
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050169: Last Updated: Thu Apr 14 18:05:55 2016
 <BR><P>
 <H3>Maximum Stack Usage =       1072 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -49,8 +49,8 @@ Function Pointers
  <LI><a href="#[1a]">EXTI0_IRQHandler</a> from stm32xx_it.o(i.EXTI0_IRQHandler) referenced from startup_stm32f401xe.o(RESET)
  <LI><a href="#[37]">EXTI15_10_IRQHandler</a> from stm32xx_it.o(i.EXTI15_10_IRQHandler) referenced from startup_stm32f401xe.o(RESET)
  <LI><a href="#[1b]">EXTI1_IRQHandler</a> from startup_stm32f401xe.o(.text) referenced from startup_stm32f401xe.o(RESET)
- <LI><a href="#[1c]">EXTI2_IRQHandler</a> from stm32xx_it.o(i.EXTI2_IRQHandler) referenced from startup_stm32f401xe.o(RESET)
- <LI><a href="#[1d]">EXTI3_IRQHandler</a> from stm32xx_it.o(i.EXTI3_IRQHandler) referenced from startup_stm32f401xe.o(RESET)
+ <LI><a href="#[1c]">EXTI2_IRQHandler</a> from startup_stm32f401xe.o(.text) referenced from startup_stm32f401xe.o(RESET)
+ <LI><a href="#[1d]">EXTI3_IRQHandler</a> from startup_stm32f401xe.o(.text) referenced from startup_stm32f401xe.o(RESET)
  <LI><a href="#[1e]">EXTI4_IRQHandler</a> from stm32xx_it.o(i.EXTI4_IRQHandler) referenced from startup_stm32f401xe.o(RESET)
  <LI><a href="#[27]">EXTI9_5_IRQHandler</a> from startup_stm32f401xe.o(.text) referenced from startup_stm32f401xe.o(RESET)
  <LI><a href="#[18]">FLASH_IRQHandler</a> from startup_stm32f401xe.o(.text) referenced from startup_stm32f401xe.o(RESET)
@@ -103,8 +103,8 @@ Function Pointers
 Global Symbols
 </H3>
 <P><STRONG><a name="[51]"></a>__main</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, __main.o(!!!main))
-<BR><BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+<BR><BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
 </UL>
 
 <P><STRONG><a name="[53]"></a>__scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter))
@@ -386,6 +386,12 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
 </UL>
 <P><STRONG><a name="[1b]"></a>EXTI1_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f401xe.o(.text))
+<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
+</UL>
+<P><STRONG><a name="[1c]"></a>EXTI2_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f401xe.o(.text))
+<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
+</UL>
+<P><STRONG><a name="[1d]"></a>EXTI3_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f401xe.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
 </UL>
 <P><STRONG><a name="[27]"></a>EXTI9_5_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f401xe.o(.text))
@@ -1145,12 +1151,12 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 376<LI>Call Chain = BlueNRG_SPI_Write &rArr; HAL_SPI_TransmitReceive &rArr; SPI_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Enable_SPI_IRQ
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Disable_SPI_IRQ
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_irq_as_output
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_irq_as_input
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;us150Delay
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_TransmitReceive
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Enable_SPI_IRQ
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Disable_SPI_IRQ
 </UL>
 <BR>[Called By]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Hal_Write_Serial
 </UL>
@@ -1176,9 +1182,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_DisableIRQ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;hci_send_req
+<BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;hci_send_req
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HCI_Process
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
 </UL>
 
 <P><STRONG><a name="[1a]"></a>EXTI0_IRQHandler</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, stm32xx_it.o(i.EXTI0_IRQHandler))
@@ -1190,20 +1196,6 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[37]"></a>EXTI15_10_IRQHandler</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, stm32xx_it.o(i.EXTI15_10_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = EXTI15_10_IRQHandler &rArr; HAL_GPIO_EXTI_IRQHandler &rArr; HAL_GPIO_EXTI_Callback &rArr; HCI_Isr &rArr; BlueNRG_SPI_Read_All &rArr; HAL_SPI_TransmitReceive &rArr; SPI_WaitOnFlagUntilTimeout
-</UL>
-<BR>[Calls]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_IRQHandler
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
-</UL>
-<P><STRONG><a name="[1c]"></a>EXTI2_IRQHandler</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, stm32xx_it.o(i.EXTI2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = EXTI2_IRQHandler &rArr; HAL_GPIO_EXTI_IRQHandler &rArr; HAL_GPIO_EXTI_Callback &rArr; HCI_Isr &rArr; BlueNRG_SPI_Read_All &rArr; HAL_SPI_TransmitReceive &rArr; SPI_WaitOnFlagUntilTimeout
-</UL>
-<BR>[Calls]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_IRQHandler
-</UL>
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
-</UL>
-<P><STRONG><a name="[1d]"></a>EXTI3_IRQHandler</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, stm32xx_it.o(i.EXTI3_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = EXTI3_IRQHandler &rArr; HAL_GPIO_EXTI_IRQHandler &rArr; HAL_GPIO_EXTI_Callback &rArr; HCI_Isr &rArr; BlueNRG_SPI_Read_All &rArr; HAL_SPI_TransmitReceive &rArr; SPI_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_IRQHandler
 </UL>
@@ -1221,9 +1213,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_EnableIRQ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;hci_send_req
+<BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;hci_send_req
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HCI_Process
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
 </UL>
 
 <P><STRONG><a name="[d7]"></a>GAP_ConnectionComplete_CB</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, sensor_service.o(i.GAP_ConnectionComplete_CB))
@@ -1252,7 +1244,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_RST
 </UL>
 
-<P><STRONG><a name="[d9]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, main.o(i.HAL_GPIO_EXTI_Callback))
+<P><STRONG><a name="[d9]"></a>HAL_GPIO_EXTI_Callback</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, main.o(i.HAL_GPIO_EXTI_Callback))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = HAL_GPIO_EXTI_Callback &rArr; HCI_Isr &rArr; BlueNRG_SPI_Read_All &rArr; HAL_SPI_TransmitReceive &rArr; SPI_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HCI_Isr
@@ -1266,8 +1258,6 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_EXTI_Callback
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI4_IRQHandler
-<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI3_IRQHandler
-<LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI2_IRQHandler
 <LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI15_10_IRQHandler
 <LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI0_IRQHandler
 </UL>
@@ -1289,9 +1279,9 @@ Global Symbols
 <P><STRONG><a name="[c9]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_WritePin))
 <BR><BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_RST
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_MspInit
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Read_All
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_irq_as_output
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Read_All
 </UL>
 
 <P><STRONG><a name="[d4]"></a>HAL_GetTick</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, stm32f4xx_hal.o(i.HAL_GetTick))
@@ -1426,8 +1416,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Read_All
+<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Read_All
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
 </UL>
 
 <P><STRONG><a name="[e0]"></a>HAL_SYSTICK_Config</STRONG> (Thumb, 52 bytes, Stack size 16 bytes, stm32f4xx_hal_cortex.o(i.HAL_SYSTICK_Config))
@@ -1505,8 +1495,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 416<LI>Call Chain = Hal_Write_Serial &rArr; BlueNRG_SPI_Write &rArr; HAL_SPI_TransmitReceive &rArr; SPI_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Timer_Set
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
 <LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Timer_Expired
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BlueNRG_SPI_Write
 </UL>
 <BR>[Called By]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;hci_write
 </UL>
@@ -1535,7 +1525,7 @@ Global Symbols
 <P><STRONG><a name="[b]"></a>NMI_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32xx_it.o(i.NMI_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f401xe.o(RESET)
 </UL>
-<P><STRONG><a name="[fa]"></a>NucleoSPI_Config</STRONG> (Thumb, 364 bytes, Stack size 32 bytes, nucleospi.o(i.NucleoSPI_Config))
+<P><STRONG><a name="[fa]"></a>NucleoSPI_Config</STRONG> (Thumb, 332 bytes, Stack size 32 bytes, nucleospi.o(i.NucleoSPI_Config))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = NucleoSPI_Config &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -2069,19 +2059,19 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[112]"></a>__get_PRIMASK</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, list.o(i.__get_PRIMASK))
-<BR><BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_node
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_head
+<BR><BR>[Called By]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_head
 <LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_is_empty
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insert_tail
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insert_head
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_node
 </UL>
 
 <P><STRONG><a name="[113]"></a>__set_PRIMASK</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, list.o(i.__set_PRIMASK))
-<BR><BR>[Called By]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_node
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_head
+<BR><BR>[Called By]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_head
 <LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_is_empty
 <LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insert_tail
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insert_head
+<LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_remove_node
 </UL>
 
 <P><STRONG><a name="[d0]"></a>us150Delay</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, stm32_bluenrg_ble.o(i.us150Delay))

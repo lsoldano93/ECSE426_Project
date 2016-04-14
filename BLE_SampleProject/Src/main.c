@@ -368,18 +368,18 @@ void User_Process(AxesRaw_t* p_axes)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   
 	if (GPIO_Pin == GPIO_PIN_0) HCI_Isr();
-	else if (GPIO_Pin == GPIO_PIN_4){
-		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
+	else if (GPIO_Pin == TEMPERATURE_INTERRUPT_PIN){
+		__HAL_GPIO_EXTI_CLEAR_IT(TEMPERATURE_INTERRUPT_PIN);
 		TEMPERATURE_FLAG = 1;
 	}
-	else if (GPIO_Pin == GPIO_PIN_2){ 
-		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
-		ACCELEROMETER_FLAG = 1;
-	}
-	else if (GPIO_Pin == GPIO_PIN_3){ 
-		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
-		LEDSTATE_FLAG = 1;
-	}
+//	else if (GPIO_Pin == GPIO_PIN_2){ 
+//		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
+//		ACCELEROMETER_FLAG = 1;
+//	}
+//	else if (GPIO_Pin == GPIO_PIN_3){ 
+//		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
+//		LEDSTATE_FLAG = 1;
+//	}
 	
 }
 

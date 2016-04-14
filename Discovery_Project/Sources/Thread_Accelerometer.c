@@ -77,7 +77,7 @@ void Thread_Accelerometer (void const *argument){
 			if(firstZ) break;
 		}
 		
-		HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_SET);
+		//HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_SET);
 		
 	}
 	

@@ -11,6 +11,8 @@
 #define THREAD_GREEN_LIGHT 2   // Signal for thread to execute
 #define THREAD_TIMEOUT 1000     // Thread timeout value in milliseconds
 
+#define NucleoSPI_IRQHandler							SPI3_IRQHandler									
+
 #define TEMPERATURE_INTERRUPT_PORT				GPIOA
 #define TEMPERATURE_INTERRUPT_PIN					GPIO_PIN_8	// GPIO_A8
 

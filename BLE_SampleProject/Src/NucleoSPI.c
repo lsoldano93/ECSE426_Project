@@ -79,7 +79,7 @@ float Master_Read(uint16_t Instruction){
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
 	returnValue = DiscoverySpiHandle.Instance->DR;
 	
-	// Generate cock and wait for read
+	// Generate clock and wait for read
 	DiscoverySpiHandle.Instance->DR = 0x0000;
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
@@ -90,8 +90,8 @@ float Master_Read(uint16_t Instruction){
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_BSY) != RESET);
 	
 	// Convert message into meaningful values
-	returnValue = (uint8_t) (messageValue >> 8);
-	tempDecimalValue = messageValue - (((uint16_t)returnValue) << 8);
+	returnValue = (uint8_t) (messageValue >> 9);
+	tempDecimalValue = messageValue - (((uint16_t)returnValue) << 9);
 	returnValue += (tempDecimalValue/100);
 	
 	return returnValue;
@@ -127,12 +127,12 @@ void NucleoSPI_Config(void){
   
 	__HAL_SPI_ENABLE(&DiscoverySpiHandle);
 	
-	__SPI2_CLK_ENABLE();
-	
 	NUCLEO_SPI_CLOCK_ENABLE();
 	TEMPERATURE_INTERRUPT_CLOCK_ENABLE();
 	ACCELEROMETER_INTERRUPT_CLOCK_ENABLE();
 	LEDSTATE_INTERRUPT_CLOCK_ENABLE();	
+	
+	__SPI2_CLK_ENABLE();
 	
 	// Configure SPI pins
 	GPIO_InitStructure.Pull  				= GPIO_PULLDOWN;
@@ -148,18 +148,18 @@ void NucleoSPI_Config(void){
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
 	
-	GPIO_InitStructure.Pin = TEMPERATURE_INTERRUPT_PIN | ACCELEROMETER_INTERRUPT_PIN | LEDSTATE_INTERRUPT_PIN;
+	GPIO_InitStructure.Pin = TEMPERATURE_INTERRUPT_PIN;
 	HAL_GPIO_Init(TEMPERATURE_INTERRUPT_PORT, &GPIO_InitStructure);
 		
 	/* Configure the NVIC for SPI */  
   HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
   HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 	
-	HAL_NVIC_SetPriority(EXTI2_IRQn, 4, 0);    
-  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-	
-	HAL_NVIC_SetPriority(EXTI3_IRQn, 4, 0);    
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+//	HAL_NVIC_SetPriority(EXTI2_IRQn, 4, 0);    
+//  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+//	
+//	HAL_NVIC_SetPriority(EXTI3_IRQn, 4, 0);    
+//  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 	
 }
 

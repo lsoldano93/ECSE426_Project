@@ -110,6 +110,7 @@ void SPI2_ISR(){
 	
 	// Receive information from master to begin communication
 	returnValue = NucleoSpiHandle.Instance->DR;
+	printf("ReturnValue: %d\n", returnValue);
 	
 	if(returnValue == COMMAND_TEMPERATURE){
 		
@@ -197,10 +198,10 @@ void SPICommunication_config(void){
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
-	__HAL_RCC_SPI2_CLK_ENABLE();
+	__HAL_RCC_SPI3_CLK_ENABLE();
 	
 	HAL_SPI_DeInit(&NucleoSpiHandle);
-	NucleoSpiHandle.Instance									= SPI2;
+	NucleoSpiHandle.Instance									= SPI3;
 	NucleoSpiHandle.Init.BaudRatePrescaler 		= SPI_BAUDRATEPRESCALER_4;
 	NucleoSpiHandle.Init.Direction						= SPI_DIRECTION_2LINES;
 	NucleoSpiHandle.Init.CLKPhase							= SPI_PHASE_1EDGE;
@@ -213,15 +214,15 @@ void SPICommunication_config(void){
   NucleoSpiHandle.Init.TIMode 							= SPI_TIMODE_DISABLED;
   NucleoSpiHandle.Init.Mode 								= SPI_MODE_SLAVE;
 	NucleoSpiHandle.RxISR                     = SPI2_ISR;
-	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI2 \n");};
+	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI3 \n");};
   
 	__HAL_SPI_ENABLE(&NucleoSpiHandle);
 	__HAL_SPI_ENABLE_IT(&NucleoSpiHandle, SPI_IT_RXNE);
 	
-	HAL_NVIC_SetPriority(SPI2_IRQn, 0, 3);
-	HAL_NVIC_EnableIRQ(SPI2_IRQn);
+	HAL_NVIC_SetPriority(SPI3_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(SPI3_IRQn);
 	
-	__SPI2_CLK_ENABLE();
+	__SPI3_CLK_ENABLE();
 	
 	DISCOVERY_SPI_CLOCK_ENABLE();
 	DISCOVERY_INTERRUPT_CLOCK_ENABLE();                                                 
@@ -230,7 +231,7 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_AF_PP;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	GPIO_InitStructure.Alternate = GPIO_AF5_SPI2;
+	GPIO_InitStructure.Alternate = GPIO_AF6_SPI3;
 	
 	// SCK, MOSI, MISO Pins
 	GPIO_InitStructure.Pin   = DISCOVERY_SCK_PIN | DISCOVERY_MOSI_PIN | DISCOVERY_MISO_PIN;
@@ -241,11 +242,11 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 	
-	GPIO_InitStructure.Pin   = TEMPERATURE_INTERRUPT_PIN | ACCELEROMETER_INTERRUPT_PIN | LEDSTATE_INTERRUPT_PIN;
+	GPIO_InitStructure.Pin   = TEMPERATURE_INTERRUPT_PIN;// | ACCELEROMETER_INTERRUPT_PIN | LEDSTATE_INTERRUPT_PIN;
 	HAL_GPIO_Init(TEMPERATURE_INTERRUPT_PORT, &GPIO_InitStructure);
 	
 	HAL_GPIO_WritePin(TEMPERATURE_INTERRUPT_PORT, TEMPERATURE_INTERRUPT_PIN, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_RESET);
 	
 }

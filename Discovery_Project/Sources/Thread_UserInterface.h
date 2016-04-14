@@ -42,10 +42,6 @@ void ledsOn(void);
 
 void ledsOff(void);
 
-/**  Configures system for user interface
-   * @brief  Initializes pins for display and clock for keypad **/
-void init_TIM4(void);
-
 void HAL_TIM_OC_MspInit(TIM_HandleTypeDef *htim);
 
 

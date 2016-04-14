@@ -46,6 +46,13 @@ int start_Thread_UserInterface (void) {
    */
 void Thread_UserInterface (void const *argument){
 	
+	// Setup MUTEX
+	ledStateMutex = osMutexCreate(ledStateMutexPtr);
+	
+	// Setup PWM
+	init_OC.OCMode = TIM_OCMODE_PWM1;
+	init_OC.OCPolarity = TIM_OCPOLARITY_HIGH;
+	
 	// Initialize these values
 	osMutexWait(ledStateMutex, (uint32_t) THREAD_TIMEOUT);
 	LED_ROTATE_STATE = ledState;
@@ -54,10 +61,9 @@ void Thread_UserInterface (void const *argument){
 	
 	while(1){
 		
-		// TODO: To implement LED speed take in a value  with LED state that adds/subtracts this osDelay
 		osDelay(UI_THREAD_OSDELAY);
 		
-		HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_SET);
+		//HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_SET);
 		
 		osMutexWait(ledStateMutex, (uint32_t) THREAD_TIMEOUT);
 		ledState = LED_ROTATE_STATE;
@@ -207,36 +213,5 @@ void ledsOff(void) {
 }
 
 
-void init_TIM4(void) {
-	
-	
-	TIM_Base_InitTypeDef init_TIM4;
-	
-	// Enable clock for TIM4 
-	__HAL_RCC_TIM4_CLK_ENABLE();
-	
-	init_TIM4.Prescaler = 0;
-	init_TIM4.CounterMode = TIM_COUNTERMODE_UP;
-	init_TIM4.Period = 8399;  // 10 kHz
-	init_TIM4.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	
-	// Initialize timer 4 handle struct
-	handle_tim4.Instance = TIM4;
-	handle_tim4.Init = init_TIM4;
-	handle_tim4.State = HAL_TIM_STATE_RESET;
-	
-	// Initialize timer 4 handle 
-	HAL_TIM_OC_Init(&handle_tim4);
 
-	// Setup PWM
-	init_OC.OCMode = TIM_OCMODE_PWM1;
-	init_OC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	
-	// Start LED clock
-	__GPIOD_CLK_ENABLE();
-	
-	// Setup MUTEX
-	ledStateMutex = osMutexCreate(ledStateMutexPtr);
-	
-}
 
