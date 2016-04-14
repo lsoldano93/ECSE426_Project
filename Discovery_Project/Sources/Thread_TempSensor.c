@@ -39,7 +39,7 @@ void Thread_TempSensor (void const *argument){
 		
 		Status_TempSensor = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);
 		updateTemp();
-		osSignalSet(tid_Thread_SPICommunication, (int32_t) THREAD_GREEN_LIGHT);
+		HAL_GPIO_WritePin(TEMPERATURE_INTERRUPT_PORT, TEMPERATURE_INTERRUPT_PIN, GPIO_PIN_SET);
 
 	}                                                       
 }

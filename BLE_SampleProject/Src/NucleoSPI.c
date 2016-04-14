@@ -10,6 +10,7 @@ SPI_HandleTypeDef DiscoverySpiHandle;
 void Master_Write(uint8_t VariableToWrite){
 
 	uint16_t message = 0;
+	uint16_t returnValue = 0;
 	uint8_t tempValue = 0;
 	
 	// LED state will be in format (LED_State*100) + DC Prescalar
@@ -36,13 +37,23 @@ void Master_Write(uint8_t VariableToWrite){
 		message = 0x0003;
 	}
 	
+	// Write LEDstate command 
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	DiscoverySpiHandle.Instance->DR = COMMAND_LEDSTATE;
 	
 	// Wait for line to be free for sending
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
+	returnValue = DiscoverySpiHandle.Instance->DR;
+	
+	// Send message
 	DiscoverySpiHandle.Instance->DR = message;
 	
-	// Wait for message to be read
+	// Wait for message to be read and clear DR
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
+	
+	returnValue = DiscoverySpiHandle.Instance->DR;
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_BSY) != RESET);
 
 	return;
@@ -51,7 +62,7 @@ void Master_Write(uint8_t VariableToWrite){
 
 
 
-float Master_Read(){
+float Master_Read(uint16_t Instruction){
 
 	uint16_t messageValue = 0;
 	
@@ -59,7 +70,16 @@ float Master_Read(){
 	float tempDecimalValue;
 	float returnValue;
 	
-	// Write dummy value to line so clock generated
+	// Write command 
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	DiscoverySpiHandle.Instance->DR = Instruction;
+	
+	// Wait for line to be free for sending
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
+	returnValue = DiscoverySpiHandle.Instance->DR;
+	
+	// Generate cock and wait for read
 	DiscoverySpiHandle.Instance->DR = 0x0000;
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
@@ -76,29 +96,6 @@ float Master_Read(){
 	
 	return returnValue;
 	
-}
-
-
-// float* = float[4] = {temperature, pitch, roll, double tap boolean}
-// uint8_t = bits[7..2] = Duty cycle prescalar, bits[1..0] = LED state
-void Master_Communication(uint8_t LED_STATE, float* returnArray){
-	
-	// Read temperature value
-	returnArray[0] = Master_Read();
-	
-	// Read pitch value
-	//returnArray[1] = Master_Read();
-	
-	// Read roll value
-	//returnArray[2] = Master_Read();
-	
-	// Read double tap boolean
-	//returnArray[3] = Master_Read_Boolean();
-	
-	// Send LED_State & Duty Cycle
-	//Master_Write(LED_STATE);
-	
-	return;
 }
 
 /**
@@ -133,7 +130,9 @@ void NucleoSPI_Config(void){
 	__SPI2_CLK_ENABLE();
 	
 	NUCLEO_SPI_CLOCK_ENABLE();
-	NUCLEO_INTERRUPT_CLOCK_ENABLE();                                                 
+	TEMPERATURE_INTERRUPT_CLOCK_ENABLE();
+	ACCELEROMETER_INTERRUPT_CLOCK_ENABLE();
+	LEDSTATE_INTERRUPT_CLOCK_ENABLE();	
 	
 	// Configure SPI pins
 	GPIO_InitStructure.Pull  				= GPIO_PULLDOWN;
@@ -145,15 +144,22 @@ void NucleoSPI_Config(void){
 	HAL_GPIO_Init(NUCLEO_SPI_GPIO_PORT, &GPIO_InitStructure);
 	
 	/* Setup input interrupt line from Discovery */
-  GPIO_InitStructure.Pin = NUCLEO_INTERRUPT_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_IT_FALLING;
+	GPIO_InitStructure.Mode  = GPIO_MODE_IT_RISING;
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
-	HAL_GPIO_Init(NUCLEO_INTERRUPT_PORT, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.Pin = TEMPERATURE_INTERRUPT_PIN | ACCELEROMETER_INTERRUPT_PIN | LEDSTATE_INTERRUPT_PIN;
+	HAL_GPIO_Init(TEMPERATURE_INTERRUPT_PORT, &GPIO_InitStructure);
 		
 	/* Configure the NVIC for SPI */  
   HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
   HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+	
+	HAL_NVIC_SetPriority(EXTI2_IRQn, 4, 0);    
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+	
+	HAL_NVIC_SetPriority(EXTI3_IRQn, 4, 0);    
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 	
 }
 

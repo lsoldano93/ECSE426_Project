@@ -51,7 +51,7 @@ void Thread_Accelerometer (void const *argument){
 		
 		Status_Accelerometer = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);
 		accelerometer_mode();
-		osSignalSet(tid_Thread_SPICommunication, (int32_t) THREAD_GREEN_LIGHT);
+	
 		//printf("%f,\n", accel.z);
 		
 		// Ghetto Double tap code
@@ -76,6 +76,8 @@ void Thread_Accelerometer (void const *argument){
 			//}
 			if(firstZ) break;
 		}
+		
+		HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_SET);
 		
 	}
 	

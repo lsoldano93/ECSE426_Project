@@ -34,3 +34,4 @@
 .\objects\stm32xx_it.o: .\Drivers\BSP\STM32F4xx-Nucleo\stm32f4xx_nucleo_bluenrg.h
 .\objects\stm32xx_it.o: .\BLE\STM32_BlueNRG\SimpleBlueNRG_HCI\includes\debug.h
 .\objects\stm32xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\stm32xx_it.o: Src\NucleoSpi.h

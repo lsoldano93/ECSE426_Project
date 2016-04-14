@@ -11,27 +11,39 @@
 
 /* Private defines -----------------------------------------------------------*/
 
+#define COMMAND_TEMPERATURE				((uint16_t) 0x1111)
+#define COMMAND_ACCELEROMETER			((uint16_t) 0x6666)
+#define COMMAND_LEDSTATE					((uint16_t) 0xffff)
+
 /* Nucleo Pins associated with Discovery signal */
-#define NUCLEO_SCK_PIN						GPIO_PIN_13  // GPIO_C9
+#define NUCLEO_SCK_PIN						GPIO_PIN_13  // GPIO_B13
 
-#define NUCLEO_MOSI_PIN						GPIO_PIN_15  // GPIO_C8
+#define NUCLEO_MOSI_PIN						GPIO_PIN_15  // GPIO_B15
 
-#define NUCLEO_MISO_PIN						GPIO_PIN_14  // GPIO_C6
+#define NUCLEO_MISO_PIN						GPIO_PIN_14  // GPIO_B14
 
 #define NUCLEO_SPI_GPIO_PORT			GPIOB
 
-#define NUCLEO_INTERRUPT_PORT							GPIOA
-#define NUCLEO_INTERRUPT_PIN							GPIO_PIN_4	// GPIO_A4
+#define TEMPERATURE_INTERRUPT_PORT				GPIOA
+#define TEMPERATURE_INTERRUPT_PIN					GPIO_PIN_4	// GPIO_A4
 
-#define NUCLEO_SPI_CLOCK_ENABLE()					__GPIOB_CLK_ENABLE()
-#define NUCLEO_INTERRUPT_CLOCK_ENABLE()		__GPIOA_CLK_ENABLE()
+#define ACCELEROMETER_INTERRUPT_PORT			GPIOA
+#define ACCELEROMETER_INTERRUPT_PIN				GPIO_PIN_2	// GPIO_A2
+
+#define LEDSTATE_INTERRUPT_PORT						GPIOA
+#define LEDSTATE_INTERRUPT_PIN						GPIO_PIN_3	// GPIO_A3
+
+#define NUCLEO_SPI_CLOCK_ENABLE()								__GPIOB_CLK_ENABLE()
+#define TEMPERATURE_INTERRUPT_CLOCK_ENABLE()		__GPIOA_CLK_ENABLE()
+#define ACCELEROMETER_INTERRUPT_CLOCK_ENABLE()	__GPIOA_CLK_ENABLE()
+#define LEDSTATE_INTERRUPT_CLOCK_ENABLE()				__GPIOA_CLK_ENABLE()
 
 
 /* Private function prototypes -----------------------------------------------*/
 
-// float* = float[4] = {temperature, pitch, roll, double tap boolean}
-// uint8_t = bits[7..2] = Duty cycle prescalar, bits[1..0] = LED state
-void Master_Communication(uint8_t LED_STATE, float* returnArray);
+void Master_Write(uint8_t VariableToWrite);
+
+float Master_Read(uint16_t Instruction);
 
 void NucleoSPI_Config(void);
 

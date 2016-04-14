@@ -111,6 +111,10 @@ void TIM3_IRQHandler(void) {
 	
 }
 
+void SPI2_IRQHandler(void){
+	SPI2_ISR();
+}
+
 
 /**
   * @brief  Input Capture callback in non blocking mode 
@@ -179,6 +183,8 @@ int main (void) {
 	/* User codes goes here*/
 	init_TIM3();															/* Initialize timer 3 				     	*/
 	init_TIM4();															/* Initialize timer 4 				     	*/
+	
+	SPICommunication_config();								/* Initialize parameters for SPI    */
   
 	ADC_config();														  /* Initialize temp sensor ADC     	*/
 	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/
@@ -187,9 +193,6 @@ int main (void) {
 	start_Thread_Accelerometer();							/* Start accelerometer thread       */
 	
 	start_Thread_UserInterface();				  		/* Start UI thread                  */
-	
-	SPICommunication_config();								/* Initialize parameters for SPI    */
-	start_Thread_SPICommunication();				  /* Start SPI thread                 */
 
 	/* User codes ends here*/
   

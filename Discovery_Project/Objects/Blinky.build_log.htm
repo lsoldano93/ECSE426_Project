@@ -22,7 +22,7 @@ Dialog DLL:      TCM.DLL V1.14.5.0
  
 <h2>Project:</h2>
 C:\zzz\ECSE426_Project\Discovery_Project\Blinky.uvprojx
-Project File Date:  04/12/2016
+Project File Date:  04/13/2016
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
@@ -36,34 +36,71 @@ Sources\Thread_UserInterface.h(35): warning:  #1295-D: Deprecated declaration re
   void resetPins();
 Sources\Thread_UserInterface.h(52): warning:  #1-D: last line of file ends without a newline
   #endif
-Sources\Thread_SPICommunication.h(83): warning:  #1-D: last line of file ends without a newline
+Sources\Thread_SPICommunication.h(36): warning:  #1295-D: Deprecated declaration SPI2_ISR - give arg types
+  void SPI2_ISR();
+Sources\Thread_SPICommunication.h(55): warning:  #1-D: last line of file ends without a newline
   #endif
 Sources\main.h(44): warning:  #1-D: last line of file ends without a newline
   #endif
-Sources\main.c: 6 warnings, 0 errors
-compiling Thread_SPICommunication.c...
-Sources\Thread_SPICommunication.h(83): warning:  #1-D: last line of file ends without a newline
+Sources\main.c: 7 warnings, 0 errors
+compiling Thread_TempSensor.c...
+Sources\Thread_TempSensor.h(25): warning:  #1-D: last line of file ends without a newline
   #endif
-Sources\Thread_SPICommunication.c(114): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Sources\Thread_TempSensor.c(35): warning:  #550-D: variable "Status_TempSensor" was set but never used
+        osEvent Status_TempSensor;
+Sources\Thread_TempSensor.c: 2 warnings, 0 errors
+compiling Thread_Accelerometer.c...
+Sources\Thread_Accelerometer.h(105): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_Accelerometer.c(48): warning:  #550-D: variable "Status_Accelerometer" was set but never used
+        osEvent Status_Accelerometer;
+Sources\Thread_Accelerometer.c(144): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        accel.x = Ax*
+CC11 + Ay*ACC12 + Az*ACC13 + ACC10;
+Sources\Thread_Accelerometer.c(145): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        accel.y = Ax*
+CC21 + Ay*
+CC22 + Az*ACC23 + ACC20;
+Sources\Thread_Accelerometer.c(146): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        accel.z = Ax*
+CC31 + Ay*
+CC32 + Az*
+CC33 + ACC30;
+Sources\Thread_Accelerometer.c(184): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        return 90.0 - 
+EGREES(acos(accel.z/1000.0));
+Sources\Thread_Accelerometer.c(235): warning:  #1-D: last line of file ends without a newline
+  }
+Sources\Thread_Accelerometer.c: 7 warnings, 0 errors
+compiling Thread_UserInterface.c...
+Sources\Thread_UserInterface.h(35): warning:  #1295-D: Deprecated declaration resetPins - give arg types
+  void resetPins();
+Sources\Thread_UserInterface.h(52): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_UserInterface.c: 2 warnings, 0 errors
+compiling Thread_SPICommunication.c...
+Sources\Thread_SPICommunication.h(36): warning:  #1295-D: Deprecated declaration SPI2_ISR - give arg types
+  void SPI2_ISR();
+Sources\Thread_SPICommunication.h(55): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\Thread_SPICommunication.c(46): warning:  #1035-D: single-precision operand implicitly converted to double-precision
         tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
-Sources\Thread_SPICommunication.c(114): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Sources\Thread_SPICommunication.c(46): warning:  #1035-D: single-precision operand implicitly converted to double-precision
         tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
-Sources\Thread_SPICommunication.c(89): warning:  #550-D: variable "integerValue" was set but never used
-        int integerValue[8];
-Sources\Thread_SPICommunication.c(90): warning:  #550-D: variable "decimalValue" was set but never used
-        int decimalValue[8];
-Sources\Thread_SPICommunication.c(244): warning:  #550-D: variable "pitch" was set but never used
+Sources\Thread_SPICommunication.c(71): warning:  #177-D: variable "i" was declared but never referenced
+        int i;
+Sources\Thread_SPICommunication.c(104): warning:  #550-D: variable "roll" was set but never used
         float temperature, pitch, roll;
-Sources\Thread_SPICommunication.c(244): warning:  #550-D: variable "roll" was set but never used
-        float temperature, pitch, roll;
-Sources\Thread_SPICommunication.c(245): warning:  #550-D: variable "doubleTap" was set but never used
+Sources\Thread_SPICommunication.c(105): warning:  #550-D: variable "doubleTap" was set but never used
         int doubleTap;
-Sources\Thread_SPICommunication.c(246): warning:  #177-D: variable "ledState" was declared but never referenced
+Sources\Thread_SPICommunication.c(106): warning:  #177-D: variable "ledState" was declared but never referenced
         uint8_t ledState;
+Sources\Thread_SPICommunication.c(188): warning:  #513-D: a value of type "void (*)()" cannot be assigned to an entity of type "void (*)(struct __SPI_HandleTypeDef *)"
+        NucleoSpiHandle.RxISR                     = SPI2_ISR;
 Sources\Thread_SPICommunication.c: 9 warnings, 0 errors
 linking...
-Program Size: Code=53420 RO-data=996 RW-data=188 ZI-data=8188  
-".\Objects\Blinky.axf" - 0 Error(s), 15 Warning(s).
+Program Size: Code=52772 RO-data=980 RW-data=184 ZI-data=8280  
+".\Objects\Blinky.axf" - 0 Error(s), 27 Warning(s).
 
 <h2>Software Packages used:</h2>
 

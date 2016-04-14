@@ -85,7 +85,9 @@ extern volatile uint8_t set_connectable;
 extern volatile int connected;
 extern AxesRaw_t axes_data;
 uint8_t bnrg_expansion_board = IDB04A1; /* at startup, suppose the X-NUCLEO-IDB04A1 is used */
-uint8_t DISCOVERY_SPI_FLAG = 0;
+uint8_t TEMPERATURE_FLAG = 0;
+uint8_t ACCELEROMETER_FLAG = 0;
+uint8_t LEDSTATE_FLAG = 0;
 uint8_t LED_STATE; 
 /**
  * @}
@@ -288,28 +290,27 @@ int main(void)
   
 
   while(1){
-		
-		/* TODO: Might be a good idea to add functionality that causes this statement not to trigger until Discovery has booted up
-			 EG: Add an external line to discovery, where discovey sets/keeps it at high once ready   - Luke */
 
 			// Check for Discovery flag trigger that indicates new data as available
-			if (DISCOVERY_SPI_FLAG == 1){
+			if (TEMPERATURE_FLAG == 1){
 				
-				Master_Communication(LED_STATE, returnArray); 
+				temperature = Master_Read(COMMAND_TEMPERATURE); 
+				TEMPERATURE_FLAG = 0;
 				
-				temperature = returnArray[0];
-				printf("Temperature: %f\n", temperature);
-				//pitch = returnArray[1];
-				//roll = returnArray[2];
-				
-				// TODO: If double tap code has been initiated then...
-				//if((int) returnArray[3] == 1){
-					
-				//}				
-				
-				DISCOVERY_SPI_FLAG = 0;
 			}
-		//else printf("reading a high pin dumbass\n");
+//			if (ACCELEROMETER_FLAG == 1){   // TODO: Must be able to read pitch and roll
+//				
+//				pitch = Master_Read(COMMAND_ACCELEROMETER);
+//				ACCELEROMETER_FLAG = 0;
+//				
+//			}
+//			if (LEDSTATE_FLAG == 1){
+//				
+//				Master_Write(LED_STATE); 
+//				LEDSTATE_FLAG = 0;
+//				
+//			}
+	
 
 
 // Uncomment this for BT functionality		
@@ -364,7 +365,18 @@ void User_Process(AxesRaw_t* p_axes)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   
 	if (GPIO_Pin == GPIO_PIN_0) HCI_Isr();
-	else if (GPIO_Pin == GPIO_PIN_4) DISCOVERY_SPI_FLAG = 1;
+	else if (GPIO_Pin == GPIO_PIN_4){
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
+		TEMPERATURE_FLAG = 1;
+	}
+	else if (GPIO_Pin == GPIO_PIN_2){ 
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
+		ACCELEROMETER_FLAG = 1;
+	}
+	else if (GPIO_Pin == GPIO_PIN_3){ 
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
+		LEDSTATE_FLAG = 1;
+	}
 	
 }
 

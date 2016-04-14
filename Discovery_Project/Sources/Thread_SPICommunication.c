@@ -6,28 +6,10 @@
 
 /* Private Variables ---------------------------------------------------------*/
 
-osThreadId tid_Thread_SPICommunication;   
 SPI_HandleTypeDef NucleoSpiHandle;
-
-osThreadDef(Thread_SPICommunication, osPriorityNormal, 1, NULL); 
 
 
 /* Private Functions ---------------------------------------------------------*/
-
-/**  Initiates SPI Communication thread
-   * @brief  Builds thread and starts it
-   * @param  None
-   * @retval Integer inidicating failure or success of thread initiation
-   */
-int start_Thread_SPICommunication (void) {
-
-  tid_Thread_SPICommunication = osThreadCreate(osThread(Thread_SPICommunication ), NULL); 
-  if (!tid_Thread_SPICommunication){
-		printf("Error starting SPI communication thread!");
-		return(-1); 
-	}
-  return(0);
-}
 
 
 void Slave_Write(float input){
@@ -66,18 +48,15 @@ void Slave_Write(float input){
 	// Create bit stream where MS -bits are integer value and LS -bits are decimal value
 	messageValue = ((uint16_t)tempIntegerValue << 8) | tempDecimalValue;
 	
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET);
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET);
 	
 	// Write message to Data register for transfer
 	NucleoSpiHandle.Instance->DR = messageValue;
+	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET);
+	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == RESET);
 	
 	// Go through proper wait protocol for transfer to complete
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == SET);
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_RXNE) == SET);
 	messageValue = NucleoSpiHandle.Instance->DR;
-	
-	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_BSY) == RESET);
+	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_BSY) != RESET);
 	
 	return; 
 	
@@ -96,6 +75,8 @@ void Slave_Read(){
 	
 	// Read message
 	messageValue = NucleoSpiHandle.Instance->DR;
+	NucleoSpiHandle.Instance->DR = 0x0000;
+	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_TXE) == RESET);
 	
 	while(__HAL_SPI_GET_FLAG(&NucleoSpiHandle, SPI_FLAG_BSY) != RESET);
 	
@@ -118,24 +99,36 @@ void Slave_Read(){
 	 * @param  None
    * @retval None
    */
-void Thread_SPICommunication (void const *argument){
+void SPI2_ISR(){
 	
 	float temperature, pitch, roll;
 	int doubleTap;
 	uint8_t ledState;
+	uint16_t returnValue;
 	
-	while(1){
-
-		/* Wait for temperature sensor or accelerometer to update its value.
-		   Upon signal, transmit temperature and accelerometer values before
-			 receiving current LED state value from Nucleo                  */
-		osSignalWait(THREAD_GREEN_LIGHT, THREAD_TIMEOUT);
+	__disable_irq();
+	__HAL_SPI_DISABLE_IT(&NucleoSpiHandle, SPI_FLAG_RXNE);
 	
-		// Read in latest temperature and accelerometer values
+	// Receive information from master to begin communication
+	returnValue = NucleoSpiHandle.Instance->DR;
+	
+	if(returnValue == COMMAND_TEMPERATURE){
+		
+		// Read in latest temperature values
 		osMutexWait(temperatureMutex, (uint32_t) THREAD_TIMEOUT);
 		temperature = temperatureValue;
 		osMutexRelease(temperatureMutex);
 		
+		// Write temperature value
+		Slave_Write(temperature);
+		printf("Temperature: %f\n", temperature);
+		
+		HAL_GPIO_WritePin(TEMPERATURE_INTERRUPT_PORT, TEMPERATURE_INTERRUPT_PIN, GPIO_PIN_RESET);
+		
+	}
+	else if(returnValue == COMMAND_ACCELEROMETER){
+	
+		// Read in latest accelerometer values
 		osMutexWait(tiltAnglesMutex, (uint32_t) THREAD_TIMEOUT);
 		roll = rollValue;
 		pitch = pitchValue;
@@ -143,30 +136,29 @@ void Thread_SPICommunication (void const *argument){
 		DOUBLE_TAP_BOOLEAN = 0;   // Clear flag
 		osMutexRelease(tiltAnglesMutex);
 		
-		
-		HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_RESET);
-		
-		// Write temperature value
-		Slave_Write(temperature);
-		printf("Temperature: %f\n", temperature);
-		// Set GPIO interrupt pin back to high
-		
 		// Write pitch value
-		//Slave_Write(pitch);
-	
-		// Write roll value
-		//Slave_Write(roll);
-	
-		// Write double tap boolean
-		//Slave_Write_Boolean(doubleTap);
-	
-		// Read LED_State & Duty Cycle
-		//Slave_Read();
+		Slave_Write(pitch);
+		printf("Pitch: %f\n", pitch);
 		
-		HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
 		
-		return;
-	}                                                       
+	}
+	else if(returnValue == COMMAND_LEDSTATE){
+		
+		// Read LED State & Duty Cycle
+		Slave_Read();
+		
+		HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_RESET);
+		
+	}
+	
+		
+	__HAL_SPI_ENABLE_IT(&NucleoSpiHandle, SPI_FLAG_RXNE);
+	__enable_irq();
+	
+	
+	return;
+	                                                     
 }
 
 /**
@@ -193,9 +185,14 @@ void SPICommunication_config(void){
   NucleoSpiHandle.Init.NSS 									= SPI_NSS_SOFT;
   NucleoSpiHandle.Init.TIMode 							= SPI_TIMODE_DISABLED;
   NucleoSpiHandle.Init.Mode 								= SPI_MODE_SLAVE;
+	NucleoSpiHandle.RxISR                     = SPI2_ISR;
 	if (HAL_SPI_Init(&NucleoSpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI2 \n");};
   
 	__HAL_SPI_ENABLE(&NucleoSpiHandle);
+	__HAL_SPI_ENABLE_IT(&NucleoSpiHandle, SPI_IT_RXNE);
+	
+	HAL_NVIC_SetPriority(SPI2_IRQn, 0, 3);
+	HAL_NVIC_EnableIRQ(SPI2_IRQn);
 	
 	__SPI2_CLK_ENABLE();
 	
@@ -212,13 +209,16 @@ void SPICommunication_config(void){
 	GPIO_InitStructure.Pin   = DISCOVERY_SCK_PIN | DISCOVERY_MOSI_PIN | DISCOVERY_MISO_PIN;
 	HAL_GPIO_Init(DISCOVERY_SPI_GPIO_PORT, &GPIO_InitStructure);
 	
-	// Discovery to Nucleo GPIO Interrupt (Out - Active Low)
-	GPIO_InitStructure.Pin   = DISCOVERY_INTERRUPT_PIN;
-	GPIO_InitStructure.Pull  = GPIO_PULLUP;
+	// Discovery to Nucleo GPIO Interrupts
+	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(DISCOVERY_INTERRUPT_PORT, &GPIO_InitStructure);
 	
-	HAL_GPIO_WritePin(DISCOVERY_INTERRUPT_PORT, DISCOVERY_INTERRUPT_PIN, GPIO_PIN_SET);
+	GPIO_InitStructure.Pin   = TEMPERATURE_INTERRUPT_PIN | ACCELEROMETER_INTERRUPT_PIN | LEDSTATE_INTERRUPT_PIN;
+	HAL_GPIO_Init(TEMPERATURE_INTERRUPT_PORT, &GPIO_InitStructure);
+	
+	HAL_GPIO_WritePin(TEMPERATURE_INTERRUPT_PORT, TEMPERATURE_INTERRUPT_PIN, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(ACCELEROMETER_INTERRUPT_PORT, ACCELEROMETER_INTERRUPT_PIN, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_RESET);
 	
 }

@@ -11,12 +11,22 @@
 #define THREAD_GREEN_LIGHT 2   // Signal for thread to execute
 #define THREAD_TIMEOUT 1000     // Thread timeout value in milliseconds
 
+#define TEMPERATURE_INTERRUPT_PORT				GPIOA
+#define TEMPERATURE_INTERRUPT_PIN					GPIO_PIN_8	// GPIO_A8
+
+#define ACCELEROMETER_INTERRUPT_PORT			GPIOA
+#define ACCELEROMETER_INTERRUPT_PIN				GPIO_PIN_3	// GPIO_A3
+
+#define LEDSTATE_INTERRUPT_PORT						GPIOA
+#define LEDSTATE_INTERRUPT_PIN						GPIO_PIN_2	// GPIO_A2
+
 /* Public variables ----------------------------------------------------------*/
 
 extern osThreadId tid_Thread_TempSensor; 
 extern osThreadId tid_Thread_Accelerometer;
 extern osThreadId tid_Thread_UserInterface;
-extern osThreadId tid_Thread_SPICommunication;
+
+extern SPI_HandleTypeDef NucleoSpiHandle;
 
 // Mutexes
 extern osMutexId temperatureMutex;

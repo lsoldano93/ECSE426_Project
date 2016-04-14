@@ -57,6 +57,8 @@ void Thread_UserInterface (void const *argument){
 		// TODO: To implement LED speed take in a value  with LED state that adds/subtracts this osDelay
 		osDelay(UI_THREAD_OSDELAY);
 		
+		HAL_GPIO_WritePin(LEDSTATE_INTERRUPT_PORT, LEDSTATE_INTERRUPT_PIN, GPIO_PIN_SET);
+		
 		osMutexWait(ledStateMutex, (uint32_t) THREAD_TIMEOUT);
 		ledState = LED_ROTATE_STATE;
 		dutyCyclePrescaler = LED_DC_PRESCALER;

@@ -22,12 +22,28 @@ Dialog DLL:      TCM.DLL V1.14.5.0
  
 <h2>Project:</h2>
 C:\zzz\ECSE426_Project\BLE_SampleProject\BLE_SampleProject.uvprojx
-Project File Date:  04/12/2016
+Project File Date:  04/13/2016
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Application'
-".\Objects\BLE_SampleProject.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+Src\NucleoSPI.h(51): warning:  #1-D: last line of file ends without a newline
+  #endif
+Src\main.c(134): warning:  #177-D: variable "NumByteToWrite" was declared but never referenced
+        uint16_t NumByteToWrite;
+Src\main.c(139): warning:  #550-D: variable "temperature" was set but never used
+        float temperature, pitch, roll;
+Src\main.c(139): warning:  #177-D: variable "pitch" was declared but never referenced
+        float temperature, pitch, roll;
+Src\main.c(139): warning:  #177-D: variable "roll" was declared but never referenced
+        float temperature, pitch, roll;
+Src\main.c(140): warning:  #177-D: variable "returnArray" was declared but never referenced
+        float returnArray[4];
+Src\main.c: 6 warnings, 0 errors
+linking...
+Program Size: Code=17244 RO-data=768 RW-data=112 ZI-data=3000  
+".\Objects\BLE_SampleProject.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
