@@ -32,41 +32,22 @@ static HAL_StatusTypeDef SPI_WaitOnFlagUntilTimeout(SPI_HandleTypeDef *hspi, uin
 }
 
 void Slave_Write(float input){
-	
-	int i;
+
 	
 	// Can only write decimal values between 0.0 & 0.99
-	int numIntegerDigits = 0;
 	uint8_t tempDecimalValue = 0;
 	uint8_t tempIntegerValue = 0;
 	uint16_t messageValue = 0;
-	
-	// Find number of integer values
-	for(i=0;i<3;i++){
-		if(input/pow(10,i) > 0) numIntegerDigits = i+1;
-		else break;
-	}
-	
+
 	// Calculate integer value
-	if(numIntegerDigits == 3){
-		tempIntegerValue = ((int)(input/100))*100;
-		tempIntegerValue += (((int)(input/10)) - ((int)(tempIntegerValue/10)))*10 ;
-		tempIntegerValue += ((int) input) - tempIntegerValue;
-	}
-	else if(numIntegerDigits == 2){
-		tempIntegerValue = ((int)(input/10));
-		tempIntegerValue += ((int) input) - tempIntegerValue;
-	}
-	else if(numIntegerDigits == 1){
-		tempIntegerValue = (int) input;
-	}
+	tempIntegerValue = (int) input;
 	
 	// Calculate decimal value 
-	tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
+	tempDecimalValue = ((int)(input*(100.0)) - (tempIntegerValue*100.0));
 	
 	// Create bit stream where MS -bits are integer value and LS -bits are decimal value
-	messageValue = ((uint16_t)tempIntegerValue << 8) | tempDecimalValue;
-	
+	messageValue = ((uint16_t)tempIntegerValue << 8) | ((uint16_t)tempDecimalValue);
+	printf("Temperature Message: %d\n", messageValue);
 	
 	// Write message to Data register for transfer
 	NucleoSpiHandle.Instance->DR = messageValue;

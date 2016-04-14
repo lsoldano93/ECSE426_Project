@@ -32,29 +32,26 @@ Sources\Thread_SPICommunication.h(38): warning:  #1295-D: Deprecated declaration
   void SPI2_ISR();
 Sources\Thread_SPICommunication.h(57): warning:  #1-D: last line of file ends without a newline
   #endif
-Sources\Thread_SPICommunication.c(65): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-        tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
-Sources\Thread_SPICommunication.c(65): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-        tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
-Sources\Thread_SPICommunication.c(78): warning:  #188-D: enumerated type mixed with another type
+Sources\Thread_SPICommunication.c(46): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        tempDecimalValue = ((int)(input*(100.0)) - (tempIntegerValue*100.0));
+Sources\Thread_SPICommunication.c(59): warning:  #188-D: enumerated type mixed with another type
         if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, 
 PI_FLAG_BSY, !RESET, 
 PI_TIMEOUT)!=HAL_OK) return; 
-Sources\Thread_SPICommunication.c(99): warning:  #188-D: enumerated type mixed with another type
+Sources\Thread_SPICommunication.c(80): warning:  #188-D: enumerated type mixed with another type
         if(SPI_WaitOnFlagUntilTimeout(&NucleoSpiHandle, 
 PI_FLAG_BSY, !RESET, 
 PI_TIMEOUT)!=HAL_OK) return; 
-Sources\Thread_SPICommunication.c(90): warning:  #177-D: variable "i" was declared but never referenced
+Sources\Thread_SPICommunication.c(71): warning:  #177-D: variable "i" was declared but never referenced
         int i;
-Sources\Thread_SPICommunication.c(124): warning:  #177-D: variable "ledState" was declared but never referenced
+Sources\Thread_SPICommunication.c(105): warning:  #177-D: variable "ledState" was declared but never referenced
         uint8_t ledState;
-Sources\Thread_SPICommunication.c(234): warning:  #513-D: a value of type "void (*)()" cannot be assigned to an entity of type "void (*)(struct __SPI_HandleTypeDef *)"
+Sources\Thread_SPICommunication.c(215): warning:  #513-D: a value of type "void (*)()" cannot be assigned to an entity of type "void (*)(struct __SPI_HandleTypeDef *)"
         NucleoSpiHandle.RxISR                     = SPI2_ISR;
-Sources\Thread_SPICommunication.c: 9 warnings, 0 errors
-compiling RTX_Conf_CM.c...
+Sources\Thread_SPICommunication.c: 8 warnings, 0 errors
 linking...
-Program Size: Code=53068 RO-data=980 RW-data=184 ZI-data=8280  
-".\Objects\Blinky.axf" - 0 Error(s), 9 Warning(s).
+Program Size: Code=49660 RO-data=836 RW-data=184 ZI-data=8280  
+".\Objects\Blinky.axf" - 0 Error(s), 8 Warning(s).
 
 <h2>Software Packages used:</h2>
 
