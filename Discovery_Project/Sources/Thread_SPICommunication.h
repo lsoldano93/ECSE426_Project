@@ -5,46 +5,28 @@
 #include "global_vars.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_rcc.h"
+#include "stm32f4xx_hal_spi.h"
 
 
 /* Private defines -----------------------------------------------------------*/
 
+#define SPI_TIMEOUT										((uint16_t) 4096)
+
 /* DISCOVERY Pins associated with Nucleo signal */
-#define DISCOVERY_DATAi0_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAi0_PIN						GPIO_PIN_2  // GPIO_D2
 
-#define DISCOVERY_DATAi1_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAi1_PIN						GPIO_PIN_5  // GPIO_D5
+#define DISCOVERY_SCK_PIN							GPIO_PIN_13  // GPIO_B13
 
-#define DISCOVERY_DATAi2_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAi2_PIN						GPIO_PIN_6  // GPIO_D6
+#define DISCOVERY_MOSI_PIN						GPIO_PIN_15  // GPIO_B15
 
-#define DISCOVERY_DATAi3_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAi3_PIN						GPIO_PIN_7  // GPIO_D7
+#define DISCOVERY_MISO_PIN						GPIO_PIN_2  // GPIO_B14
 
-#define DISCOVERY_DATAo0_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAo0_PIN						GPIO_PIN_8  // GPIO_D8
+#define DISCOVERY_SPI_GPIO_PORT				GPIOB
 
-#define DISCOVERY_DATAo1_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAo1_PIN						GPIO_PIN_9  // GPIO_D9
+#define DISCOVERY_INTERRUPT_PORT			GPIOA
+#define DISCOVERY_INTERRUPT_PIN				GPIO_PIN_8	 // GPIO_A8
 
-#define DISCOVERY_DATAo2_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAo2_PIN						GPIO_PIN_10  // GPIO_D10
-
-#define DISCOVERY_DATAo3_GPIO_PORT			GPIOD
-#define DISCOVERY_DATAo3_PIN						GPIO_PIN_11  // GPIO_D11
-
-#define NUCLEO_TO_DISCOVERY_GPIO_PORT		GPIOA
-#define NUCLEO_TO_DISCOVERY_PIN					GPIO_PIN_3  // GPIO_A3
-
-#define DISCOVERY_TO_NUCLEO_GPIO_PORT		GPIOA
-#define DISCOVERY_TO_NUCLEO_PIN					GPIO_PIN_10  // GPIO_A10
-
-#define DISCOVERY_INTERRUPT_PORT				GPIOA
-#define DISCOVERY_INTERRUPT_PIN					GPIO_PIN_8	 // GPIO_A8
-
-#define DISCOVERY_DATAio_CLOCK_ENABLE()		__GPIOD_CLK_ENABLE()
-#define DISCOVERY_HSI_CLOCK_ENABLE()			__GPIOA_CLK_ENABLE()
+#define DISCOVERY_SPI_CLOCK_ENABLE()						__GPIOB_CLK_ENABLE()
+#define DISCOVERY_INTERRUPT_CLOCK_ENABLE()			__GPIOA_CLK_ENABLE()
 
 /* Private Variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/

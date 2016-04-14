@@ -4,115 +4,46 @@
 #include <math.h>
 
 /* Private variables ---------------------------------------------------------*/
+SPI_HandleTypeDef DiscoverySpiHandle;
 
-void Read_DataLines(int* inputArray){
-
-	// inputArray[0] = MSB, read from Datai3 {Datai3, Datai2, Datai1, Datai0} = {inputArray[0],inputArray[1],inputArray[2],inputArray[3]}
-	if(HAL_GPIO_ReadPin(NUCLEO_DATAi3_GPIO_PORT, NUCLEO_DATAi3_PIN) == GPIO_PIN_SET) inputArray[0] = 1;
-	else inputArray[0] = 0;
-	
-	if(HAL_GPIO_ReadPin(NUCLEO_DATAi2_GPIO_PORT, NUCLEO_DATAi2_PIN) == GPIO_PIN_SET) inputArray[1] = 1;
-	else inputArray[1] = 0;
-	
-	if(HAL_GPIO_ReadPin(NUCLEO_DATAi1_GPIO_PORT, NUCLEO_DATAi1_PIN) == GPIO_PIN_SET) inputArray[2] = 1;
-	else inputArray[2] = 0;
-	
-	if(HAL_GPIO_ReadPin(NUCLEO_DATAi0_GPIO_PORT, NUCLEO_DATAi0_PIN) == GPIO_PIN_SET) inputArray[3] = 1;
-	else inputArray[3] = 0;
-	
-	return;
-}
-	
-
-void Set_DataLines(int* inputArray){
-	
-	// inputArray[0] = MSB, write to Datao3 {Datao3, Datao2, Datao1, Datao0} = {inputArray[0],inputArray[1],inputArray[2],inputArray[3]}
-	if(inputArray[0] == 1) HAL_GPIO_WritePin(NUCLEO_DATAo3_GPIO_PORT, NUCLEO_DATAo3_PIN, GPIO_PIN_SET);
-	else HAL_GPIO_WritePin(NUCLEO_DATAo3_GPIO_PORT, NUCLEO_DATAo3_PIN, GPIO_PIN_RESET);
-	
-	if(inputArray[1] == 1) HAL_GPIO_WritePin(NUCLEO_DATAo2_GPIO_PORT, NUCLEO_DATAo2_PIN, GPIO_PIN_SET);
-	else HAL_GPIO_WritePin(NUCLEO_DATAo2_GPIO_PORT, NUCLEO_DATAo2_PIN, GPIO_PIN_RESET);
-	
-	if(inputArray[2] == 1) HAL_GPIO_WritePin(NUCLEO_DATAo1_GPIO_PORT, NUCLEO_DATAo1_PIN, GPIO_PIN_SET);
-	else HAL_GPIO_WritePin(NUCLEO_DATAo1_GPIO_PORT, NUCLEO_DATAo1_PIN, GPIO_PIN_RESET);
-	
-	if(inputArray[3] == 1) HAL_GPIO_WritePin(NUCLEO_DATAo0_GPIO_PORT, NUCLEO_DATAo0_PIN, GPIO_PIN_SET);
-	else HAL_GPIO_WritePin(NUCLEO_DATAo0_GPIO_PORT, NUCLEO_DATAo0_PIN, GPIO_PIN_RESET);
-	
-	return;
-}
-
-void Reset_DataLines(){
-	
-	HAL_GPIO_WritePin(NUCLEO_DATAo3_GPIO_PORT, NUCLEO_DATAo3_PIN, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(NUCLEO_DATAo2_GPIO_PORT, NUCLEO_DATAo2_PIN, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(NUCLEO_DATAo1_GPIO_PORT, NUCLEO_DATAo1_PIN, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(NUCLEO_DATAo0_GPIO_PORT, NUCLEO_DATAo0_PIN, GPIO_PIN_RESET);
-	
-	return;
-}
 
 void Master_Write(uint8_t VariableToWrite){
 
-	int i;
-	int outputArray[8];
-	int tempArray[4];
+	uint16_t message = 0;
+	uint8_t tempValue = 0;
 	
 	// LED state will be in format (LED_State*100) + DC Prescalar
 	// Because VariableToWrite is an integer, division by 100 will leave factor of 100
 	if (VariableToWrite/100 == 0){
 		// LED State = 0 = Off
 		// Prescalar doesn't matter; DC not a factor
-		for(i=0;i<6;i++) outputArray[i] = 0;
-		outputArray[6] = 0;
-		outputArray[7] = 0;
+		message = 0x0000;
 	}
 	else if (VariableToWrite/100 == 1){
 		// LED State = 1 = On
-		outputArray[6] = 0;
-		outputArray[7] = 1;
-		
-		// Convert into bit-stream array (MSB first {7,6,5,4,3,2})
-		VariableToWrite -= 100;
-		for (i= 0;i<6;i++) outputArray[5-i] = VariableToWrite & (1 << i) ? 1 : 0;
-
+		tempValue = VariableToWrite - 100;
+		message = (uint16_t)(VariableToWrite << 2);
+		message += 0x0001;
 	}
 	else if (VariableToWrite/100 == 2){
 		// LED State = 2 = CW Rotation
 		// Prescalar doesn't matter; DC not a factor
-		for(i=0;i<6;i++) outputArray[i] = 0;
-		outputArray[6] = 1;
-		outputArray[7] = 0;
+		message = 0x0002;
 	}
 	else if (VariableToWrite/100 == 3){
 		// LED State = 3 = CCW Rotation
 		// Prescalar doesn't matter; DC not a factor
-		for(i=0;i<6;i++) outputArray[i] = 0;
-		outputArray[6] = 1;
-		outputArray[7] = 1;
+		message = 0x0003;
 	}
 	
-	// Send first 4 bits of byte (MSB first)
-	for(i=0;i<4;i++)tempArray[i]=outputArray[i];
-	Set_DataLines(tempArray);
 	
-	// Indicate that data ready to be read
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
+	// Wait for line to be free for sending
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	DiscoverySpiHandle.Instance->DR = message;
 	
-	// Wait for Discovery to finish reading
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET);
-	
-	// Send last 4 bits of byte (MSB first)
-	for(i=0;i<4;i++)tempArray[i]=outputArray[4+i];
-	Set_DataLines(tempArray);
-	
-	// Indicate that data ready to be read again
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
-	
-	// Wait for Discovery to finish reading
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
-	
-	Reset_DataLines();
+	// Wait for message to be read
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_BSY) != RESET);
 
 	return;
 	
@@ -122,85 +53,29 @@ void Master_Write(uint8_t VariableToWrite){
 
 float Master_Read(){
 
-	int i;
+	uint16_t messageValue = 0;
 	
 	// Can only read decimal values between 0.0 & 0.99
-	int integerValue[8];
-	int decimalValue[8];
-	int tempArray[4];
-	
 	float tempDecimalValue;
 	float returnValue;
 	
-	// Wait for Discovery to finish writing
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET);
+	// Write dummy value to line so clock generated
+	DiscoverySpiHandle.Instance->DR = 0x0000;
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
 	
-	// Read first four bits of integer value (MSB first)
-	Read_DataLines(tempArray);
-	for(i=0;i<4;i++)integerValue[i]=tempArray[i];
+	messageValue = DiscoverySpiHandle.Instance->DR;
 	
-	// Signal to Discovery that pins have been read
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
+	// Wait for line release
+	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_BSY) != RESET);
 	
-	// Wait for Discovery to finish writing
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
-	
-	// Read next four bits of integer value (MSB first)
-	Read_DataLines(tempArray);
-	for(i=0;i<4;i++)integerValue[i+4]=tempArray[i];
-	
-	// Signal to Discovery that pins have been read
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
-	
-	// Wait for Discovery to finish writing
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET);
-	
-	// Read first four bits of decimal value (MSB first)
-	Read_DataLines(tempArray);
-	for(i=0;i<4;i++)decimalValue[i]=tempArray[i];
-	
-	// Signal to Discovery that pins have been read
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
-	
-	// Wait for Discovery to finish writing
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
-	
-	// Read next four bits of integer value (MSB first)
-	Read_DataLines(tempArray);
-	for(i=0;i<4;i++)decimalValue[i+4]=tempArray[i];
-	
-	// Signal to Discovery that pins have been read
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
-	
-	// Convert integer bit stream into float value
-	for(i=0;i<8;i++) returnValue += ((float)pow(2,i)) * integerValue[7-i];
-	for(i=0;i<8;i++) tempDecimalValue += ((float)pow(2,i)) * decimalValue[7-i];
-	
+	// Convert message into meaningful values
+	returnValue = (uint8_t) (messageValue >> 8);
+	tempDecimalValue = messageValue - (((uint16_t)returnValue) << 8);
 	returnValue += (tempDecimalValue/100);
 	
 	return returnValue;
 	
-}
-
-float Master_Read_Boolean(){
-	
-	float boolean;
-	
-	// Wait for Discovery to finish writing
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET);
-	
-	// Read input port 0 (pin set = true, pin reset = false)
-	if(HAL_GPIO_ReadPin(NUCLEO_DATAi0_GPIO_PORT, NUCLEO_DATAi0_PIN) == GPIO_PIN_SET) boolean = 1;
-	else boolean = 0;
-	
-	// Signal to Discovery that pins have been read
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
-	
-	// Reset to proper pin order
-	while(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
-	
-	return boolean;
 }
 
 
@@ -235,91 +110,45 @@ void NucleoSPI_Config(void){
 	
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
-	NUCLEO_DATAi_CLOCK_ENABLE();
-	NUCLEO_DATAo_CLOCK_ENABLE();
-	NUCLEO_HSI_CLOCK_ENABLE();                                                 
+	/* SPI configuration -------------------------------------------------------*/
+	__HAL_RCC_SPI2_CLK_ENABLE();
 	
-	// NUCLEO Output Pin 0  (Output - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAo0_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAo0_GPIO_PORT, &GPIO_InitStructure);
+  HAL_SPI_DeInit(&DiscoverySpiHandle);
+  DiscoverySpiHandle.Instance 							  = SPI2;
+  DiscoverySpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_4;
+  DiscoverySpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES;
+  DiscoverySpiHandle.Init.CLKPhase 						= SPI_PHASE_1EDGE;
+  DiscoverySpiHandle.Init.CLKPolarity 				= SPI_POLARITY_LOW;
+  DiscoverySpiHandle.Init.CRCCalculation			= SPI_CRCCALCULATION_DISABLED;
+  DiscoverySpiHandle.Init.CRCPolynomial 			= 7;
+  DiscoverySpiHandle.Init.DataSize 						= SPI_DATASIZE_16BIT;
+  DiscoverySpiHandle.Init.FirstBit 						= SPI_FIRSTBIT_MSB;
+  DiscoverySpiHandle.Init.NSS 								= SPI_NSS_SOFT;
+  DiscoverySpiHandle.Init.TIMode 							= SPI_TIMODE_DISABLED;
+  DiscoverySpiHandle.Init.Mode 								= SPI_MODE_MASTER;
+	if (HAL_SPI_Init(&DiscoverySpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI2 \n");};
+  
+	__HAL_SPI_ENABLE(&DiscoverySpiHandle);
 	
-	// NUCLEO Output Pin 1  (Output - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAo1_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAo1_GPIO_PORT, &GPIO_InitStructure);
+	__SPI2_CLK_ENABLE();
 	
-	// NUCLEO Output Pin 2  (Output - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAo2_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAo2_GPIO_PORT, &GPIO_InitStructure);
+	NUCLEO_SPI_CLOCK_ENABLE();
+	NUCLEO_INTERRUPT_CLOCK_ENABLE();                                                 
 	
-	// NUCLEO Output Pin 3  (Output - Active High)
-	GPIO_InitStructure.Pull  = GPIO_PULLDOWN;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAo3_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAo3_GPIO_PORT, &GPIO_InitStructure);
+	// Configure SPI pins
+	GPIO_InitStructure.Pull  				= GPIO_PULLDOWN;
+	GPIO_InitStructure.Mode  				= GPIO_MODE_AF_PP;
+	GPIO_InitStructure.Speed 				= GPIO_SPEED_FREQ_MEDIUM;
+	GPIO_InitStructure.Alternate    = GPIO_AF5_SPI2;
 	
-	// NUCLEO to Discovery Handshake Pin  (Output - Active Low)
-	GPIO_InitStructure.Pull  = GPIO_PULLUP;
-	GPIO_InitStructure.Pin   = NUCLEO_TO_DISCOVERY_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_TO_DISCOVERY_GPIO_PORT, &GPIO_InitStructure);
-	
-	/* Instantiate pins to high for active low state */
-	Reset_DataLines();
-	
-	/* Instantiate HS pin to high for active low state */
-	HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
-	
-	// NUCLEO Input Pin 0  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_NOPULL;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAi0_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAi0_GPIO_PORT, &GPIO_InitStructure);
-	
-	// NUCLEO Input Pin 1  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_NOPULL;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAi1_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAi1_GPIO_PORT, &GPIO_InitStructure);
-	
-	// NUCLEO Input Pin 2  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_NOPULL;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAi2_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAi2_GPIO_PORT, &GPIO_InitStructure);
-	
-	// NUCLEO Input Pin 3  (Input - Active High)
-	GPIO_InitStructure.Pull  = GPIO_NOPULL;
-	GPIO_InitStructure.Pin   = NUCLEO_DATAi3_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(NUCLEO_DATAi3_GPIO_PORT, &GPIO_InitStructure);
-	
-	// Discovery to Nucleo Handshake Pin  (Input - Active Low)
-	GPIO_InitStructure.Pull  = GPIO_NOPULL;
-	GPIO_InitStructure.Pin   = DISCOVERY_TO_NUCLEO_PIN;
-	GPIO_InitStructure.Mode  = GPIO_MODE_INPUT;
-	GPIO_InitStructure.Speed = GPIO_SPEED_FREQ_MEDIUM;
-	HAL_GPIO_Init(DISCOVERY_TO_NUCLEO_GPIO_PORT, &GPIO_InitStructure);
+	GPIO_InitStructure.Pin   = NUCLEO_SCK_PIN | NUCLEO_MISO_PIN | NUCLEO_MOSI_PIN;
+	HAL_GPIO_Init(NUCLEO_SPI_GPIO_PORT, &GPIO_InitStructure);
 	
 	/* Setup input interrupt line from Discovery */
   GPIO_InitStructure.Pin = NUCLEO_INTERRUPT_PIN;
 	GPIO_InitStructure.Mode  = GPIO_MODE_IT_FALLING;
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
-	GPIO_InitStructure.Speed = GPIO_SPEED_MEDIUM;
+	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
 	HAL_GPIO_Init(NUCLEO_INTERRUPT_PORT, &GPIO_InitStructure);
 		
 	/* Configure the NVIC for SPI */  
