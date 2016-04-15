@@ -48,7 +48,7 @@
 #include "debug.h"
 #include "stm32_bluenrg_ble.h"
 #include "bluenrg_utils.h"
-#include "NucleoSPI.h"
+#include "DopeComs.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -83,12 +83,11 @@
 /* Private variables ---------------------------------------------------------*/
 extern volatile uint8_t set_connectable;
 extern volatile int connected;
-extern AxesRaw_t axes_data;
+
 uint8_t bnrg_expansion_board = IDB04A1; /* at startup, suppose the X-NUCLEO-IDB04A1 is used */
-uint8_t TEMPERATURE_FLAG = 0;
-uint8_t ACCELEROMETER_FLAG = 0;
-uint8_t LEDSTATE_FLAG = 0;
-uint8_t LED_STATE; 
+uint8_t doubleTap_flag = 0;
+uint16_t ledState = 0; 
+float temperature, pitch, roll;
 /**
  * @}
  */
@@ -97,7 +96,7 @@ uint8_t LED_STATE;
  * @{
  */
 /* Private function prototypes -----------------------------------------------*/
-void User_Process(AxesRaw_t* p_axes);
+void User_Process();
 /**
  * @}
  */
@@ -125,18 +124,22 @@ void User_Process(AxesRaw_t* p_axes);
  * @param  None
  * @retval None
  */
+ 
+ //TODO: DELETE THIS
+int debug = 0;
 int main(void)
 {
   const char *name = "BTLE_G4";
   uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
   uint8_t bdaddr[BDADDR_SIZE];
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
+	
 	uint16_t NumByteToWrite;
   
   uint8_t  hwVersion;
   uint16_t fwVersion;
 	
-	float temperature, pitch, roll;
+	
 	float returnArray[4];
   
   int ret;  
@@ -152,20 +155,16 @@ int main(void)
    */
   HAL_Init();
   
-#if NEW_SERVICES
-  /* Configure LED2 */
-  BSP_LED_Init(LED2); 
-#endif
-  
-  /* Configure the User Button in GPIO Mode */
-  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
-  
+ 
   /* Configure the system clock */
 	/* SYSTEM CLOCK = 32 MHz */
   SystemClock_Config();
 
+	/*Configure Dope Coms*/
+	DopeComs_Config();
+
 	/* Configure Nucleo for SPI communications with Discovery */
-  NucleoSPI_Config();
+  //NucleoSPI_Config();
 
   /* Initialize the BlueNRG SPI driver */
   BNRG_SPI_Init();
@@ -248,42 +247,19 @@ int main(void)
   
   PRINTF("SERVER: BLE Stack Initialized\n");
   
-  ret = Add_Acc_Service();
+  ret = Add_Sensor_Service();
   
   if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("Acc service added successfully.\n");
+    PRINTF("Sensor service added successfully.\n");
   else
-    PRINTF("Error while adding Acc service.\n");
+    PRINTF("Error while adding Sensor service.\n");
   
-  ret = Add_Environmental_Sensor_Service();
+  ret = Add_Led_Service();
   
-  if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("Environmental Sensor service added successfully.\n");
-  else
-    PRINTF("Error while adding Environmental Sensor service.\n");
-
-#if NEW_SERVICES
-  /* Instantiate Timer Service with two characteristics:
-   * - seconds characteristic (Readable only)
-   * - minutes characteristics (Readable and Notifiable )
-   */
-  ret = Add_Time_Service(); 
-  
-  if(ret == BLE_STATUS_SUCCESS)
-    PRINTF("Time service added successfully.\n");
-  else
-    PRINTF("Error while adding Time service.\n");  
-  
-  /* Instantiate LED Button Service with one characteristic:
-   * - LED characteristic (Readable and Writable)
-   */  
-  ret = Add_LED_Service();
-
   if(ret == BLE_STATUS_SUCCESS)
     PRINTF("LED service added successfully.\n");
   else
-    PRINTF("Error while adding LED service.\n");  
-#endif
+    PRINTF("Error while adding LED service.\n");
 
   /* Set output power level */
   ret = aci_hal_set_tx_power_level(1,4);
@@ -291,38 +267,62 @@ int main(void)
 
   while(1){
 
-			// Check for Discovery flag trigger that indicates new data as available
-			if (TEMPERATURE_FLAG == 1){
-				LED_STATE++;
-				temperature = Master_Read(COMMAND_TEMPERATURE); 
-				printf("Temperature: %f, Value: %d\n", temperature, LED_STATE);
-				TEMPERATURE_FLAG = 0;
-				
-			}
-//			if (ACCELEROMETER_FLAG == 1){   // TODO: Must be able to read pitch and roll
-//				
-//				pitch = Master_Read(COMMAND_PITCH);
-//				roll = Master_Read(COMMAND_ROLL);
-//				if(Master_Read(COMMAND_DTAP)) // TODO: Execute some code;
-//				ACCELEROMETER_FLAG = 0;
-//				
-//			}
-//			if (LEDSTATE_FLAG == 1){
-//				
-//				Master_Write(LED_STATE); 
-//				LEDSTATE_FLAG = 0;
-//				
-//			}
-	
+//		if(debug == 1){
+//			HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
+//			if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET) printf("Discovery to Nucleo HS reading high\n");
+//			
+//			HAL_GPIO_WritePin(NUCLEO_DATAo0_GPIO_PORT, NUCLEO_DATAo0_PIN, GPIO_PIN_SET);
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi0_GPIO_PORT, NUCLEO_DATAi0_PIN) == GPIO_PIN_SET) printf("Input zero is reading high\n");
+//			
+//			HAL_GPIO_WritePin(NUCLEO_DATAo1_GPIO_PORT, NUCLEO_DATAo1_PIN, GPIO_PIN_SET);
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi1_GPIO_PORT, NUCLEO_DATAi1_PIN) == GPIO_PIN_SET) printf("Input one is reading high\n");
+//			
+//			HAL_GPIO_WritePin(NUCLEO_DATAo2_GPIO_PORT, NUCLEO_DATAo2_PIN, GPIO_PIN_SET);
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi2_GPIO_PORT, NUCLEO_DATAi2_PIN) == GPIO_PIN_SET) printf("Input two is reading high\n");
+//			
+//			HAL_GPIO_WritePin(NUCLEO_DATAo3_GPIO_PORT, NUCLEO_DATAo3_PIN, GPIO_PIN_SET);
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi3_GPIO_PORT, NUCLEO_DATAi3_PIN) == GPIO_PIN_SET) printf("Input three is reading high\n");
+//			
+//			Reset_DataLines();
+//			debug = 0;
+//		}
+//		else if(debug == 2){
+////			HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_SET);
+////			HAL_GPIO_WritePin(NUCLEO_DATAo0_GPIO_PORT, NUCLEO_DATAo0_PIN, GPIO_PIN_SET);
+////			HAL_GPIO_WritePin(NUCLEO_DATAo1_GPIO_PORT, NUCLEO_DATAo1_PIN, GPIO_PIN_SET);
+////			HAL_GPIO_WritePin(NUCLEO_DATAo2_GPIO_PORT, NUCLEO_DATAo2_PIN, GPIO_PIN_SET);
+////			HAL_GPIO_WritePin(NUCLEO_DATAo3_GPIO_PORT, NUCLEO_DATAo3_PIN, GPIO_PIN_SET);
+//			
+//			Reset_DataLines();
+//			HAL_GPIO_WritePin(NUCLEO_TO_DISCOVERY_GPIO_PORT, NUCLEO_TO_DISCOVERY_PIN, GPIO_PIN_RESET);
+//			
+//			if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) == GPIO_PIN_SET) printf("Discovery to Nucleo HS reading high\n");
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi0_GPIO_PORT, NUCLEO_DATAi0_PIN) == GPIO_PIN_SET) printf("Input zero is reading high\n");
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi1_GPIO_PORT, NUCLEO_DATAi1_PIN) == GPIO_PIN_SET) printf("Input one is reading high\n");
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi2_GPIO_PORT, NUCLEO_DATAi2_PIN) == GPIO_PIN_SET) printf("Input two is reading high\n");
+//			if(HAL_GPIO_ReadPin(NUCLEO_DATAi3_GPIO_PORT, NUCLEO_DATAi3_PIN) == GPIO_PIN_SET) printf("Input three is reading high\n");
+//			
+//			Reset_DataLines();
+//			debug = 0;
+//		}
+		
+		if(HAL_GPIO_ReadPin(DISCOVERY_TO_NUCLEO_GPIO_PORT, DISCOVERY_TO_NUCLEO_PIN) ==  GPIO_PIN_SET){
+			// Currently just attempts to read temperature
+			Master_Communication(ledState, returnArray);
+			temperature = returnArray[0];
+			pitch = returnArray[1];
+			roll = returnArray[2];
+			if(((int)returnArray[3]) == 1);// {doubleTap_flag = 1; printf("BRAPPPP\n");}
+//			printf("Temperature value: %f\n", returnArray[0]);
+//			printf("Pitch value: %f\n", returnArray[1]);
+//			printf("Roll value: %f\n", returnArray[2]);
+		}
 
 
 // Uncomment this for BT functionality		
-//    HCI_Process();
-//    User_Process(&axes_data);
-//#if NEW_SERVICES
-//    Update_Time_Characteristics();
-//#endif
-			
+		HCI_Process();
+    User_Process();
+		
   }
 }
 
@@ -334,30 +334,28 @@ int main(void)
  * @param  AxesRaw_t* p_axes
  * @retval None
  */
-void User_Process(AxesRaw_t* p_axes)
+
+
+void User_Process()
 {
   if(set_connectable){
     setConnectable();
     set_connectable = FALSE;
   }  
 
-  /* Check if the user has pushed the button */
-  if(BSP_PB_GetState(BUTTON_KEY) == RESET)
-  {
-    while (BSP_PB_GetState(BUTTON_KEY) == RESET);
+  if(set_connectable){
+		setConnectable();
+		set_connectable = FALSE;
+	}
     
-    //BSP_LED_Toggle(LED2); //used for debugging (BSP_LED_Init() above must be also enabled)
-    
-    if(connected)
-    {
-      /* Update acceleration data */
-      p_axes->AXIS_X += 1;
-      p_axes->AXIS_Y -= 1;
-      p_axes->AXIS_Z += 2;
-      //PRINTF("ACC: X=%6d Y=%6d Z=%6d\r\n", p_axes->AXIS_X, p_axes->AXIS_Y, p_axes->AXIS_Z);
-      Acc_Update(p_axes);
-    }
-  }
+   if(connected)
+   {
+			Temp_Update((uint16_t)(temperature * 100));
+			Pitch_Update((uint16_t)(pitch * 100));
+			Roll_Update((uint16_t)(roll * 100));
+			//Dtap_Update();
+		  //doubleTap_flag = 0;
+	 }
 }
 
 /**
@@ -368,10 +366,10 @@ void User_Process(AxesRaw_t* p_axes)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
   
 	if (GPIO_Pin == GPIO_PIN_0) HCI_Isr();
-	else if (GPIO_Pin == TEMPERATURE_INTERRUPT_PIN){
-		__HAL_GPIO_EXTI_CLEAR_IT(TEMPERATURE_INTERRUPT_PIN);
-		TEMPERATURE_FLAG = 1;
-	}
+//	else if (GPIO_Pin == GPIO_PIN_4){
+//		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_4);
+//		TEMPERATURE_FLAG = 1;
+//	}
 //	else if (GPIO_Pin == GPIO_PIN_2){ 
 //		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
 //		ACCELEROMETER_FLAG = 1;

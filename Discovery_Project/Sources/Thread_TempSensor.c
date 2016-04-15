@@ -37,10 +37,10 @@ void Thread_TempSensor (void const *argument){
 	// Update temperature values when signaled to do so, clear said signal after execution
 	while(1){
 		
-		Status_TempSensor = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);	
+		Status_TempSensor = osSignalWait((int32_t) THREAD_GREEN_LIGHT, (uint32_t) THREAD_TIMEOUT);
 		updateTemp();
-		HAL_GPIO_WritePin(TEMPERATURE_INTERRUPT_PORT, TEMPERATURE_INTERRUPT_PIN, GPIO_PIN_SET);
-
+		osSignalSet(tid_Thread_DopeComs, THREAD_GREEN_LIGHT);
+		
 	}                                                       
 }
 	

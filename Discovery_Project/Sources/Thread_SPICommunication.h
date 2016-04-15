@@ -20,11 +20,11 @@
 
 /* DISCOVERY Pins associated with Nucleo signal */
 
-#define DISCOVERY_SCK_PIN							GPIO_PIN_10  // GPIO_C10
+#define DISCOVERY_SCK_PIN							GPIO_PIN_10  // GPIO_B10
 
-#define DISCOVERY_MOSI_PIN						GPIO_PIN_12  // GPIO_C12
+#define DISCOVERY_MOSI_PIN						GPIO_PIN_3  // GPIO_C3
 
-#define DISCOVERY_MISO_PIN						GPIO_PIN_11  // GPIO_C11
+#define DISCOVERY_MISO_PIN						GPIO_PIN_2  // GPIO_C2
 
 #define DISCOVERY_SPI_GPIO_PORT				GPIOC
 
@@ -37,6 +37,20 @@
 
 void SPI2_ISR();
 
+/**
+  * @brief  Sends a Byte through the SPI interface and return the Byte received from the SPI bus.
+  * @param  Byte : Byte send.
+  * @retval The received byte value
+  */
+static uint8_t Slave_SendByte(uint8_t byte);
+
+static uint8_t Slave_ReadByte(void);
+
+/**
+  * @brief  Initialize SPI handle for slave device (Discovery board)
+  * @param  None
+  * @retval None
+  */
 void SPICommunication_config(void);
 
 

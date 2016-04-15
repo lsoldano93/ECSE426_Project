@@ -156,13 +156,13 @@ void EXTI4_IRQHandler(void){
 	HAL_GPIO_EXTI_IRQHandler(TEMPERATURE_INTERRUPT_PIN);
 }
 
-//void EXTI2_IRQHandler(void){
-//	HAL_GPIO_EXTI_IRQHandler(ACCELEROMETER_INTERRUPT_PIN);
-//}
+void EXTI2_IRQHandler(void){
+	HAL_GPIO_EXTI_IRQHandler(ACCELEROMETER_INTERRUPT_PIN);
+}
 
-//void EXTI3_IRQHandler(void){
-//	HAL_GPIO_EXTI_IRQHandler(LEDSTATE_INTERRUPT_PIN);
-//}
+void EXTI3_IRQHandler(void){
+	HAL_GPIO_EXTI_IRQHandler(LEDSTATE_INTERRUPT_PIN);
+}
 
 /**
   * @brief  This function handles the Push Button interrupt request.

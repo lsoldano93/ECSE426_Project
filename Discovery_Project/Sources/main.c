@@ -93,33 +93,6 @@ void init_TIM3(void) {
 	
 }
 
-void init_TIM4(void) {
-	
-	
-	TIM_Base_InitTypeDef init_TIM4;
-	
-	// Enable clock for TIM4 
-	__HAL_RCC_TIM4_CLK_ENABLE();
-	
-	init_TIM4.Prescaler = 0;
-	init_TIM4.CounterMode = TIM_COUNTERMODE_UP;
-	init_TIM4.Period = 8399;  // 10 kHz
-	init_TIM4.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	
-	// Initialize timer 4 handle struct
-	handle_tim4.Instance = TIM4;
-	handle_tim4.Init = init_TIM4;
-	handle_tim4.State = HAL_TIM_STATE_RESET;
-	
-	// Initialize timer 4 handle 
-	HAL_TIM_OC_Init(&handle_tim4);
-	
-	// Start LED clock
-	__GPIOD_CLK_ENABLE();
-	
-	
-}
-
 
 /**
   * @brief  This function handles accelerometer interrupt requests
@@ -138,9 +111,9 @@ void TIM3_IRQHandler(void) {
 	
 }
 
-void NucleoSPI_IRQHandler(void){
-	SPI2_ISR();
-}
+//void SPI2_IRQHandler(void){
+//	SPI2_ISR();
+//}
 
 
 /**
@@ -204,12 +177,16 @@ int main (void) {
 	// Initialize flags and counters
 	timingDelay = 0;
 	tim3_ticks = 0;
-	printf("Begin Program\n");
+	
+	printf("Beginning Program\n");
+	
 	/* User codes goes here*/
 	init_TIM3();															/* Initialize timer 3 				     	*/
 	init_TIM4();															/* Initialize timer 4 				     	*/
 	
-	SPICommunication_config();								/* Initialize parameters for SPI    */
+	//SPICommunication_config();							/* Initialize parameters for SPI    */
+	DopeComs_config();												/* Initialize parameters for Dope Coms    */
+	start_Thread_DopeComs(); 									/* Start DopeComs thread  				*/
   
 	ADC_config();														  /* Initialize temp sensor ADC     	*/
 	start_Thread_TempSensor(); 								/* Start temp sensor thread  				*/

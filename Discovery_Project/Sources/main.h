@@ -6,7 +6,7 @@
 #include "Thread_TempSensor.h"
 #include "Thread_Accelerometer.h"
 #include "Thread_UserInterface.h"
-#include "Thread_SPICommunication.h"
+#include "DopeComs.h"
 
 osMutexId temperatureMutex;
 osMutexId tiltAnglesMutex;

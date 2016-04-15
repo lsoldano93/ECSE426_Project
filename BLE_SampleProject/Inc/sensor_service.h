@@ -114,9 +114,12 @@ typedef struct {
 /** @addtogroup SENSOR_SERVICE_Exported_Functions
  *  @{
  */
-tBleStatus Add_Acc_Service(void);
-tBleStatus Acc_Update(AxesRaw_t *data);
-tBleStatus Add_Environmental_Sensor_Service(void);
+tBleStatus Temp_Update(int16_t temp);
+tBleStatus Pitch_Update(int16_t pitch);
+tBleStatus Roll_Update(int16_t roll);
+tBleStatus Add_Sensor_Service(void);
+uint16_t readLedState();
+tBleStatus Add_Led_Service(void);
 void       setConnectable(void);
 void       enableNotification(void);
 void       GAP_ConnectionComplete_CB(uint8_t addr[6], uint16_t handle);

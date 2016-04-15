@@ -27,7 +27,21 @@ Project File Date:  04/14/2016
 <h2>Output:</h2>
 *** Using Compiler 'V5.05 update 2 (build 169)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Lab4'
-".\Objects\Blinky.axf" - 0 Error(s), 0 Warning(s).
+compiling DopeComs.c...
+Sources\DopeComs.h(80): warning:  #1-D: last line of file ends without a newline
+  #endif
+Sources\DopeComs.c(107): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
+Sources\DopeComs.c(107): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        tempDecimalValue = (int)((input*(100.0)) - ((float)tempIntegerValue*100.0));
+Sources\DopeComs.c(88): warning:  #550-D: variable "numIntegerDigits" was set but never used
+        int numIntegerDigits = 0;
+Sources\DopeComs.c(241): warning:  #177-D: variable "ledState" was declared but never referenced
+        uint8_t ledState;
+Sources\DopeComs.c: 5 warnings, 0 errors
+linking...
+Program Size: Code=50744 RO-data=992 RW-data=192 ZI-data=8192  
+".\Objects\Blinky.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 

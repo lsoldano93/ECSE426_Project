@@ -79,7 +79,7 @@ float Master_Read(uint16_t Instruction){
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
 	returnValue = DiscoverySpiHandle.Instance->DR;
 	
-	// Generate clock and wait for read
+	// Generate cock and wait for read
 	DiscoverySpiHandle.Instance->DR = 0x0000;
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_TXE) == RESET);
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_RXNE) == RESET);
@@ -90,8 +90,8 @@ float Master_Read(uint16_t Instruction){
 	while(__HAL_SPI_GET_FLAG(&DiscoverySpiHandle, SPI_FLAG_BSY) != RESET);
 	
 	// Convert message into meaningful values
-	returnValue = (uint8_t) (messageValue >> 9);
-	tempDecimalValue = messageValue - (((uint16_t)returnValue) << 9);
+	returnValue = (uint8_t) (messageValue >> 8);
+	tempDecimalValue = messageValue - (((uint16_t)returnValue) << 8);
 	returnValue += (tempDecimalValue/100);
 	
 	return returnValue;
@@ -108,10 +108,10 @@ void NucleoSPI_Config(void){
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
 	/* SPI configuration -------------------------------------------------------*/
-	__HAL_RCC_SPI2_CLK_ENABLE();
+	__HAL_RCC_SPI3_CLK_ENABLE();
 	
   HAL_SPI_DeInit(&DiscoverySpiHandle);
-  DiscoverySpiHandle.Instance 							  = SPI2;
+  DiscoverySpiHandle.Instance 							  = SPI3;
   DiscoverySpiHandle.Init.BaudRatePrescaler 	= SPI_BAUDRATEPRESCALER_4;
   DiscoverySpiHandle.Init.Direction 					= SPI_DIRECTION_2LINES;
   DiscoverySpiHandle.Init.CLKPhase 						= SPI_PHASE_1EDGE;
@@ -123,22 +123,22 @@ void NucleoSPI_Config(void){
   DiscoverySpiHandle.Init.NSS 								= SPI_NSS_SOFT;
   DiscoverySpiHandle.Init.TIMode 							= SPI_TIMODE_DISABLED;
   DiscoverySpiHandle.Init.Mode 								= SPI_MODE_MASTER;
-	if (HAL_SPI_Init(&DiscoverySpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI2 \n");};
+	if (HAL_SPI_Init(&DiscoverySpiHandle) != HAL_OK) {printf ("ERROR: Error in initialising SPI3 \n");};
   
 	__HAL_SPI_ENABLE(&DiscoverySpiHandle);
+	
+	__SPI3_CLK_ENABLE();
 	
 	NUCLEO_SPI_CLOCK_ENABLE();
 	TEMPERATURE_INTERRUPT_CLOCK_ENABLE();
 	ACCELEROMETER_INTERRUPT_CLOCK_ENABLE();
 	LEDSTATE_INTERRUPT_CLOCK_ENABLE();	
 	
-	__SPI2_CLK_ENABLE();
-	
 	// Configure SPI pins
 	GPIO_InitStructure.Pull  				= GPIO_PULLDOWN;
 	GPIO_InitStructure.Mode  				= GPIO_MODE_AF_PP;
 	GPIO_InitStructure.Speed 				= GPIO_SPEED_FREQ_MEDIUM;
-	GPIO_InitStructure.Alternate    = GPIO_AF5_SPI2;
+	GPIO_InitStructure.Alternate    = GPIO_AF6_SPI3;
 	
 	GPIO_InitStructure.Pin   = NUCLEO_SCK_PIN | NUCLEO_MISO_PIN | NUCLEO_MOSI_PIN;
 	HAL_GPIO_Init(NUCLEO_SPI_GPIO_PORT, &GPIO_InitStructure);
@@ -148,18 +148,18 @@ void NucleoSPI_Config(void){
 	GPIO_InitStructure.Pull = GPIO_NOPULL;
 	GPIO_InitStructure.Speed = GPIO_SPEED_HIGH;
 	
-	GPIO_InitStructure.Pin = TEMPERATURE_INTERRUPT_PIN;
+	GPIO_InitStructure.Pin = TEMPERATURE_INTERRUPT_PIN | ACCELEROMETER_INTERRUPT_PIN | LEDSTATE_INTERRUPT_PIN;
 	HAL_GPIO_Init(TEMPERATURE_INTERRUPT_PORT, &GPIO_InitStructure);
 		
 	/* Configure the NVIC for SPI */  
   HAL_NVIC_SetPriority(EXTI4_IRQn, 4, 0);    
   HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 	
-//	HAL_NVIC_SetPriority(EXTI2_IRQn, 4, 0);    
-//  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-//	
-//	HAL_NVIC_SetPriority(EXTI3_IRQn, 4, 0);    
-//  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+	HAL_NVIC_SetPriority(EXTI2_IRQn, 4, 0);    
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+	
+	HAL_NVIC_SetPriority(EXTI3_IRQn, 4, 0);    
+  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 	
 }
 
